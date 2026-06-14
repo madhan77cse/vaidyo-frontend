@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health - Vaidyo</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-vaidyo">
+  <div class="container">
+    <a class="navbar-brand" href="dashboard.html"><i class="fa-solid fa-heart-pulse"></i> Vaidyo</a>
+    <div class="ms-auto d-flex gap-2">
+      <a href="dashboard.html" class="btn btn-sm btn-outline-light">Dashboard</a>
+      <a href="medicines.html" class="btn btn-sm btn-outline-light">Medicines</a>
+      <a href="doctors.html" class="btn btn-sm btn-outline-light">Doctors</a>
+      <a href="appointments.html" class="btn btn-sm btn-outline-light">Appointments</a>
+      <button class="btn btn-sm btn-light" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-4">
+
+  <div id="alertBanner"></div>
+
+  <!-- Add Health Log -->
+  <div class="card-custom mb-4">
+    <h5><i class="fa-solid fa-heart-pulse"></i> Log Health Reading</h5>
+    <form id="healthForm" class="row g-3 mt-2">
+      <div class="col-md-2">
+        <label class="form-label">BP Systolic</label>
+        <input type="number" class="form-control" id="bpSystolic" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">BP Diastolic</label>
+        <input type="number" class="form-control" id="bpDiastolic" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Sugar Level</label>
+        <input type="number" class="form-control" id="sugarLevel" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Weight (kg)</label>
+        <input type="number" step="0.1" class="form-control" id="weight" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Pulse Rate</label>
+        <input type="number" class="form-control" id="pulseRate" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Temperature</label>
+        <input type="number" step="0.1" class="form-control" id="temperature" required>
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">Notes</label>
+        <input type="text" class="form-control" id="notes">
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Submit Reading</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Charts -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card-custom">
+        <h6>BP Trend</h6>
+        <canvas id="bpChart"></canvas>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card-custom">
+        <h6>Sugar Trend</h6>
+        <canvas id="sugarChart"></canvas>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card-custom">
+        <h6>Weight Trend</h6>
+        <canvas id="weightChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Table -->
+  <div class="card-custom">
+    <h5><i class="fa-solid fa-clock-rotate-left"></i> Health History</h5>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr><th>Date</th><th>BP</th><th>Sugar</th><th>Weight</th><th>Pulse</th><th>Temp</th><th>Status</th></tr>
+        </thead>
+        <tbody id="historyBody">
+          <tr><td colspan="7" class="text-muted text-center">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+if (!checkAuth('PATIENT')) { }
+const auth = getAuth();
+
+let bpChart, sugarChart, weightChart;
+
+async function loadHealth() {
+    try {
+        const logs = await apiGet('/api/patient/health?patientId=' + auth.userId);
+
+        // Alert banner for latest CRITICAL
+        if (logs.length > 0) {
+            const latest = logs[0];
+            if (latest.alertStatus === 'CRITICAL') {
+                document.getElementById('alertBanner').innerHTML =
+                    '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation"></i> Your latest reading is <strong>CRITICAL</strong>. Please consult a doctor.</div>';
+            } else if (latest.alertStatus === 'WARNING') {
+                document.getElementById('alertBanner').innerHTML =
+                    '<div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation"></i> Your latest reading shows a <strong>WARNING</strong>. Keep monitoring.</div>';
+            }
+        }
+
+        // History table
+        if (logs.length === 0) {
+            document.getElementById('historyBody').innerHTML = '<tr><td colspan="7" class="text-muted text-center">No health logs yet.</td></tr>';
+        } else {
+            let html = '';
+            logs.forEach(l => {
+                html += '<tr>'
+                    + '<td>' + formatDate(l.loggedAt) + '</td>'
+                    + '<td>' + l.bpSystolic + '/' + l.bpDiastolic + '</td>'
+                    + '<td>' + l.sugarLevel + '</td>'
+                    + '<td>' + l.weight + '</td>'
+                    + '<td>' + l.pulseRate + '</td>'
+                    + '<td>' + l.temperature + '</td>'
+                    + '<td>' + getStatusBadge(l.alertStatus) + '</td>'
+                    + '</tr>';
+            });
+            document.getElementById('historyBody').innerHTML = html;
+        }
+
+        // Charts - last 7 readings, oldest to newest
+        const recent = logs.slice(0, 7).reverse();
+        const labels = recent.map(l => formatDate(l.loggedAt));
+
+        if (bpChart) bpChart.destroy();
+        if (sugarChart) sugarChart.destroy();
+        if (weightChart) weightChart.destroy();
+
+        bpChart = new Chart(document.getElementById('bpChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Systolic', data: recent.map(l => l.bpSystolic), borderColor: '#2196F3', tension: 0.3 },
+                    { label: 'Diastolic', data: recent.map(l => l.bpDiastolic), borderColor: '#F44336', tension: 0.3 }
+                ]
+            },
+            options: { responsive: true, plugins: { legend: { display: true } } }
+        });
+
+        sugarChart = new Chart(document.getElementById('sugarChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{ label: 'Sugar', data: recent.map(l => l.sugarLevel), borderColor: '#FF9800', tension: 0.3 }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+        weightChart = new Chart(document.getElementById('weightChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{ label: 'Weight', data: recent.map(l => l.weight), borderColor: '#4CAF50', tension: 0.3 }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+    } catch (e) {
+        document.getElementById('historyBody').innerHTML = '<tr><td colspan="7" class="text-danger text-center">Failed to load health data.</td></tr>';
+    }
+}
+
+document.getElementById('healthForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const payload = {
+        bpSystolic: parseInt(document.getElementById('bpSystolic').value),
+        bpDiastolic: parseInt(document.getElementById('bpDiastolic').value),
+        sugarLevel: parseInt(document.getElementById('sugarLevel').value),
+        weight: parseFloat(document.getElementById('weight').value),
+        pulseRate: parseInt(document.getElementById('pulseRate').value),
+        temperature: parseFloat(document.getElementById('temperature').value),
+        notes: document.getElementById('notes').value
+    };
+    showLoading();
+    try {
+        const result = await apiPost('/api/patient/health?patientId=' + auth.userId, payload);
+        hideLoading();
+        showSuccess('Health reading logged! Status: ' + result.alertStatus);
+        document.getElementById('healthForm').reset();
+        loadHealth();
+    } catch (err) {
+        hideLoading();
+        showError('Failed to log health reading.');
+    }
+});
+
+loadHealth();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appointments - Vaidyo Doctor</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-vaidyo">
+  <div class="container">
+    <a class="navbar-brand" href="dashboard.html"><i class="fa-solid fa-heart-pulse"></i> Vaidyo</a>
+    <div class="ms-auto d-flex gap-2">
+      <a href="dashboard.html" class="btn btn-sm btn-outline-light">Dashboard</a>
+      <a href="availability.html" class="btn btn-sm btn-outline-light">Availability</a>
+      <button class="btn btn-sm btn-light" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-4">
+
+  <div class="card-custom mb-3">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h5 class="mb-0"><i class="fa-solid fa-calendar-check"></i> All Appointments</h5>
+      </div>
+      <div class="col-md-6">
+        <select class="form-select" id="statusFilter">
+          <option value="">All Statuses</option>
+          <option value="PENDING">Pending</option>
+          <option value="REPLIED">Replied</option>
+          <option value="CONFIRMED">Confirmed</option>
+          <option value="REJECTED">Rejected</option>
+          <option value="COMPLETED">Completed</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="apptList">
+    <p class="text-muted text-center">Loading...</p>
+  </div>
+
+</div>
+
+<!-- Reply Modal -->
+<div class="modal fade" id="replyModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reply to Appointment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="replyForm">
+          <input type="hidden" id="replyApptId">
+          <div class="mb-3">
+            <label class="form-label">Date & Time</label>
+            <input type="datetime-local" class="form-control" id="scheduledAt" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Fee (₹)</label>
+            <input type="number" class="form-control" id="fee" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Notes</label>
+            <textarea class="form-control" id="replyNotes" rows="2"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Send Reply</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+if (!checkAuth('DOCTOR')) { }
+const auth = getAuth();
+
+let allAppts = [];
+
+async function loadAppointments() {
+    try {
+        allAppts = await apiGet('/api/doctor/appointments?doctorId=' + auth.userId);
+        renderAppts(allAppts);
+    } catch (e) {
+        document.getElementById('apptList').innerHTML = '<p class="text-danger text-center">Failed to load appointments.</p>';
+    }
+}
+
+function renderAppts(appts) {
+    if (appts.length === 0) {
+        document.getElementById('apptList').innerHTML = '<p class="text-muted text-center">No appointments found.</p>';
+        return;
+    }
+
+    let html = '';
+    appts.forEach(a => {
+        html += '<div class="card-custom mb-3">'
+            + '<div class="row align-items-center">'
+            + '<div class="col-md-2"><strong>' + a.patientName + '</strong></div>'
+            + '<div class="col-md-2">' + getStatusBadge(a.status) + '</div>'
+            + '<div class="col-md-4"><small class="text-muted">Symptoms:</small> ' + (a.symptoms || '-') + '</div>'
+            + '<div class="col-md-2"><small class="text-muted">' + (a.scheduledAt ? formatDate(a.scheduledAt) : '-') + '</small></div>'
+            + '<div class="col-md-2 text-end" id="apptAction' + a.id + '"></div>'
+            + '</div>'
+            + '</div>';
+    });
+    document.getElementById('apptList').innerHTML = html;
+
+    appts.forEach(a => {
+        const actionDiv = document.getElementById('apptAction' + a.id);
+        if (a.status === 'PENDING') {
+            actionDiv.innerHTML = '<button class="btn btn-sm btn-primary" onclick="openReply(' + a.id + ')">Reply</button>';
+        } else if (a.status === 'CONFIRMED') {
+            actionDiv.innerHTML = '<button class="btn btn-sm btn-success" onclick="markComplete(' + a.id + ')">Mark Complete</button>';
+        } else if (a.status === 'REPLIED') {
+            actionDiv.innerHTML = '<span class="text-muted small">Awaiting patient response</span>';
+        } else if (a.status === 'COMPLETED') {
+            actionDiv.innerHTML = '<span class="badge bg-secondary">Completed</span>';
+        } else if (a.status === 'REJECTED') {
+            actionDiv.innerHTML = '<span class="text-muted small">Rejected by patient</span>';
+        }
+    });
+}
+
+document.getElementById('statusFilter').addEventListener('change', function() {
+    const val = this.value;
+    if (!val) {
+        renderAppts(allAppts);
+    } else {
+        renderAppts(allAppts.filter(a => a.status === val));
+    }
+});
+
+function openReply(id) {
+    document.getElementById('replyForm').reset();
+    document.getElementById('replyApptId').value = id;
+    new bootstrap.Modal(document.getElementById('replyModal')).show();
+}
+
+document.getElementById('replyForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const id = document.getElementById('replyApptId').value;
+    const payload = {
+        scheduledAt: document.getElementById('scheduledAt').value + ':00',
+        fee: parseFloat(document.getElementById('fee').value),
+        notes: document.getElementById('replyNotes').value
+    };
+    showLoading();
+    try {
+        await apiPut('/api/doctor/appointments/' + id + '/reply', payload);
+        hideLoading();
+        showSuccess('Reply sent!');
+        bootstrap.Modal.getInstance(document.getElementById('replyModal')).hide();
+        loadAppointments();
+    } catch (err) {
+        hideLoading();
+        showError('Failed to send reply.');
+    }
+});
+
+async function markComplete(id) {
+    const result = await Swal.fire({
+        title: 'Mark this appointment as completed?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, complete'
+    });
+    if (result.isConfirmed) {
+        try {
+            await apiPut('/api/doctor/appointments/' + id + '/complete');
+            showSuccess('Marked as completed!');
+            loadAppointments();
+        } catch (e) {
+            showError('Failed to update.');
+        }
+    }
+}
+
+loadAppointments();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caretaker Dashboard - Vaidyo</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-vaidyo">
+  <div class="container">
+    <a class="navbar-brand" href="dashboard.html"><i class="fa-solid fa-heart-pulse"></i> Vaidyo</a>
+    <div class="ms-auto d-flex gap-2">
+      <a href="patient.html" class="btn btn-sm btn-outline-light">Full History</a>
+      <button class="btn btn-sm btn-light" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-4">
+
+  <div class="card-custom mb-4">
+    <h3 id="welcomeMsg">Welcome!</h3>
+    <p class="text-muted mb-0">Monitoring your patient's health and medicine status.</p>
+  </div>
+
+  <div id="alertBanner"></div>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card-custom">
+        <h5><i class="fa-solid fa-pills"></i> Today's Medicine Status</h5>
+        <div id="medStatus" class="mt-2">
+          <p class="text-muted small">Loading...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card-custom">
+        <h5><i class="fa-solid fa-heart-pulse"></i> Latest Health Readings</h5>
+        <div id="healthLatest" class="mt-2">
+          <p class="text-muted small">Loading...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card-custom">
+        <h5><i class="fa-brands fa-telegram"></i> Telegram Alerts</h5>
+        <div id="telegramSection" class="mt-2">
+          <p class="text-muted small">Loading...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+if (!checkAuth('CARETAKER')) { }
+const auth = getAuth();
+document.getElementById('welcomeMsg').textContent = 'Welcome, ' + auth.fullName + '!';
+
+const patientId = localStorage.getItem('patientId');
+
+async function loadDashboard() {
+    if (!patientId) {
+        document.getElementById('medStatus').innerHTML = '<p class="text-danger small">Patient ID not found. Please contact support.</p>';
+        document.getElementById('healthLatest').innerHTML = '<p class="text-danger small">Patient ID not found.</p>';
+        return;
+    }
+
+    try {
+        const logs = await apiGet('/api/caretaker/patients/' + patientId + '/health');
+
+        if (logs.length === 0) {
+            document.getElementById('healthLatest').innerHTML = '<p class="text-muted small">No health logs yet.</p>';
+            document.getElementById('medStatus').innerHTML = '<p class="text-muted small">No medicine data available.</p>';
+            return;
+        }
+
+        const latest = logs[0];
+
+        if (latest.alertStatus === 'CRITICAL') {
+            document.getElementById('alertBanner').innerHTML =
+                '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation"></i> <strong>CRITICAL</strong> health reading detected for your patient!</div>';
+        } else if (latest.alertStatus === 'WARNING') {
+            document.getElementById('alertBanner').innerHTML =
+                '<div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation"></i> <strong>WARNING</strong> level health reading for your patient.</div>';
+        }
+
+        document.getElementById('healthLatest').innerHTML =
+            '<div class="row text-center g-2">'
+            + '<div class="col-4"><small class="text-muted">BP</small><h6>' + latest.bpSystolic + '/' + latest.bpDiastolic + '</h6></div>'
+            + '<div class="col-4"><small class="text-muted">Sugar</small><h6>' + latest.sugarLevel + '</h6></div>'
+            + '<div class="col-4"><small class="text-muted">Weight</small><h6>' + latest.weight + ' kg</h6></div>'
+            + '<div class="col-4"><small class="text-muted">Pulse</small><h6>' + latest.pulseRate + '</h6></div>'
+            + '<div class="col-4"><small class="text-muted">Temp</small><h6>' + latest.temperature + '</h6></div>'
+            + '<div class="col-4"><small class="text-muted">Status</small><h6>' + getStatusBadge(latest.alertStatus) + '</h6></div>'
+            + '</div>'
+            + '<p class="text-muted small mt-2 mb-0">Logged: ' + formatDate(latest.loggedAt) + '</p>';
+
+        // Medicine status note: backend doesn't expose a direct caretaker medicine endpoint
+        document.getElementById('medStatus').innerHTML = '<p class="text-muted small">Medicine status tracking requires a dedicated caretaker endpoint. Showing health data only for now.</p>';
+
+    } catch (e) {
+        document.getElementById('healthLatest').innerHTML = '<p class="text-danger small">Failed to load health data.</p>';
+        document.getElementById('medStatus').innerHTML = '<p class="text-danger small">Failed to load data.</p>';
+    }
+}
+
+async function loadTelegram() {
+    try {
+        const status = await apiGet('/api/telegram/status/' + auth.userId);
+        if (status.linked) {
+            document.getElementById('telegramSection').innerHTML = '<p class="text-success mb-0"><i class="fa-solid fa-circle-check"></i> Telegram Connected</p>';
+        } else {
+            document.getElementById('telegramSection').innerHTML =
+                '<p class="text-muted small">Link your Telegram to receive alerts for your patient.</p>'
+                + '<button class="btn btn-primary btn-sm" onclick="linkTelegram()">Generate Link Code</button>'
+                + '<div id="telegramCode" class="mt-2"></div>';
+        }
+    } catch (e) {
+        document.getElementById('telegramSection').innerHTML = '<p class="text-muted small">Unable to check Telegram status.</p>';
+    }
+}
+
+async function linkTelegram() {
+    try {
+        const data = await apiGet('/api/telegram/generate/' + auth.userId);
+        document.getElementById('telegramCode').innerHTML =
+            '<div class="alert alert-info small mb-0">'
+            + 'Open <strong>@' + data.botUsername + '</strong> on Telegram and send code: <strong>' + data.code + '</strong>'
+            + '</div>';
+    } catch (e) {
+        showError('Failed to generate code.');
+    }
+}
+
+loadDashboard();
+loadTelegram();
+</script>
+
+</body>
+</html>

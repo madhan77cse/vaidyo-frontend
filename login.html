@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Vaidyo</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<style>
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0F172A, #1E3A8A, #2563EB);
+    padding: 20px;
+}
+.auth-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+}
+.auth-card .logo {
+    text-align: center;
+    margin-bottom: 25px;
+}
+.auth-card .logo i {
+    font-size: 2.5rem;
+    color: var(--primary);
+}
+.auth-card .logo h3 {
+    font-weight: 700;
+    margin-top: 10px;
+    color: var(--dark);
+}
+</style>
+</head>
+<body>
+
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="logo">
+      <i class="fa-solid fa-heart-pulse"></i>
+      <h3>Vaidyo</h3>
+      <p class="text-muted small">Your Doctor. Your Home. Your Health.</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="mb-3">
+        <label class="form-label">Mobile Number</label>
+        <input type="tel" class="form-control" id="mobileNumber" placeholder="Enter mobile number" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="Enter password" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+
+    <p class="text-center mt-3 small">Don't have an account? <a href="register.html">Register</a></p>
+    <p class="text-center mt-2"><a href="index.html" class="small text-muted"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/utils.js"></script>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const mobileNumber = document.getElementById('mobileNumber').value;
+    const password = document.getElementById('password').value;
+
+    showLoading();
+
+    try {
+        const data = await apiPost('/api/auth/login', { mobileNumber, password }, false);
+        hideLoading();
+
+        
+
+        if (data.token) {
+            saveAuth(data);
+            showSuccess('Login successful!');
+            setTimeout(() => redirectByRole(data.role), 1200);
+        } else {
+            showError(data.message || 'Invalid mobile number or password');
+        }
+    } catch (err) {
+        hideLoading();
+        showError('Unable to connect to server. Please try again.');
+    }
+});
+</script>
+
+</body>
+</html>
