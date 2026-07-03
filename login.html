@@ -4,101 +4,678 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login - Vaidyo</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
 <style>
+:root {
+    --primary: #2563EB;
+    --secondary: #10B981;
+    --gold: #F59E0B;
+    --info: #0891B2;
+    --dark: #1E293B;
+}
+
+* { font-family: 'Poppins', sans-serif; }
+
+body { margin: 0; }
+
 .auth-wrapper {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #0F172A, #1E3A8A, #2563EB);
-    padding: 20px;
+    background:
+        radial-gradient(circle at 8% 12%, rgba(16,185,129,0.55), transparent 36%),
+        radial-gradient(circle at 92% 10%, rgba(245,158,11,0.50), transparent 38%),
+        radial-gradient(circle at 90% 88%, rgba(37,99,235,0.55), transparent 40%),
+        radial-gradient(circle at 6% 90%, rgba(249,115,22,0.50), transparent 38%),
+        radial-gradient(circle at 50% 45%, rgba(139,92,246,0.30), transparent 55%),
+        linear-gradient(135deg, #0B1220 0%, #0F1E33 35%, #102A2A 65%, #1A1730 100%);
+    padding: 40px 24px;
+    position: relative;
+    overflow: hidden;
 }
-.auth-card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    padding: 40px;
+
+.bg-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(55px);
+    opacity: 0.65;
+    animation: blob-float 9s ease-in-out infinite;
+}
+@keyframes blob-float {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(25px,-30px) scale(1.1); }
+}
+.blob-1 { width: 280px; height: 280px; background: var(--secondary); top: 2%; left: 3%; animation-delay: 0s; }
+.blob-2 { width: 240px; height: 240px; background: var(--primary); top: 6%; right: 6%; animation-delay: 2s; }
+.blob-3 { width: 260px; height: 260px; background: var(--info); bottom: 4%; right: 3%; animation-delay: 4s; }
+.blob-4 { width: 260px; height: 260px; background: #6366F1; bottom: 2%; left: 8%; animation-delay: 1s; }
+
+.med-icon {
+    position: absolute;
+    color: rgba(148,197,255,0.07);
+    animation: med-float 7s ease-in-out infinite;
+}
+@keyframes med-float {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-22px) rotate(10deg); }
+}
+.med-1 { top: 14%; left: 46%; animation-delay: 0.5s; }
+.med-2 { top: 70%; left: 38%; animation-delay: 2.5s; }
+.med-3 { top: 38%; right: 4%; animation-delay: 1.2s; }
+.med-4 { bottom: 10%; left: 2%; animation-delay: 3s; }
+
+.auth-shell {
+    display: flex;
+    align-items: stretch;
+    gap: 56px;
+    max-width: 1120px;
     width: 100%;
-    max-width: 420px;
+    position: relative;
+    z-index: 1;
 }
-.auth-card .logo {
+
+/* ===== LEFT: carousel ===== */
+.brand-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 0;
+    color: #fff;
+}
+
+.trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(245,158,11,0.18);
+    border: 1px solid rgba(245,158,11,0.4);
+    color: #FCD34D;
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 6px 14px;
+    border-radius: 50px;
+    margin-bottom: 18px;
+    width: fit-content;
+}
+.trust-badge svg { color: #FCD34D; }
+
+.logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.logo-icon-wrap {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--secondary), var(--info));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(16,185,129,0.4);
+    flex-shrink: 0;
+}
+.logo-icon-wrap svg { width: 28px; height: 28px; }
+.brand-side h1 { font-weight: 800; font-size: 2.1rem; margin-bottom: 0; color: #fff; }
+.brand-side .tagline { font-size: 1.1rem; color: #CBD5E1; margin-bottom: 30px; line-height: 1.5; }
+.brand-side .tagline strong {
+    background: linear-gradient(90deg, var(--gold), var(--secondary));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* Carousel */
+.feature-carousel {
+    position: relative;
+    height: 168px;
+    overflow: hidden;
+    margin-bottom: 22px;
+}
+.feature-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 18px;
+    padding: 22px 26px;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+    pointer-events: none;
+}
+.feature-slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+.feature-slide .illustration-wrap {
+    width: 92px; height: 92px;
+    border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+}
+.feature-slide .illustration-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 60%);
+}
+.feature-slide .illustration-wrap svg { width: 46px; height: 46px; position: relative; z-index: 1; }
+.feature-slide .feature-title { font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 4px; }
+.feature-slide .feature-desc { font-size: 0.88rem; color: #CBD5E1; line-height: 1.4; }
+
+.fs-1 .illustration-wrap { background: linear-gradient(135deg, var(--primary), #60A5FA); }
+.fs-2 .illustration-wrap { background: linear-gradient(135deg, var(--secondary), #34D399); }
+.fs-3 .illustration-wrap { background: linear-gradient(135deg, var(--info), #67E8F9); }
+.fs-4 .illustration-wrap { background: linear-gradient(135deg, #DC2626, #F87171); }
+.fs-5 .illustration-wrap { background: linear-gradient(135deg, var(--gold), #FCD34D); }
+.fs-6 .illustration-wrap { background: linear-gradient(135deg, #F97316, #FB923C); }
+.fs-7 .illustration-wrap { background: linear-gradient(135deg, #7C3AED, #C4B5FD); }
+
+.carousel-dots { display: flex; gap: 8px; margin-bottom: 26px; }
+.carousel-dots .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.carousel-dots .dot.active { width: 24px; border-radius: 5px; background: var(--gold); }
+
+.mini-stats-row { display: flex; gap: 12px; }
+.mini-stat {
+    flex: 1;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 14px;
+    padding: 14px 10px;
     text-align: center;
-    margin-bottom: 25px;
 }
-.auth-card .logo i {
-    font-size: 2.5rem;
+.mini-stat-num {
+    font-weight: 700; font-size: 1.05rem;
+    background: linear-gradient(90deg, var(--gold), var(--secondary));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.mini-stat-label { font-size: 0.7rem; color: #94A3B8; margin-top: 2px; font-weight: 500; }
+
+/* ===== RIGHT: login card (colorful, custom shape) ===== */
+.auth-card {
+    flex: 1;
+    max-width: 460px;
+    background:
+        radial-gradient(circle at 100% 0%, rgba(245,158,11,0.30), transparent 50%),
+        radial-gradient(circle at 0% 0%, rgba(16,185,129,0.28), transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(37,99,235,0.30), transparent 55%),
+        radial-gradient(circle at 0% 100%, rgba(15,23,42,0.10), transparent 50%),
+        linear-gradient(165deg, #E8F8F1 0%, #E6F0FD 35%, #FDF3DC 65%, #102A2A 130%);
+    border-radius: 26px;
+    box-shadow: 0 30px 80px rgba(16,24,40,0.35);
+    padding: 44px 40px;
+    position: relative;
+    align-self: center;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.6);
+}
+.auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 7px;
+    background: linear-gradient(90deg, var(--secondary), var(--gold), var(--primary), #0F172A);
+    background-size: 300% 100%;
+    animation: stripe-move 4s linear infinite;
+}
+.auth-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310B981' stroke-width='1.2'><path d='M6 3v6a4 4 0 0 0 8 0V3'/><circle cx='18' cy='14' r='3'/><path d='M10 9v3a6 6 0 0 0 6 6'/></svg>"),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563EB' stroke-width='1.2'><rect x='9' y='2' width='6' height='20' rx='3' transform='rotate(45 12 12)'/><line x1='8.5' y1='15.5' x2='15.5' y2='8.5'/></svg>"),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F59E0B' stroke-width='1.2'><path d='M22 12h-4l-3 9L9 3l-3 9H2'/></svg>");
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-size: 90px 90px, 60px 60px, 80px 80px;
+    background-position: -10px -10px, calc(100% + 14px) 50%, 50% calc(100% + 20px);
+    opacity: 0.10;
+}
+@keyframes stripe-move {
+    0% { background-position: 0% 0; }
+    100% { background-position: 300% 0; }
+}
+
+.card-deco {
+    position: absolute;
+    top: 18px; right: 18px;
+    width: 42px; height: 42px;
+    opacity: 0.18;
     color: var(--primary);
 }
-.auth-card .logo h3 {
-    font-weight: 700;
-    margin-top: 10px;
+
+.auth-card h3 { font-weight: 800; margin-bottom: 4px; color: var(--dark); font-size: 1.5rem; }
+.auth-card .subtitle { color: #64748B; font-size: 0.92rem; margin-bottom: 26px; }
+
+.form-label { color: #334155; font-weight: 500; font-size: 0.9rem; }
+
+.form-control {
+    border-radius: 12px;
+    border: 1.5px solid #C7E8DD;
+    padding: 11px 16px;
+    font-size: 0.95rem;
+    background: linear-gradient(135deg, rgba(16,185,129,0.10), rgba(37,99,235,0.10));
     color: var(--dark);
+}
+.form-control::placeholder { color: #64748B; }
+.form-control:focus {
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 4px rgba(16,185,129,0.14);
+    background: linear-gradient(135deg, rgba(16,185,129,0.16), rgba(37,99,235,0.16));
+    color: var(--dark);
+}
+
+.input-icon-wrap { position: relative; }
+.input-icon-wrap .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94A3B8; pointer-events: none; }
+.input-icon-wrap .form-control { padding-left: 42px; }
+
+.password-toggle-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94A3B8; cursor: pointer; padding: 4px; display: flex; }
+.password-toggle-btn:hover { color: var(--primary); }
+
+.remember-note {
+    background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(245,158,11,0.08));
+    border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 0.82rem;
+    color: var(--dark);
+    display: flex; gap: 10px; align-items: flex-start; line-height: 1.4;
+}
+.remember-note svg { color: var(--secondary); flex-shrink: 0; margin-top: 1px; }
+
+.btn-gradient-submit {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, var(--secondary), var(--primary));
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    padding: 13px 28px;
+    color: #fff;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 22px rgba(16,185,129,0.35);
+}
+.btn-gradient-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16,185,129,0.45); color: #fff; }
+.btn-gradient-submit::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -75%;
+    width: 50%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.45), transparent);
+    transform: skewX(-20deg);
+    animation: shine 3s ease-in-out infinite;
+}
+@keyframes shine {
+    0% { left: -75%; }
+    50%,100% { left: 130%; }
+}
+
+.trust-row { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; margin-top: 22px; font-size: 0.78rem; color: var(--text-muted,#64748B); }
+.trust-row span { display: flex; align-items: center; gap: 5px; }
+.trust-row svg { color: var(--secondary); }
+
+.divider-or { display: flex; align-items: center; gap: 12px; color: #CBD5E1; font-size: 0.8rem; margin: 18px 0; }
+.divider-or::before, .divider-or::after { content: ''; flex: 1; height: 1px; background: #E2E8F0; }
+
+/* ===== Custom loading overlay ===== */
+.vaidyo-loading-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15,23,42,0.55);
+    backdrop-filter: blur(3px);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 9999;
+}
+.vaidyo-loading-overlay.show { display: flex; }
+.vaidyo-loading-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px 40px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+}
+.pulse-ring-wrap { position: relative; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; }
+.pulse-ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 3px solid var(--secondary);
+    opacity: 0;
+    animation: pulse-ring-anim 1.6s ease-out infinite;
+}
+.pulse-ring:nth-child(2) { animation-delay: 0.5s; }
+@keyframes pulse-ring-anim {
+    0% { transform: scale(0.5); opacity: 0.8; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+.pulse-core { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--secondary), var(--primary)); color:#fff; display:flex; align-items:center; justify-content:center; }
+.vaidyo-loading-text { font-weight: 600; color: var(--dark); font-size: 0.9rem; }
+
+/* ===== Custom toast ===== */
+.vaidyo-toast {
+    position: fixed;
+    top: 24px; right: 24px;
+    min-width: 300px;
+    max-width: 380px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+    padding: 16px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transform: translateX(420px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(.4,0,.2,1);
+    z-index: 10000;
+    border-left: 5px solid var(--secondary);
+    border-bottom: 1px solid rgba(96,165,250,0.15);
+}
+.vaidyo-toast.show { transform: translateX(0); opacity: 1; }
+.vaidyo-toast.toast-error { border-left-color: #DC2626; }
+.vaidyo-toast .toast-icon-wrap { width: 32px; height: 32px; border-radius: 50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#fff; background: var(--secondary); }
+.vaidyo-toast.toast-error .toast-icon-wrap { background: #DC2626; }
+.vaidyo-toast .toast-title { font-weight: 700; font-size: 0.9rem; color: var(--dark); margin-bottom: 2px; }
+.vaidyo-toast .toast-msg { font-size: 0.82rem; color: var(--text-muted,#64748B); }
+
+@media (max-width: 900px) {
+    .auth-shell { flex-direction: column; }
+    .auth-card { max-width: 100%; }
 }
 </style>
 </head>
 <body>
 
-<div class="auth-wrapper">
-  <div class="auth-card">
-    <div class="logo">
-      <i class="fa-solid fa-heart-pulse"></i>
-      <h3>Vaidyo</h3>
-      <p class="text-muted small">Your Doctor. Your Home. Your Health.</p>
+<!-- Custom loading overlay -->
+<div class="vaidyo-loading-overlay" id="vaidyoLoading">
+  <div class="vaidyo-loading-box">
+    <div class="pulse-ring-wrap">
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="pulse-core">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
     </div>
-
-    <form id="loginForm">
-      <div class="mb-3">
-        <label class="form-label">Mobile Number</label>
-        <input type="tel" class="form-control" id="mobileNumber" placeholder="Enter mobile number" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="Enter password" required>
-      </div>
-      <button type="submit" class="btn btn-primary w-100">Login</button>
-    </form>
-
-    <p class="text-center mt-3 small">Don't have an account? <a href="register.html">Register</a></p>
-    <p class="text-center mt-2"><a href="index.html" class="small text-muted"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
+    <div class="vaidyo-loading-text">Signing you in...</div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Custom toast container -->
+<div id="vaidyoToast" class="vaidyo-toast">
+  <div class="toast-icon-wrap" id="vaidyoToastIcon"></div>
+  <div>
+    <div class="toast-title" id="vaidyoToastTitle"></div>
+    <div class="toast-msg" id="vaidyoToastMsg"></div>
+  </div>
+</div>
+
+<div class="auth-wrapper">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+  <div class="bg-blob blob-4"></div>
+
+  <!-- floating medical symbols -->
+  <svg class="med-icon med-1" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3v6a4 4 0 0 0 8 0V3"/><circle cx="18" cy="14" r="3"/><path d="M10 9v3a6 6 0 0 0 6 6"/></svg>
+  <svg class="med-icon med-2" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="2" width="6" height="20" rx="3" transform="rotate(45 12 12)"/><line x1="8.5" y1="15.5" x2="15.5" y2="8.5"/></svg>
+  <svg class="med-icon med-3" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+  <svg class="med-icon med-4" width="65" height="65" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+
+  <div class="auth-shell">
+
+    <!-- LEFT: rotating feature carousel -->
+    <div class="brand-side">
+      <div class="trust-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Trusted by families across Tamil Nadu
+      </div>
+      <div class="logo-row">
+        <div class="logo-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            <path d="M3.5 12h4l1.5-3 2 6 1.5-3h8"/>
+          </svg>
+        </div>
+        <h1>Vaidyo</h1>
+      </div>
+      <p class="tagline">Healthcare for every <strong>Indian family</strong>.<br>Designed for the elderly. Built with love.</p>
+
+      <div class="feature-carousel" id="featureCarousel">
+        <div class="feature-slide fs-1 active">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="white"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div>
+            <div class="feature-title">Book doctors from home</div>
+            <div class="feature-desc">Consult verified doctors anytime, anywhere</div>
+          </div>
+        </div>
+        <div class="feature-slide fs-2">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M12 11V7a2 2 0 0 1 4 0"/><path d="M7 16h.01M12 16h.01M17 16h.01"/></svg></div>
+          <div>
+            <div class="feature-title">Medicine reminders via Telegram</div>
+            <div class="feature-desc">Reply YES to mark your dose as taken</div>
+          </div>
+        </div>
+        <div class="feature-slide fs-3">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><path d="M8 16h.01M16 16h.01"/></svg></div>
+          <div>
+            <div class="feature-title">AI symptom checker &amp; report reader</div>
+            <div class="feature-desc">Understand your health in simple language</div>
+          </div>
+        </div>
+        <div class="feature-slide fs-4">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div>
+            <div class="feature-title">Emergency SOS &amp; ambulance booking</div>
+            <div class="feature-desc">One tap alerts your emergency contacts</div>
+          </div>
+        </div>
+        <div class="feature-slide fs-5">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69s-7 7.44-7 11.31a7 7 0 0 0 14 0c0-3.87-7-11.31-7-11.31z"/></svg></div>
+          <div>
+            <div class="feature-title">Find blood donors near you</div>
+            <div class="feature-desc">Connect with donors by blood group &amp; location</div>
+          </div>
+        </div>
+        <div class="feature-slide fs-6">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+          <div>
+            <div class="feature-title">Food recommendations</div>
+            <div class="feature-desc">AI diet tips based on your conditions</div>
+          </div>
+        </div>
+        <div class="feature-slide fs-7">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <div>
+            <div class="feature-title">English + Indian languages</div>
+            <div class="feature-desc">தமிழ், हिंदी &amp; more — use Vaidyo in your own language</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-dots" id="carouselDots"></div>
+
+      <div class="mini-stats-row">
+        <div class="mini-stat">
+          <div class="mini-stat-num">100%</div>
+          <div class="mini-stat-label">Free to use</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-num">12+ Languages</div>
+          <div class="mini-stat-label">English + Indian languages</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-num">24×7</div>
+          <div class="mini-stat-label">Emergency SOS</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: login card -->
+    <div class="auth-card">
+      <svg class="card-deco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3v6a4 4 0 0 0 8 0V3"/><circle cx="18" cy="14" r="3"/><path d="M10 9v3a6 6 0 0 0 6 6"/></svg>
+
+      <h3>Welcome Back 👋</h3>
+      <p class="subtitle">Sign in to continue to your Vaidyo account</p>
+
+      <form id="loginForm">
+        <div class="mb-3">
+          <label class="form-label">Mobile Number</label>
+          <div class="input-icon-wrap">
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            <input type="tel" class="form-control" id="mobileNumber" placeholder="Enter mobile number" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Password</label>
+          <div class="input-icon-wrap">
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" class="form-control" id="password" placeholder="Enter password" required style="padding-right: 42px;">
+            <button type="button" class="password-toggle-btn" id="togglePassword" aria-label="Show password">
+              <svg id="eyeIconShow" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg id="eyeIconHide" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.7 18.7 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="remember-note mb-3">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span>Please remember your password carefully. We're still working on a "Forgot Password" option — it'll be available soon.</span>
+        </div>
+        <button type="submit" class="btn btn-gradient-submit w-100">Login to Vaidyo</button>
+      </form>
+
+      <div class="divider-or">or</div>
+
+      <p class="text-center small mb-1">Don't have an account? <a href="register.html">Register here</a></p>
+      <p class="text-center mb-0"><a href="index.html" class="small text-muted">&larr; Back to Home</a></p>
+
+      <div class="trust-row">
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Secure Login</span>
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Encrypted Data</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script src="js/api.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/utils.js"></script>
 <script>
+/* ---------- Feature carousel (auto-rotating, one by one) ---------- */
+(function() {
+    const slides = document.querySelectorAll('.feature-slide');
+    const dotsWrap = document.getElementById('carouselDots');
+    let current = 0;
+
+    slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goTo(i));
+        dotsWrap.appendChild(dot);
+    });
+    const dots = dotsWrap.querySelectorAll('.dot');
+
+    function goTo(index) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = index;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+    }
+
+    setInterval(() => {
+        goTo((current + 1) % slides.length);
+    }, 3200);
+})();
+
+/* ---------- Password toggle ---------- */
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const passwordInput = document.getElementById('password');
+    const showIcon = document.getElementById('eyeIconShow');
+    const hideIcon = document.getElementById('eyeIconHide');
+    const isHidden = passwordInput.type === 'password';
+    passwordInput.type = isHidden ? 'text' : 'password';
+    showIcon.style.display = isHidden ? 'none' : 'block';
+    hideIcon.style.display = isHidden ? 'block' : 'none';
+    this.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+});
+
+/* ---------- Custom loading overlay (replaces plain showLoading) ---------- */
+function vaidyoShowLoading(text) {
+    document.querySelector('.vaidyo-loading-text').textContent = text || 'Signing you in...';
+    document.getElementById('vaidyoLoading').classList.add('show');
+}
+function vaidyoHideLoading() {
+    document.getElementById('vaidyoLoading').classList.remove('show');
+}
+
+/* ---------- Custom toast (replaces plain showSuccess/showError) ---------- */
+let toastTimer;
+function vaidyoToast(type, title, msg) {
+    const toast = document.getElementById('vaidyoToast');
+    const iconWrap = document.getElementById('vaidyoToastIcon');
+    document.getElementById('vaidyoToastTitle').textContent = title;
+    document.getElementById('vaidyoToastMsg').textContent = msg;
+
+    toast.classList.remove('toast-error');
+    if (type === 'error') {
+        toast.classList.add('toast-error');
+        iconWrap.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    } else {
+        iconWrap.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    }
+
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3800);
+}
+
+/* ---------- Login submit ---------- */
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-
     const mobileNumber = document.getElementById('mobileNumber').value;
     const password = document.getElementById('password').value;
-
-    showLoading();
-
+    vaidyoShowLoading('Signing you in...');
     try {
         const data = await apiPost('/api/auth/login', { mobileNumber, password }, false);
-        hideLoading();
-
-        
+        vaidyoHideLoading();
 
         if (data.token) {
             saveAuth(data);
-            showSuccess('Login successful!');
-            setTimeout(() => redirectByRole(data.role), 1200);
+            vaidyoToast('success', 'Login successful!', 'Redirecting to your dashboard...');
+            setTimeout(() => redirectByRole(data.role), 1300);
         } else {
-            showError(data.message || 'Invalid mobile number or password');
+            vaidyoToast('error', 'Login failed', data.message || 'Invalid mobile number or password');
         }
     } catch (err) {
-        hideLoading();
-        showError('Unable to connect to server. Please try again.');
+        vaidyoHideLoading();
+        vaidyoToast('error', 'Connection error', 'Unable to connect to server. Please try again.');
     }
 });
 </script>
-
 </body>
 </html>

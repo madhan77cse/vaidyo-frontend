@@ -4,271 +4,748 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Register - Vaidyo</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
 <style>
+* { font-family: 'Poppins', sans-serif; }
+
 .auth-wrapper {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #0F172A, #1E3A8A, #2563EB);
-    padding: 20px;
+    background:
+        radial-gradient(circle at 8% 12%, rgba(16,185,129,0.50), transparent 36%),
+        radial-gradient(circle at 92% 10%, rgba(245,158,11,0.46), transparent 38%),
+        radial-gradient(circle at 90% 88%, rgba(37,99,235,0.50), transparent 40%),
+        radial-gradient(circle at 6% 90%, rgba(249,115,22,0.46), transparent 38%),
+        radial-gradient(circle at 50% 45%, rgba(139,92,246,0.28), transparent 55%),
+        linear-gradient(135deg, #0B1220 0%, #0F1E33 35%, #102A2A 65%, #1A1730 100%);
+    padding: 40px 24px;
+    position: relative;
+    overflow: hidden;
 }
-.auth-card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    padding: 40px;
+.bg-blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(55px); opacity: 0.6;
+    animation: blob-float 9s ease-in-out infinite;
+}
+@keyframes blob-float {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(25px,-30px) scale(1.1); }
+}
+.blob-1 { width:220px;height:220px;background:#10B981;top:2%;left:3%;animation-delay:0s; }
+.blob-2 { width:190px;height:190px;background:#F59E0B;top:6%;right:6%;animation-delay:2s; }
+.blob-3 { width:210px;height:210px;background:#2563EB;bottom:4%;right:3%;animation-delay:4s; }
+.blob-4 { width:220px;height:220px;background:#F97316;bottom:2%;left:8%;animation-delay:1s; }
+
+/* floating medical icons */
+.med-icon { position:absolute; color:rgba(255,255,255,0.09); animation:med-float 7s ease-in-out infinite; }
+@keyframes med-float { 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-20px) rotate(8deg);} }
+.med-1{top:12%;left:44%;animation-delay:0.4s;}
+.med-2{top:68%;left:36%;animation-delay:2s;}
+.med-3{top:35%;right:3%;animation-delay:1s;}
+
+.auth-shell {
+    display: flex;
+    align-items: stretch;
+    gap: 52px;
+    max-width: 1140px;
     width: 100%;
-    max-width: 480px;
+    position: relative;
+    z-index: 1;
 }
-.auth-card .logo {
-    text-align: center;
-    margin-bottom: 25px;
+
+/* ===== LEFT: brand + carousel (same as login) ===== */
+.brand-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 0;
+    color: #fff;
 }
-.auth-card .logo i {
-    font-size: 2.5rem;
-    color: var(--primary);
+.trust-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(245,158,11,0.18); border: 1px solid rgba(245,158,11,0.4);
+    color: #FCD34D; font-weight: 600; font-size: 0.78rem;
+    padding: 6px 14px; border-radius: 50px; margin-bottom: 18px; width: fit-content;
 }
-.auth-card .logo h3 {
-    font-weight: 700;
-    margin-top: 10px;
-    color: var(--dark);
+.logo-row { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+.logo-icon-wrap {
+    width:56px;height:56px;border-radius:16px;
+    background:linear-gradient(135deg,#10B981,#0891B2);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 24px rgba(16,185,129,0.4);flex-shrink:0;
 }
+.logo-icon-wrap svg{width:28px;height:28px;}
+.brand-side h1{font-weight:800;font-size:2.1rem;margin-bottom:0;}
+.brand-side .tagline{font-size:1.1rem;color:#CBD5E1;margin-bottom:30px;line-height:1.5;}
+.brand-side .tagline strong{background:linear-gradient(90deg,#F59E0B,#10B981);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+.feature-carousel{position:relative;height:168px;overflow:hidden;margin-bottom:22px;}
+.feature-slide {
+    position:absolute;inset:0;display:flex;align-items:center;gap:20px;
+    background:rgba(255,255,255,0.08);backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,0.16);border-radius:18px;
+    padding:22px 26px;opacity:0;transform:translateX(40px);
+    transition:opacity 0.55s ease,transform 0.55s ease;pointer-events:none;
+}
+.feature-slide.active{opacity:1;transform:translateX(0);pointer-events:auto;}
+.illustration-wrap {
+    width:92px;height:92px;border-radius:18px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;position:relative;overflow:hidden;color:#fff;
+}
+.illustration-wrap::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,0.35),transparent 60%);}
+.illustration-wrap svg{width:40px;height:40px;position:relative;z-index:1;}
+.feature-slide .feature-title{font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:4px;}
+.feature-slide .feature-desc{font-size:0.88rem;color:#CBD5E1;line-height:1.4;}
+.fs-1 .illustration-wrap{background:linear-gradient(135deg,#2563EB,#60A5FA);}
+.fs-2 .illustration-wrap{background:linear-gradient(135deg,#10B981,#34D399);}
+.fs-3 .illustration-wrap{background:linear-gradient(135deg,#0891B2,#67E8F9);}
+.fs-4 .illustration-wrap{background:linear-gradient(135deg,#DC2626,#F87171);}
+.fs-5 .illustration-wrap{background:linear-gradient(135deg,#F59E0B,#FCD34D);}
+.fs-6 .illustration-wrap{background:linear-gradient(135deg,#F97316,#FB923C);}
+.fs-7 .illustration-wrap{background:linear-gradient(135deg,#7C3AED,#C4B5FD);}
+
+.carousel-dots{display:flex;gap:8px;margin-bottom:26px;}
+.carousel-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.25);cursor:pointer;transition:all 0.3s ease;}
+.carousel-dots .dot.active{width:24px;border-radius:5px;background:#F59E0B;}
+
+.mini-stats-row{display:flex;gap:12px;}
+.mini-stat{flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:14px 10px;text-align:center;}
+.mini-stat-num{font-weight:700;font-size:1rem;background:linear-gradient(90deg,#F59E0B,#10B981);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.mini-stat-label{font-size:0.7rem;color:#94A3B8;margin-top:2px;font-weight:500;}
+
+/* ===== RIGHT: registration card ===== */
+.auth-card {
+    flex:1;max-width:500px;
+    background:linear-gradient(165deg,#FFFFFF 0%,#F0FDF9 35%,#FEF9EC 68%,#EFF6FF 100%);
+    border-radius:26px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.38);
+    padding:38px 38px;
+    position:relative;align-self:center;overflow:hidden;
+    border:1px solid rgba(255,255,255,0.6);
+}
+.auth-card::before {
+    content:'';position:absolute;top:0;left:0;right:0;height:7px;
+    background:linear-gradient(90deg,#10B981,#F59E0B,#2563EB,#F97316);
+    background-size:300% 100%;animation:stripe-move 4s linear infinite;
+}
+@keyframes stripe-move{0%{background-position:0% 0;}100%{background-position:300% 0;}}
+
+.auth-card .logo{text-align:center;margin-bottom:16px;}
+.card-logo-wrap{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#10B981,#0891B2);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 8px 22px rgba(16,185,129,0.35);}
+.card-logo-wrap svg{width:28px;height:28px;}
+.auth-card .logo h3{font-weight:800;margin-bottom:2px;color:#0F172A;font-size:1.4rem;}
+
+/* Step progress */
+.step-progress{display:flex;align-items:center;justify-content:center;margin-bottom:22px;}
+.step-item{display:flex;flex-direction:column;align-items:center;}
+.step-circle{width:40px;height:40px;border-radius:50%;background:#fff;border:2.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;font-weight:700;color:#94A3B8;transition:all 0.35s ease;position:relative;z-index:1;}
+.step-label{font-size:0.72rem;color:#94A3B8;font-weight:600;margin-top:6px;white-space:nowrap;}
+.step-line{width:65px;height:3px;background:#E2E8F0;margin:0 4px 24px;border-radius:2px;transition:all 0.4s ease;}
+.checkmark-icon{display:none;}
+
+/* active role highlights */
+.step-progress.role-patient .step-circle.s1{border-color:#2563EB;color:#2563EB;box-shadow:0 0 0 4px rgba(37,99,235,0.12);}
+.step-progress.role-patient .step-label.l1{color:#2563EB;}
+.step-progress.role-doctor .step-circle.s1{border-color:#10B981;color:#10B981;box-shadow:0 0 0 4px rgba(16,185,129,0.12);}
+.step-progress.role-doctor .step-label.l1{color:#10B981;}
+.step-progress.role-nurse .step-circle.s1{border-color:#F97316;color:#F97316;box-shadow:0 0 0 4px rgba(249,115,22,0.12);}
+.step-progress.role-nurse .step-label.l1{color:#F97316;}
+.step-progress.role-caretaker .step-circle.s1{border-color:#F59E0B;color:#F59E0B;box-shadow:0 0 0 4px rgba(245,158,11,0.12);}
+.step-progress.role-caretaker .step-label.l1{color:#F59E0B;}
+
+/* step 1 complete */
+.step-progress.on-step2 .step-circle.s1{background:#10B981;border-color:#10B981;color:#fff;}
+.step-progress.on-step2 .step-circle.s1 .num{display:none;}
+.step-progress.on-step2 .step-circle.s1 .checkmark-icon{display:block;}
+.step-progress.on-step2 .step-line{background:linear-gradient(90deg,#10B981,#F59E0B);}
+.step-progress.on-step2 .step-circle.s2{border-color:#F59E0B;color:#F59E0B;box-shadow:0 0 0 4px rgba(245,158,11,0.14);}
+.step-progress.on-step2 .step-label.l2{color:#F59E0B;}
+
+/* ===== Role cards ===== */
 .role-card {
-    border: 2px solid #E2E8F0;
-    border-radius: 12px;
-    padding: 20px 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
+    border:2px solid #E8F5F0;border-radius:16px;padding:18px 10px 14px;
+    text-align:center;cursor:pointer;transition:all 0.25s ease;
+    background:#fff;position:relative;overflow:hidden;
 }
-.role-card:hover {
-    border-color: var(--primary);
+.role-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:16px 16px 0 0;opacity:0;transition:opacity 0.25s ease;}
+.role-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(15,23,42,0.10);}
+.role-card .role-icon-wrap{width:60px;height:60px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;color:#fff;transition:all 0.25s ease;}
+.role-card .role-name{font-weight:700;font-size:0.95rem;color:#1E293B;margin-bottom:2px;}
+.role-card .role-sub{font-size:0.72rem;color:#94A3B8;}
+
+/* Patient — blue */
+.role-card[data-role="PATIENT"] .role-icon-wrap{background:linear-gradient(135deg,#2563EB,#60A5FA);}
+.role-card[data-role="PATIENT"]::before{background:linear-gradient(90deg,#2563EB,#60A5FA);}
+.role-card[data-role="PATIENT"]:hover::before,.role-card[data-role="PATIENT"].selected::before{opacity:1;}
+.role-card.selected[data-role="PATIENT"]{border-color:#2563EB;background:linear-gradient(160deg,#EFF6FF,#DBEAFE 80%);box-shadow:0 8px 22px rgba(37,99,235,0.18);}
+.role-card.selected[data-role="PATIENT"] .role-sub{color:#3B82F6;}
+
+/* Doctor — green */
+.role-card[data-role="DOCTOR"] .role-icon-wrap{background:linear-gradient(135deg,#10B981,#34D399);}
+.role-card[data-role="DOCTOR"]::before{background:linear-gradient(90deg,#10B981,#34D399);}
+.role-card[data-role="DOCTOR"]:hover::before,.role-card[data-role="DOCTOR"].selected::before{opacity:1;}
+.role-card.selected[data-role="DOCTOR"]{border-color:#10B981;background:linear-gradient(160deg,#ECFDF5,#D1FAE5 80%);box-shadow:0 8px 22px rgba(16,185,129,0.18);}
+.role-card.selected[data-role="DOCTOR"] .role-sub{color:#10B981;}
+
+/* Nurse — orange */
+.role-card[data-role="NURSE"] .role-icon-wrap{background:linear-gradient(135deg,#F97316,#FB923C);}
+.role-card[data-role="NURSE"]::before{background:linear-gradient(90deg,#F97316,#FB923C);}
+.role-card[data-role="NURSE"]:hover::before,.role-card[data-role="NURSE"].selected::before{opacity:1;}
+.role-card.selected[data-role="NURSE"]{border-color:#F97316;background:linear-gradient(160deg,#FFF7ED,#FFEDD5 80%);box-shadow:0 8px 22px rgba(249,115,22,0.18);}
+.role-card.selected[data-role="NURSE"] .role-sub{color:#F97316;}
+
+/* Caretaker — gold */
+.role-card[data-role="CARETAKER"] .role-icon-wrap{background:linear-gradient(135deg,#F59E0B,#FCD34D);}
+.role-card[data-role="CARETAKER"]::before{background:linear-gradient(90deg,#F59E0B,#FCD34D);}
+.role-card[data-role="CARETAKER"]:hover::before,.role-card[data-role="CARETAKER"].selected::before{opacity:1;}
+.role-card.selected[data-role="CARETAKER"]{border-color:#F59E0B;background:linear-gradient(160deg,#FFFBEB,#FEF3C7 80%);box-shadow:0 8px 22px rgba(245,158,11,0.18);}
+.role-card.selected[data-role="CARETAKER"] .role-sub{color:#D97706;}
+
+/* Role SVG illustrations inside icon wrap */
+.role-card[data-role="PATIENT"] .role-icon-wrap svg,
+.role-card[data-role="DOCTOR"] .role-icon-wrap svg,
+.role-card[data-role="NURSE"] .role-icon-wrap svg,
+.role-card[data-role="CARETAKER"] .role-icon-wrap svg { width:28px;height:28px; }
+
+/* form inputs */
+.form-control,.form-select{border-radius:12px;border:1.5px solid #C7E8DD;padding:10px 14px;font-size:0.92rem;background:rgba(255,255,255,0.85);}
+.form-control:focus,.form-select:focus{border-color:#10B981;box-shadow:0 0 0 4px rgba(16,185,129,0.12);background:#fff;}
+
+.role-field-section-title{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#64748B;margin:14px 0 10px;display:flex;align-items:center;gap:8px;}
+.role-field-section-title::after{content:'';flex:1;height:1px;background:#E2E8F0;}
+
+.btn-gradient-submit {
+    position:relative;overflow:hidden;
+    background:linear-gradient(90deg,#10B981,#2563EB);
+    border:none;border-radius:12px;font-weight:700;padding:12px 28px;color:#fff;
+    transition:all 0.3s ease;box-shadow:0 8px 22px rgba(16,185,129,0.35);
 }
-.role-card.selected {
-    border-color: var(--primary);
-    background: #EFF6FF;
-}
-.role-card i {
-    font-size: 1.8rem;
-    color: var(--primary);
-    margin-bottom: 8px;
-    display: block;
-}
+.btn-gradient-submit:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(16,185,129,0.45);color:#fff;}
+.btn-gradient-submit:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-gradient-submit::after{content:'';position:absolute;top:0;left:-75%;width:50%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);transform:skewX(-20deg);animation:shine 3s ease-in-out infinite;}
+@keyframes shine{0%{left:-75%;}50%,100%{left:130%;}}
+
+.btn-outline-back{border-radius:12px;border:1.5px solid #E2E8F0;background:#fff;font-weight:600;color:#1E293B;padding:10px 28px;}
+.btn-outline-back:hover{border-color:#2563EB;color:#2563EB;}
+
+/* loading + toast */
+.vaidyo-loading-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:9999;}
+.vaidyo-loading-overlay.show{display:flex;}
+.vaidyo-loading-box{background:#fff;border-radius:20px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 20px 50px rgba(0,0,0,0.25);}
+.pulse-ring-wrap{position:relative;width:56px;height:56px;display:flex;align-items:center;justify-content:center;}
+.pulse-ring{position:absolute;inset:0;border-radius:50%;border:3px solid #10B981;opacity:0;animation:pulse-ring-anim 1.6s ease-out infinite;}
+.pulse-ring:nth-child(2){animation-delay:0.5s;}
+@keyframes pulse-ring-anim{0%{transform:scale(0.5);opacity:0.8;}100%{transform:scale(1.6);opacity:0;}}
+.pulse-core{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#10B981,#2563EB);color:#fff;display:flex;align-items:center;justify-content:center;}
+.vaidyo-loading-text{font-weight:600;color:#1E293B;font-size:0.9rem;}
+
+.vaidyo-toast{position:fixed;top:24px;right:24px;min-width:300px;max-width:380px;background:#fff;border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,0.18);padding:16px 18px;display:flex;align-items:flex-start;gap:12px;transform:translateX(420px);opacity:0;transition:all 0.4s cubic-bezier(.4,0,.2,1);z-index:10000;border-left:5px solid #10B981;}
+.vaidyo-toast.show{transform:translateX(0);opacity:1;}
+.vaidyo-toast.toast-error{border-left-color:#DC2626;}
+.vaidyo-toast .toast-icon-wrap{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;background:#10B981;}
+.vaidyo-toast.toast-error .toast-icon-wrap{background:#DC2626;}
+.vaidyo-toast .toast-title{font-weight:700;font-size:0.9rem;color:#1E293B;margin-bottom:2px;}
+.vaidyo-toast .toast-msg{font-size:0.82rem;color:#64748B;}
+
+@media(max-width:900px){.auth-shell{flex-direction:column;}.auth-card{max-width:100%;}}
 </style>
 </head>
 <body>
 
-<div class="auth-wrapper">
-  <div class="auth-card">
-    <div class="logo">
-      <i class="fa-solid fa-heart-pulse"></i>
-      <h3>Vaidyo</h3>
-      <p class="text-muted small">Create your account</p>
-    </div>
-
-    <!-- Step 1: Role selection -->
-    <div id="step1">
-      <p class="mb-3 fw-500">I am registering as a:</p>
-      <div class="row g-2 mb-3">
-        <div class="col-4">
-          <div class="role-card" data-role="PATIENT" onclick="selectRole('PATIENT')">
-            <i class="fa-solid fa-user"></i>
-            <div class="small fw-500">Patient</div>
-          </div>
-        </div>
-        <div class="col-4">
-          <div class="role-card" data-role="DOCTOR" onclick="selectRole('DOCTOR')">
-            <i class="fa-solid fa-user-doctor"></i>
-            <div class="small fw-500">Doctor</div>
-          </div>
-        </div>
-        <div class="col-4">
-          <div class="role-card" data-role="CARETAKER" onclick="selectRole('CARETAKER')">
-            <i class="fa-solid fa-user-nurse"></i>
-            <div class="small fw-500">Caretaker</div>
-          </div>
-        </div>
+<div class="vaidyo-loading-overlay" id="vaidyoLoading">
+  <div class="vaidyo-loading-box">
+    <div class="pulse-ring-wrap">
+      <div class="pulse-ring"></div><div class="pulse-ring"></div>
+      <div class="pulse-core">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
       </div>
-      <button class="btn btn-primary w-100" onclick="goToStep2()" id="continueBtn" disabled>Continue</button>
     </div>
-
-    <!-- Step 2: Form -->
-    <div id="step2" style="display:none;">
-      <form id="registerForm">
-        <div class="mb-3">
-          <label class="form-label">Full Name</label>
-          <input type="text" class="form-control" id="fullName" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Mobile Number</label>
-          <input type="tel" class="form-control" id="mobileNumber" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Password</label>
-          <input type="password" class="form-control" id="password" required>
-        </div>
-
-        <!-- PATIENT FIELDS -->
-        <div id="patientFields" style="display:none;">
-          <div class="row">
-            <div class="col-6 mb-3">
-              <label class="form-label">Age</label>
-              <input type="number" class="form-control" id="age">
-            </div>
-            <div class="col-6 mb-3">
-              <label class="form-label">Blood Group</label>
-              <select class="form-select" id="bloodGroup">
-                <option value="">Select</option>
-                <option>A+</option><option>A-</option>
-                <option>B+</option><option>B-</option>
-                <option>O+</option><option>O-</option>
-                <option>AB+</option><option>AB-</option>
-              </select>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Address</label>
-            <textarea class="form-control" id="address" rows="2"></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Emergency Contact</label>
-            <input type="tel" class="form-control" id="emergencyContact">
-          </div>
-        </div>
-
-        <!-- DOCTOR FIELDS -->
-        <div id="doctorFields" style="display:none;">
-          <div class="mb-3">
-            <label class="form-label">License Number</label>
-            <input type="text" class="form-control" id="licenseNumber">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Speciality</label>
-            <select class="form-select" id="speciality">
-              <option value="">Select</option>
-              <option value="GENERAL">General</option>
-              <option value="CARDIOLOGY">Cardiology</option>
-              <option value="ORTHOPEDICS">Orthopedics</option>
-              <option value="DIABETOLOGY">Diabetology</option>
-              <option value="NEUROLOGY">Neurology</option>
-              <option value="DERMATOLOGY">Dermatology</option>
-              <option value="ENT">ENT</option>
-              <option value="OPHTHALMOLOGY">Ophthalmology</option>
-              <option value="GYNECOLOGY">Gynecology</option>
-              <option value="PEDIATRICS">Pediatrics</option>
-              <option value="PSYCHIATRY">Psychiatry</option>
-              <option value="UROLOGY">Urology</option>
-            </select>
-          </div>
-          <div class="row">
-            <div class="col-6 mb-3">
-              <label class="form-label">Experience (Years)</label>
-              <input type="number" class="form-control" id="experienceYears">
-            </div>
-            <div class="col-6 mb-3">
-              <label class="form-label">Consultation Fee</label>
-              <input type="number" class="form-control" id="consultationFee">
-            </div>
-          </div>
-        </div>
-
-        <!-- CARETAKER FIELDS -->
-        <div id="caretakerFields" style="display:none;">
-          <div class="mb-3">
-            <label class="form-label">Patient's Mobile Number</label>
-            <input type="tel" class="form-control" id="patientMobileNumber">
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100">Register</button>
-        <button type="button" class="btn btn-outline-secondary w-100 mt-2" onclick="goToStep1()">Back</button>
-      </form>
-    </div>
-
-    <p class="text-center mt-3 small">Already have an account? <a href="login.html">Login</a></p>
+    <div class="vaidyo-loading-text">Creating your account...</div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<div id="vaidyoToast" class="vaidyo-toast">
+  <div class="toast-icon-wrap" id="vaidyoToastIcon"></div>
+  <div><div class="toast-title" id="vaidyoToastTitle"></div><div class="toast-msg" id="vaidyoToastMsg"></div></div>
+</div>
+
+<div class="auth-wrapper">
+  <div class="bg-blob blob-1"></div><div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div><div class="bg-blob blob-4"></div>
+
+  <svg class="med-icon med-1" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3v6a4 4 0 0 0 8 0V3"/><circle cx="18" cy="14" r="3"/><path d="M10 9v3a6 6 0 0 0 6 6"/></svg>
+  <svg class="med-icon med-2" width="65" height="65" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+  <svg class="med-icon med-3" width="75" height="75" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+
+  <div class="auth-shell">
+
+    <!-- LEFT: same info panel as login -->
+    <div class="brand-side">
+      <div class="trust-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Trusted by families across Tamil Nadu
+      </div>
+      <div class="logo-row">
+        <div class="logo-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            <path d="M3.5 12h4l1.5-3 2 6 1.5-3h8"/>
+          </svg>
+        </div>
+        <h1>Vaidyo</h1>
+      </div>
+      <p class="tagline">Healthcare for every <strong>Indian family</strong>.<br>Join thousands of patients &amp; doctors today.</p>
+
+      <div class="feature-carousel" id="featureCarousel">
+        <div class="feature-slide fs-1 active">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div><div class="feature-title">Book doctors from home</div><div class="feature-desc">Consult verified doctors anytime, anywhere</div></div>
+        </div>
+        <div class="feature-slide fs-2">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M12 11V7a2 2 0 0 1 4 0"/><path d="M7 16h.01M12 16h.01M17 16h.01"/></svg></div>
+          <div><div class="feature-title">Medicine reminders via Telegram</div><div class="feature-desc">Reply YES to mark your dose as taken</div></div>
+        </div>
+        <div class="feature-slide fs-3">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <div><div class="feature-title">AI symptom checker</div><div class="feature-desc">Understand your health in simple language</div></div>
+        </div>
+        <div class="feature-slide fs-4">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div><div class="feature-title">Emergency SOS &amp; ambulance</div><div class="feature-desc">One tap alerts your emergency contacts</div></div>
+        </div>
+        <div class="feature-slide fs-5">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69s-7 7.44-7 11.31a7 7 0 0 0 14 0c0-3.87-7-11.31-7-11.31z"/></svg></div>
+          <div><div class="feature-title">Find blood donors near you</div><div class="feature-desc">Connect by blood group &amp; location</div></div>
+        </div>
+        <div class="feature-slide fs-6">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+          <div><div class="feature-title">AI food recommendations</div><div class="feature-desc">Diet tips based on your health conditions</div></div>
+        </div>
+        <div class="feature-slide fs-7">
+          <div class="illustration-wrap"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <div><div class="feature-title">12+ Indian languages</div><div class="feature-desc">தமிழ், हिंदी, తెలుగు, ಕನ್ನಡ &amp; more</div></div>
+        </div>
+      </div>
+
+      <div class="carousel-dots" id="carouselDots"></div>
+
+      <div class="mini-stats-row">
+        <div class="mini-stat"><div class="mini-stat-num">100%</div><div class="mini-stat-label">Free to use</div></div>
+        <div class="mini-stat"><div class="mini-stat-num">12+ Lang</div><div class="mini-stat-label">Indian languages</div></div>
+        <div class="mini-stat"><div class="mini-stat-num">24×7</div><div class="mini-stat-label">Emergency SOS</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: registration card -->
+    <div class="auth-card">
+      <div class="logo">
+        <div class="card-logo-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            <path d="M3.5 12h4l1.5-3 2 6 1.5-3h8"/>
+          </svg>
+        </div>
+        <h3>Create Account</h3>
+        <p class="text-muted small mb-0">Join Vaidyo in 2 simple steps</p>
+      </div>
+
+      <!-- Step progress -->
+      <div class="step-progress" id="stepProgress">
+        <div class="step-item">
+          <div class="step-circle s1">
+            <span class="num">1</span>
+            <svg class="checkmark-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="step-label l1">Choose Role</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item">
+          <div class="step-circle s2"><span class="num">2</span></div>
+          <div class="step-label l2">Your Details</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Role cards -->
+      <div id="step1">
+        <p class="mb-3 fw-600 small text-muted">I am registering as a:</p>
+        <div class="row g-3 mb-4">
+          <div class="col-6">
+            <div class="role-card" data-role="PATIENT" onclick="selectRole('PATIENT')">
+              <div class="role-icon-wrap">
+                <!-- Patient: person with heart -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                  <path d="M12 11c0 0-3 2-3 4.5S10.5 19 12 19s3-1 3-3.5-3-4.5-3-4.5z" opacity="0.6"/>
+                </svg>
+              </div>
+              <div class="role-name">Patient</div>
+              <div class="role-sub">I need medical care</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="role-card" data-role="DOCTOR" onclick="selectRole('DOCTOR')">
+              <div class="role-icon-wrap">
+                <!-- Doctor: stethoscope -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 3v6a4 4 0 0 0 8 0V3"/>
+                  <circle cx="18" cy="14" r="3"/>
+                  <path d="M10 9v3a6 6 0 0 0 6 6"/>
+                  <line x1="6" y1="3" x2="6" y2="3.01"/>
+                  <line x1="14" y1="3" x2="14" y2="3.01"/>
+                </svg>
+              </div>
+              <div class="role-name">Doctor</div>
+              <div class="role-sub">I provide consultations</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="role-card" data-role="NURSE" onclick="selectRole('NURSE')">
+              <div class="role-icon-wrap">
+                <!-- Nurse: cross + person -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                  <line x1="12" y1="13" x2="12" y2="17"/>
+                  <line x1="10" y1="15" x2="14" y2="15"/>
+                </svg>
+              </div>
+              <div class="role-name">Nurse</div>
+              <div class="role-sub">I provide nursing care</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="role-card" data-role="CARETAKER" onclick="selectRole('CARETAKER')">
+              <div class="role-icon-wrap">
+                <!-- Caretaker: two people -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <div class="role-name">Caretaker</div>
+              <div class="role-sub">I care for a patient</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-gradient-submit w-100" onclick="goToStep2()" id="continueBtn" disabled>Continue →</button>
+      </div>
+
+      <!-- Step 2: Details form -->
+      <div id="step2" style="display:none;">
+        <form id="registerForm">
+          <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mobile Number</label>
+            <input type="tel" class="form-control" id="mobileNumber" placeholder="Enter mobile number" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <div style="position:relative;">
+              <input type="password" class="form-control" id="password" placeholder="Create a password" required style="padding-right:42px;">
+              <button type="button" onclick="togglePwd()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94A3B8;cursor:pointer;padding:4px;">
+                <svg id="eyeShow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg id="eyeHide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.7 18.7 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- PATIENT -->
+          <div id="patientFields" style="display:none;">
+            <div class="role-field-section-title">Patient Details</div>
+            <div class="row">
+              <div class="col-6 mb-3"><label class="form-label">Age</label><input type="number" class="form-control" id="age" placeholder="Age"></div>
+              <div class="col-6 mb-3"><label class="form-label">Blood Group</label>
+                <select class="form-select" id="bloodGroup"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select>
+              </div>
+            </div>
+            <div class="mb-3"><label class="form-label">Address</label><textarea class="form-control" id="address" rows="2" placeholder="Your address"></textarea></div>
+            <div class="mb-3"><label class="form-label">Emergency Contact</label><input type="tel" class="form-control" id="emergencyContact" placeholder="Emergency mobile number"></div>
+          </div>
+
+          <!-- DOCTOR -->
+          <div id="doctorFields" style="display:none;">
+            <div class="role-field-section-title">Doctor Details</div>
+            <div class="mb-3"><label class="form-label">Medical License Number</label><input type="text" class="form-control" id="licenseNumber" placeholder="e.g. TN-12345"></div>
+            <div class="mb-3"><label class="form-label">Speciality</label>
+              <select class="form-select" id="speciality"><option value="">Select speciality</option><option value="GENERAL">General Physician</option><option value="CARDIOLOGY">Cardiology</option><option value="ORTHOPEDICS">Orthopedics</option><option value="DIABETOLOGY">Diabetology</option><option value="NEUROLOGY">Neurology</option><option value="DERMATOLOGY">Dermatology</option><option value="ENT">ENT</option><option value="OPHTHALMOLOGY">Ophthalmology</option><option value="GYNECOLOGY">Gynecology</option><option value="PEDIATRICS">Pediatrics</option><option value="PSYCHIATRY">Psychiatry</option><option value="UROLOGY">Urology</option></select>
+            </div>
+            <div class="row">
+              <div class="col-6 mb-3"><label class="form-label">Experience (Years)</label><input type="number" class="form-control" id="experienceYears" placeholder="e.g. 5"></div>
+              <div class="col-6 mb-3"><label class="form-label">Consultation Fee (₹)</label><input type="number" class="form-control" id="consultationFee" placeholder="e.g. 500"></div>
+            </div>
+
+            <!-- Profile Photo -->
+            <div class="mb-3">
+              <label class="form-label">Profile Photo <span style="color:#94A3B8;font-weight:400;">(optional)</span></label>
+              <div style="display:flex;align-items:center;gap:14px;">
+                <div id="docPhotoPreviewWrap" onclick="document.getElementById('doctorPhoto').click()" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#10B981,#0891B2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:#fff;flex-shrink:0;overflow:hidden;cursor:pointer;border:2px solid rgba(16,185,129,0.3);">
+                  <span id="docPhotoInitial">D</span>
+                  <img id="docPhotoImg" style="display:none;width:100%;height:100%;object-fit:cover;">
+                </div>
+                <div>
+                  <button type="button" onclick="document.getElementById('doctorPhoto').click()" style="background:linear-gradient(90deg,#10B981,#0891B2);border:none;border-radius:9px;color:#fff;font-weight:600;font-size:0.8rem;padding:7px 16px;cursor:pointer;font-family:'Poppins',sans-serif;">Choose Photo</button>
+                  <div style="font-size:0.72rem;color:#94A3B8;margin-top:4px;">JPG or PNG, max 2MB</div>
+                </div>
+              </div>
+              <input type="file" id="doctorPhoto" accept="image/jpeg,image/png" style="display:none;">
+            </div>
+
+            <!-- Certificate -->
+            <div class="mb-3">
+              <label class="form-label">License / Certificate <span style="color:#DC2626;">*</span></label>
+              <input type="file" class="form-control" id="doctorCertificate" accept=".jpg,.jpeg,.png,.pdf">
+              <div class="form-text">JPG, PNG or PDF — max 5MB. Required for admin verification.</div>
+            </div>
+          </div>
+
+          <!-- NURSE -->
+          <div id="nurseFields" style="display:none;">
+            <div class="role-field-section-title">Nurse Details</div>
+            <div class="mb-3"><label class="form-label">Nursing Council Reg. Number</label><input type="text" class="form-control" id="nursingCouncilNumber" placeholder="Council registration number"></div>
+            <div class="mb-3"><label class="form-label">Council Name / State</label>
+              <select class="form-select" id="nursingCouncilState"><option value="">Select state</option><option>Tamil Nadu</option><option>Maharashtra</option><option>Karnataka</option><option>Kerala</option><option>Andhra Pradesh</option><option>Telangana</option><option>Delhi</option><option>West Bengal</option><option>Rajasthan</option><option>Gujarat</option><option>Uttar Pradesh</option><option>Other</option></select>
+            </div>
+            <div class="mb-3"><label class="form-label">Upload ID / Certificate</label><input type="file" class="form-control" id="nursingCertificate" accept=".jpg,.jpeg,.png,.pdf"><div class="form-text">JPG, PNG or PDF — max 5MB</div></div>
+          </div>
+
+          <!-- CARETAKER -->
+          <div id="caretakerFields" style="display:none;">
+            <div class="role-field-section-title">Caretaker Details</div>
+            <div class="mb-3"><label class="form-label">Patient's Mobile Number</label><input type="tel" class="form-control" id="patientMobileNumber" placeholder="Patient's registered mobile"></div>
+          </div>
+
+          <button type="submit" class="btn btn-gradient-submit w-100 mb-2">Create Account</button>
+          <button type="button" class="btn btn-outline-back w-100" onclick="goToStep1()">← Back</button>
+        </form>
+      </div>
+
+      <p class="text-center mt-3 small mb-0">Already have an account? <a href="login.html" style="font-weight:600;">Login here</a></p>
+    </div>
+
+  </div>
+</div>
+
 <script src="js/api.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/utils.js"></script>
 <script>
 let selectedRole = '';
 
-function selectRole(role) {
+/* Carousel */
+(function(){
+    const slides = document.querySelectorAll('.feature-slide');
+    const dotsWrap = document.getElementById('carouselDots');
+    let current = 0;
+    slides.forEach((_,i)=>{
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i===0?' active':'');
+        dot.addEventListener('click',()=>goTo(i));
+        dotsWrap.appendChild(dot);
+    });
+    const dots = dotsWrap.querySelectorAll('.dot');
+    function goTo(index){
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = index;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+    }
+    setInterval(()=>goTo((current+1)%slides.length), 3200);
+})();
+
+/* Doctor photo preview */
+document.addEventListener('change', function(e) {
+    if(e.target.id === 'doctorPhoto') {
+        const file = e.target.files[0];
+        if(!file) return;
+        if(file.size > 2*1024*1024){ vaidyoToast('error','Too large','Max photo size is 2MB.'); return; }
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const img = document.getElementById('docPhotoImg');
+            img.src = ev.target.result;
+            img.style.display = 'block';
+            document.getElementById('docPhotoInitial').style.display = 'none';
+            // update initial from name field
+            const name = document.getElementById('fullName').value;
+            if(name) document.getElementById('docPhotoInitial').textContent = name[0].toUpperCase();
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+/* Update photo initial when name is typed */
+document.addEventListener('input', function(e) {
+    if(e.target.id === 'fullName') {
+        const initial = e.target.value ? e.target.value[0].toUpperCase() : 'D';
+        document.getElementById('docPhotoInitial').textContent = initial;
+    }
+});
+function togglePwd(){
+    const inp = document.getElementById('password');
+    const s = document.getElementById('eyeShow');
+    const h = document.getElementById('eyeHide');
+    const hidden = inp.type==='password';
+    inp.type = hidden?'text':'password';
+    s.style.display = hidden?'none':'block';
+    h.style.display = hidden?'block':'none';
+}
+
+function selectRole(role){
     selectedRole = role;
-    document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
-    document.querySelector('.role-card[data-role="' + role + '"]').classList.add('selected');
+    document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+    document.querySelector('.role-card[data-role="'+role+'"]').classList.add('selected');
     document.getElementById('continueBtn').disabled = false;
+    const sp = document.getElementById('stepProgress');
+    sp.classList.remove('role-patient','role-doctor','role-nurse','role-caretaker');
+    sp.classList.add('role-'+role.toLowerCase());
 }
 
-function goToStep2() {
-    document.getElementById('step1').style.display = 'none';
-    document.getElementById('step2').style.display = 'block';
-
-    document.getElementById('patientFields').style.display = 'none';
-    document.getElementById('doctorFields').style.display = 'none';
-    document.getElementById('caretakerFields').style.display = 'none';
-
-    if (selectedRole === 'PATIENT') document.getElementById('patientFields').style.display = 'block';
-    if (selectedRole === 'DOCTOR') document.getElementById('doctorFields').style.display = 'block';
-    if (selectedRole === 'CARETAKER') document.getElementById('caretakerFields').style.display = 'block';
+function goToStep2(){
+    document.getElementById('step1').style.display='none';
+    document.getElementById('step2').style.display='block';
+    document.getElementById('stepProgress').classList.add('on-step2');
+    ['patientFields','doctorFields','nurseFields','caretakerFields'].forEach(id=>document.getElementById(id).style.display='none');
+    const map = {PATIENT:'patientFields',DOCTOR:'doctorFields',NURSE:'nurseFields',CARETAKER:'caretakerFields'};
+    if(map[selectedRole]) document.getElementById(map[selectedRole]).style.display='block';
 }
 
-function goToStep1() {
-    document.getElementById('step1').style.display = 'block';
-    document.getElementById('step2').style.display = 'none';
+function goToStep1(){
+    document.getElementById('step1').style.display='block';
+    document.getElementById('step2').style.display='none';
+    document.getElementById('stepProgress').classList.remove('on-step2');
 }
 
-document.getElementById('registerForm').addEventListener('submit', async function(e) {
+/* Toast */
+let toastTimer;
+function vaidyoToast(type,title,msg){
+    const toast=document.getElementById('vaidyoToast');
+    const icon=document.getElementById('vaidyoToastIcon');
+    document.getElementById('vaidyoToastTitle').textContent=title;
+    document.getElementById('vaidyoToastMsg').textContent=msg;
+    toast.classList.remove('toast-error');
+    if(type==='error'){
+        toast.classList.add('toast-error');
+        icon.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    } else {
+        icon.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    }
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>toast.classList.remove('show'),3800);
+}
+
+document.getElementById('registerForm').addEventListener('submit', async function(e){
     e.preventDefault();
-
-    const payload = {
+    const payload={
         fullName: document.getElementById('fullName').value,
         mobileNumber: document.getElementById('mobileNumber').value,
         password: document.getElementById('password').value,
         role: selectedRole
     };
-
-    if (selectedRole === 'PATIENT') {
-        payload.age = parseInt(document.getElementById('age').value) || null;
-        payload.bloodGroup = document.getElementById('bloodGroup').value;
-        payload.address = document.getElementById('address').value;
-        payload.emergencyContact = document.getElementById('emergencyContact').value;
-    } else if (selectedRole === 'DOCTOR') {
-        payload.licenseNumber = document.getElementById('licenseNumber').value;
-        payload.speciality = document.getElementById('speciality').value;
-        payload.experienceYears = parseInt(document.getElementById('experienceYears').value) || null;
-        payload.consultationFee = parseFloat(document.getElementById('consultationFee').value) || null;
-    } else if (selectedRole === 'CARETAKER') {
-        payload.patientMobileNumber = document.getElementById('patientMobileNumber').value;
+    if(selectedRole==='PATIENT'){
+        payload.age=parseInt(document.getElementById('age').value)||null;
+        payload.bloodGroup=document.getElementById('bloodGroup').value;
+        payload.address=document.getElementById('address').value;
+        payload.emergencyContact=document.getElementById('emergencyContact').value;
+    } else if(selectedRole==='DOCTOR'){
+        payload.licenseNumber=document.getElementById('licenseNumber').value;
+        payload.speciality=document.getElementById('speciality').value;
+        payload.experienceYears=parseInt(document.getElementById('experienceYears').value)||null;
+        payload.consultationFee=parseFloat(document.getElementById('consultationFee').value)||null;
+    } else if(selectedRole==='NURSE'){
+        payload.nursingCouncilNumber=document.getElementById('nursingCouncilNumber').value;
+        payload.nursingCouncilState=document.getElementById('nursingCouncilState').value;
+    } else if(selectedRole==='CARETAKER'){
+        payload.patientMobileNumber=document.getElementById('patientMobileNumber').value;
     }
+    document.querySelector('.vaidyo-loading-text').textContent='Creating your account...';
+    document.getElementById('vaidyoLoading').classList.add('show');
+    try{
+        // Step 1: Register account
+        const data=await apiPost('/api/auth/register',payload,false);
 
-    showLoading();
-
-    try {
-        const data = await apiPost('/api/auth/register', payload, false);
-        hideLoading();
-
-        if (data.token) {
-            saveAuth(data);
-            showSuccess('Registration successful!');
-            setTimeout(() => redirectByRole(data.role), 1200);
-        } else {
-            showError(data.message || 'Registration failed. Please check your details.');
+        if(!data.token){
+            document.getElementById('vaidyoLoading').classList.remove('show');
+            vaidyoToast('error','Registration failed',data.message||'Please check your details.');
+            return;
         }
-    } catch (err) {
-        hideLoading();
-        showError('Unable to connect to server. Please try again.');
+
+        // Step 2: Upload certificate if Doctor or Nurse
+        if(selectedRole==='DOCTOR'){
+            const certFile = document.getElementById('doctorCertificate').files[0];
+            const photoFile = document.getElementById('doctorPhoto').files[0];
+
+            // Upload profile photo
+            if(photoFile){
+                document.querySelector('.vaidyo-loading-text').textContent='Uploading profile photo...';
+                const photoData = new FormData();
+                photoData.append('file', photoFile);
+                try {
+                    await fetch('https://vaidyo-backend.onrender.com/api/doctor/profile/photo', {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + data.token },
+                        body: photoData
+                    });
+                } catch(e){ console.warn('Photo upload failed:', e); }
+            }
+
+            // Upload certificate
+            if(certFile){
+    document.querySelector('.vaidyo-loading-text').textContent='Uploading certificate...';
+    const formData = new FormData();
+    formData.append('file', certFile);
+    formData.append('userId', data.userId);
+    try {
+        const uploadRes = await fetch('https://vaidyo-backend.onrender.com/api/doctor/certificate', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + data.token },
+            body: formData
+        });
+        console.log('Certificate upload status:', uploadRes.status);
+    } catch(e){ console.warn('Certificate upload failed:', e); }
+}
+        }
+
+        if(selectedRole==='NURSE'){
+            const certFile = document.getElementById('nursingCertificate').files[0];
+            if(certFile){
+                document.querySelector('.vaidyo-loading-text').textContent='Uploading certificate...';
+                const formData = new FormData();
+                formData.append('file', certFile);
+                try {
+                    await fetch('https://vaidyo-backend.onrender.com/api/nurse/upload-certificate', {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + data.token },
+                        body: formData
+                    });
+                } catch(uploadErr){
+                    console.warn('Nurse certificate upload failed:', uploadErr);
+                }
+            }
+        }
+
+        document.getElementById('vaidyoLoading').classList.remove('show');
+        saveAuth(data);
+        vaidyoToast('success','Registration successful!','Redirecting to your dashboard...');
+        setTimeout(()=>redirectByRole(data.role),1300);
+
+    } catch(err){
+        document.getElementById('vaidyoLoading').classList.remove('show');
+        vaidyoToast('error','Connection error','Unable to connect. Please try again.');
     }
 });
 </script>
-
 </body>
 </html>

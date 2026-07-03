@@ -1,4 +1,5 @@
 :root {
+    /* --- Existing core palette (kept as-is, used across current pages) --- */
     --primary: #2563EB;
     --secondary: #10B981;
     --accent: #8B5CF6;
@@ -7,6 +8,25 @@
     --dark: #0F172A;
     --light: #F1F5F9;
     --white: #FFFFFF;
+
+    /* --- New tokens for upcoming admin / AI / emergency / nurse features --- */
+    --gold: #F59E0B;          /* ratings, highlights */
+    --info: #0891B2;          /* AI feature pages, info cards */
+    --danger-deep: #DC2626;   /* emergency SOS, rejected */
+    --warning-deep: #D97706;  /* expiry alerts, pending */
+    --success-deep: #059669;  /* approved, confirmed */
+    --admin-purple: #7C3AED;  /* admin-only sections */
+
+    --text-dark: #1E293B;
+    --text-muted: #64748B;
+
+    --gradient-primary: linear-gradient(135deg, var(--primary), var(--admin-purple));
+    --gradient-health:  linear-gradient(135deg, var(--success-deep), var(--info));
+    --gradient-emergency: linear-gradient(135deg, var(--danger-deep), var(--warning-deep));
+
+    --radius-card: 16px;
+    --radius-btn: 10px;
+    --shadow-card: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 * {
@@ -15,6 +35,8 @@
 
 body {
     background: var(--light);
+    font-size: 15px;
+    color: var(--text-dark);
 }
 
 .navbar-vaidyo {
@@ -28,27 +50,85 @@ body {
     font-weight: 500;
 }
 
+/* Admin navbar variant — distinct from public navbar so it never gets mistaken for the patient/doctor app */
+.navbar-admin {
+    background: linear-gradient(135deg, var(--dark), var(--admin-purple));
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.navbar-admin .navbar-brand,
+.navbar-admin .nav-link {
+    color: #fff !important;
+    font-weight: 500;
+}
+
 .card-custom {
     border: none;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
     padding: 24px;
     background: #fff;
+    transition: all 0.3s ease;
 }
 
 .btn-primary {
     background: var(--primary);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-btn);
     font-weight: 500;
     padding: 10px 28px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37,99,235,0.3);
 }
 
 .btn-success {
     background: var(--secondary);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-btn);
     font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: var(--danger-deep);
+    border: none;
+    border-radius: var(--radius-btn);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(220,38,38,0.3);
+}
+
+.btn-info-vaidyo {
+    background: var(--info);
+    border: none;
+    color: #fff;
+    border-radius: var(--radius-btn);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-info-vaidyo:hover {
+    transform: translateY(-2px);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(8,145,178,0.3);
+}
+
+/* Generic rounded button lift, in case other btn-* combos get used */
+.btn {
+    border-radius: var(--radius-btn);
+    transition: all 0.3s ease;
 }
 
 /* Hero */
@@ -174,6 +254,9 @@ body {
 .feature-card.f-blue { border-top-color: var(--primary); }
 .feature-card.f-green { border-top-color: var(--secondary); }
 .feature-card.f-purple { border-top-color: var(--accent); }
+.feature-card.f-cyan { border-top-color: var(--info); }
+.feature-card.f-red { border-top-color: var(--danger-deep); }
+.feature-card.f-orange { border-top-color: var(--warning-deep); }
 
 .feature-icon-wrap {
     width: 70px; height: 70px;
@@ -187,6 +270,9 @@ body {
 .feature-card.f-blue .feature-icon-wrap { background: linear-gradient(135deg, var(--primary), #60A5FA); }
 .feature-card.f-green .feature-icon-wrap { background: linear-gradient(135deg, var(--secondary), #34D399); }
 .feature-card.f-purple .feature-icon-wrap { background: linear-gradient(135deg, var(--accent), #C4B5FD); }
+.feature-card.f-cyan .feature-icon-wrap { background: linear-gradient(135deg, var(--info), #67E8F9); }
+.feature-card.f-red .feature-icon-wrap { background: linear-gradient(135deg, var(--danger-deep), #FCA5A5); }
+.feature-card.f-orange .feature-icon-wrap { background: linear-gradient(135deg, var(--warning-deep), #FCD34D); }
 
 /* How it works */
 .step-card {
@@ -280,3 +366,225 @@ footer .footer-bottom {
     text-align: center;
     font-size: 0.85rem;
 }
+
+/* ============================================================
+   NEW — shared building blocks for upcoming admin / patient /
+   doctor / nurse pages (sidebar, status badges, stat cards, etc.)
+   ============================================================ */
+
+/* Sidebar layout (admin/doctor/nurse/patient dashboards) */
+.sidebar-vaidyo {
+    background: var(--gradient-primary);
+    min-height: 100vh;
+    color: #fff;
+    padding: 24px 0;
+}
+
+.sidebar-vaidyo .sidebar-brand {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.3rem;
+    padding: 0 24px 24px;
+    display: block;
+}
+
+.sidebar-vaidyo .nav-link {
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+    padding: 12px 24px;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.25s ease;
+}
+
+.sidebar-vaidyo .nav-link i {
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-vaidyo .nav-link:hover,
+.sidebar-vaidyo .nav-link.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border-left: 4px solid #fff;
+    padding-left: 20px;
+}
+
+/* Status badges — consistent across doctor/nurse verification, medicines, ambulance, etc. */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.status-badge.status-pending {
+    background: rgba(217,119,6,0.12);
+    color: var(--warning-deep);
+}
+
+.status-badge.status-approved,
+.status-badge.status-success {
+    background: rgba(5,150,105,0.12);
+    color: var(--success-deep);
+}
+
+.status-badge.status-rejected,
+.status-badge.status-danger {
+    background: rgba(220,38,38,0.12);
+    color: var(--danger-deep);
+}
+
+.status-badge.status-info {
+    background: rgba(8,145,178,0.12);
+    color: var(--info);
+}
+
+/* Stat cards (admin dashboard, nurse/doctor dashboards) */
+.stat-card {
+    border: none;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 22px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+}
+
+.stat-card .stat-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.stat-card .stat-number {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0;
+    line-height: 1.1;
+}
+
+.stat-card .stat-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 0;
+}
+
+.stat-card.stat-blue .stat-icon { background: linear-gradient(135deg, var(--primary), #60A5FA); }
+.stat-card.stat-purple .stat-icon { background: linear-gradient(135deg, var(--admin-purple), #C4B5FD); }
+.stat-card.stat-amber .stat-icon { background: linear-gradient(135deg, var(--warning-deep), #FCD34D); }
+.stat-card.stat-cyan .stat-icon { background: linear-gradient(135deg, var(--info), #67E8F9); }
+.stat-card.stat-green .stat-icon { background: linear-gradient(135deg, var(--success-deep), #6EE7B7); }
+.stat-card.stat-red .stat-icon { background: linear-gradient(135deg, var(--danger-deep), #FCA5A5); }
+
+/* Page header bands for themed sections (AI features / emergency / ambulance) */
+.page-header-band {
+    border-radius: var(--radius-card);
+    padding: 36px 28px;
+    color: #fff;
+    margin-bottom: 28px;
+}
+
+.page-header-band.band-health { background: var(--gradient-health); }
+.page-header-band.band-emergency { background: var(--gradient-emergency); }
+.page-header-band.band-admin { background: var(--gradient-primary); }
+.page-header-band.band-ambulance { background: linear-gradient(135deg, var(--warning-deep), var(--gold)); }
+
+.page-header-band h2 {
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.page-header-band p {
+    margin-bottom: 0;
+    opacity: 0.92;
+}
+
+/* AI disclaimer box — must always be visible, never hidden */
+.disclaimer-box {
+    background: rgba(220,38,38,0.08);
+    border: 1px solid rgba(220,38,38,0.25);
+    border-left: 4px solid var(--danger-deep);
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: var(--danger-deep);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Rating stars */
+.rating-stars i {
+    color: var(--gold);
+}
+
+.rating-stars i.fa-regular {
+    color: #E2E8F0;
+}
+
+/* Emergency SOS button */
+.sos-btn {
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: var(--gradient-emergency);
+    color: #fff;
+    border: none;
+    font-size: 1.4rem;
+    font-weight: 700;
+    box-shadow: 0 0 0 0 rgba(220,38,38,0.5);
+    animation: sos-pulse 2s infinite;
+}
+
+@keyframes sos-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(220,38,38,0.5); }
+    70%  { box-shadow: 0 0 0 30px rgba(220,38,38,0); }
+    100% { box-shadow: 0 0 0 0 rgba(220,38,38,0); }
+}
+
+/* Language toggle */
+.lang-toggle {
+    background: rgba(255,255,255,0.15);
+    border-radius: 50px;
+    padding: 4px;
+    display: inline-flex;
+    gap: 2px;
+}
+
+.lang-toggle button {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    transition: all 0.25s ease;
+}
+
+.lang-toggle button.active {
+    background: #fff;
+    color: var(--primary);
+}
+
+/* Elderly-friendly minimums */
+label, .form-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+h1, h2, h3 { letter-spacing: -0.02em; }

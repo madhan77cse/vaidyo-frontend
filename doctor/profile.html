@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile - Vaidyo Doctor</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+* { font-family: 'Poppins', sans-serif; }
+body { background: #0F1623; color: #E2E8F0; margin: 0; }
+.sidebar { width:240px;min-height:100vh;background:linear-gradient(180deg,#0D1B2A 0%,#0A1628 100%);border-right:1px solid rgba(16,185,129,0.12);position:fixed;top:0;left:0;z-index:100;display:flex;flex-direction:column; }
+.sidebar-brand { padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:10px; }
+.sidebar-logo { width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#10B981,#0891B2);display:flex;align-items:center;justify-content:center; }
+.sidebar-logo svg { width:18px;height:18px; }
+.brand-text { font-weight:800;font-size:1rem;color:#fff; }
+.brand-sub  { font-size:0.65rem;color:#10B981;font-weight:600;text-transform:uppercase;letter-spacing:.05em; }
+.sidebar-section { padding:16px 14px 4px;font-size:0.65rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.07em; }
+.sidebar nav { flex:1;padding:6px 8px; }
+.nav-link-doc { display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,0.6);font-weight:500;font-size:0.84rem;text-decoration:none;transition:all 0.2s;margin-bottom:3px; }
+.nav-link-doc:hover { background:rgba(16,185,129,0.12);color:#6EE7B7; }
+.nav-link-doc.active { background:linear-gradient(90deg,rgba(16,185,129,0.25),rgba(8,145,178,0.15));color:#fff;border-left:3px solid #10B981;padding-left:9px; }
+.nav-link-doc .ni { width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.nav-link-doc.active .ni { background:rgba(16,185,129,0.25); }
+.sidebar-footer { padding:14px 10px;border-top:1px solid rgba(255,255,255,0.05); }
+.doc-user-row { display:flex;align-items:center;gap:9px;background:rgba(255,255,255,0.04);border-radius:10px;padding:9px 11px; }
+.doc-avatar { width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#10B981,#0891B2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;color:#fff;flex-shrink:0; }
+.doc-name-s { font-size:0.78rem;font-weight:600;color:#E2E8F0; }
+.doc-role-s { font-size:0.65rem;color:#10B981; }
+.logout-btn { margin-left:auto;background:none;border:none;color:#64748B;cursor:pointer;padding:3px; }
+.logout-btn:hover { color:#DC2626; }
+.main-content { margin-left:240px;padding:28px;min-height:100vh; }
+.topbar { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px; }
+.topbar h1 { font-size:1.5rem;font-weight:800;color:#fff;margin:0; }
+.topbar .sub { color:#64748B;font-size:0.82rem;margin-top:2px; }
+.verif-banner { border-radius:14px;padding:16px 20px;margin-bottom:22px;display:flex;align-items:center;gap:14px; }
+.verif-banner svg { flex-shrink:0; }
+.verif-banner.pending  { background:rgba(217,119,6,0.12);border:1px solid rgba(217,119,6,0.3); }
+.verif-banner.approved { background:rgba(5,150,105,0.12);border:1px solid rgba(5,150,105,0.3); }
+.verif-banner.rejected { background:rgba(220,38,38,0.12);border:1px solid rgba(220,38,38,0.3); }
+.verif-banner h6 { margin:0 0 2px;font-weight:700;font-size:0.9rem; }
+.verif-banner p  { margin:0;font-size:0.8rem;opacity:0.85; }
+.pending  h6,.pending  p { color:#FCD34D; }
+.approved h6,.approved p { color:#34D399; }
+.rejected h6,.rejected p { color:#FCA5A5; }
+.section-card { background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:26px;margin-bottom:20px; }
+.section-card-title { font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:20px;display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.06); }
+.section-card-title .title-icon { width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff; }
+.photo-wrap { display:flex;flex-direction:column;align-items:center;gap:14px; }
+.photo-circle { width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#10B981,#0891B2);display:flex;align-items:center;justify-content:center;font-size:2.4rem;font-weight:800;color:#fff;position:relative;overflow:hidden;cursor:pointer;border:3px solid rgba(16,185,129,0.4); }
+.photo-circle img { width:100%;height:100%;object-fit:cover;position:absolute;inset:0; }
+.photo-overlay { position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s; }
+.photo-circle:hover .photo-overlay { opacity:1; }
+.photo-label { font-size:0.75rem;color:#64748B;text-align:center; }
+.form-label { font-size:0.82rem;font-weight:600;color:#94A3B8;margin-bottom:5px; }
+.form-control,.form-select { background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);border-radius:11px;padding:10px 14px;color:#fff;font-size:0.88rem;font-family:'Poppins',sans-serif;transition:all 0.2s; }
+.form-control::placeholder { color:#475569; }
+.form-control:focus,.form-select:focus { border-color:#10B981;background:rgba(16,185,129,0.08);box-shadow:0 0 0 4px rgba(16,185,129,0.1);color:#fff;outline:none; }
+.form-select option { background:#0F1623;color:#fff; }
+textarea.form-control { resize:vertical;min-height:90px; }
+.fee-prefix { background:rgba(16,185,129,0.15);border:1.5px solid rgba(16,185,129,0.25);border-right:none;border-radius:11px 0 0 11px;padding:10px 14px;color:#34D399;font-weight:700;font-size:0.9rem; }
+.fee-input { border-radius:0 11px 11px 0 !important; }
+.btn-save { background:linear-gradient(90deg,#10B981,#0891B2);border:none;border-radius:12px;font-weight:700;padding:12px 36px;color:#fff;transition:all 0.3s;box-shadow:0 8px 20px rgba(16,185,129,0.3);position:relative;overflow:hidden;font-family:'Poppins',sans-serif;cursor:pointer; }
+.btn-save::after { content:'';position:absolute;top:0;left:-75%;width:50%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,0.3),transparent);transform:skewX(-20deg);animation:shine 3s ease-in-out infinite; }
+@keyframes shine { 0%{left:-75%} 50%,100%{left:130%} }
+.btn-save:hover { transform:translateY(-2px);box-shadow:0 12px 28px rgba(16,185,129,0.45);color:#fff; }
+.v-overlay { position:fixed;inset:0;background:rgba(10,15,25,0.7);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:9999; }
+.v-overlay.show { display:flex; }
+.v-box { background:#0D1B2A;border:1px solid rgba(16,185,129,0.3);border-radius:18px;padding:28px 40px;display:flex;flex-direction:column;align-items:center;gap:12px; }
+.spin { width:38px;height:38px;border:3px solid rgba(16,185,129,0.2);border-top-color:#10B981;border-radius:50%;animation:spin 0.9s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.spin-text { color:#6EE7B7;font-weight:600;font-size:0.85rem; }
+.v-toast { position:fixed;top:22px;right:22px;min-width:290px;background:#0D1B2A;border:1px solid rgba(16,185,129,0.2);border-left:5px solid #10B981;border-radius:13px;box-shadow:0 14px 36px rgba(0,0,0,0.4);padding:13px 16px;display:flex;align-items:flex-start;gap:11px;transform:translateX(400px);opacity:0;transition:all 0.4s cubic-bezier(.4,0,.2,1);z-index:10000; }
+.v-toast.show { transform:translateX(0);opacity:1; }
+.v-toast.err  { border-left-color:#DC2626; }
+.v-toast .ti  { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;background:#10B981; }
+.v-toast.err .ti { background:#DC2626; }
+.v-toast .tt  { font-weight:700;font-size:0.83rem;color:#E2E8F0;margin-bottom:2px; }
+.v-toast .tm  { font-size:0.76rem;color:#94A3B8; }
+@media(max-width:900px){ .sidebar{display:none;} .main-content{margin-left:0;padding:16px;} }
+</style>
+</head>
+<body>
+<div class="v-overlay" id="vOverlay"><div class="v-box"><div class="spin"></div><div class="spin-text">Saving profile...</div></div></div>
+<div id="vToast" class="v-toast"><div class="ti" id="vTI"></div><div><div class="tt" id="vTT"></div><div class="tm" id="vTM"></div></div></div>
+<input type="file" id="photoInput" accept="image/*" style="display:none">
+
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/><path d="M3.5 12h4l1.5-3 2 6 1.5-3h8"/></svg></div>
+    <div><div class="brand-text">Vaidyo</div><div class="brand-sub">Doctor Portal</div></div>
+  </div>
+  <div class="sidebar-section">Main</div>
+  <nav>
+    <a href="dashboard.html" class="nav-link-doc"><div class="ni"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>Dashboard</a>
+    <a href="appointments.html" class="nav-link-doc"><div class="ni"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>Appointments</a>
+    <a href="availability.html" class="nav-link-doc"><div class="ni"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>Availability</a>
+    <a href="profile.html" class="nav-link-doc active"><div class="ni"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>My Profile</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="doc-user-row">
+      <div class="doc-avatar" id="sidebarAvatar">D</div>
+      <div><div class="doc-name-s" id="sidebarName">Doctor</div><div class="doc-role-s">Doctor</div></div>
+      <button class="logout-btn" onclick="doLogout()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="topbar">
+    <div><h1>My Profile</h1><div class="sub">Manage your professional information</div></div>
+  </div>
+
+  <div class="verif-banner pending" id="verifBanner" style="display:none;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <div><h6 id="verifTitle">Verification Pending</h6><p id="verifMsg">Your profile is under review by the admin.</p></div>
+  </div>
+
+  <form id="profileForm">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="section-card h-100">
+          <div class="section-card-title">
+            <div class="title-icon" style="background:linear-gradient(135deg,#10B981,#0891B2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            Photo & Identity
+          </div>
+          <div class="photo-wrap mb-4">
+            <div class="photo-circle" onclick="document.getElementById('photoInput').click()" id="photoCircle">
+              <span id="photoInitial">D</span>
+              <img id="photoPreview" style="display:none;">
+              <div class="photo-overlay"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+            </div>
+            <div class="photo-label">Click to upload photo<br><span style="color:#475569;font-size:0.7rem;">JPG or PNG, max 2MB</span></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="fullName" placeholder="Dr. Your Name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mobile Number</label>
+            <input type="tel" class="form-control" id="mobileNumber" disabled style="opacity:0.5;">
+            <div style="font-size:0.72rem;color:#475569;margin-top:4px;">Mobile cannot be changed</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="section-card mb-4">
+          <div class="section-card-title">
+            <div class="title-icon" style="background:linear-gradient(135deg,#7C3AED,#4338CA)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6a4 4 0 0 0 8 0V3"/><circle cx="18" cy="14" r="3"/><path d="M10 9v3a6 6 0 0 0 6 6"/></svg></div>
+            Professional Details
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Specialization</label>
+              <select class="form-select" id="speciality">
+                <option value="">Select specialization</option>
+                <option value="GENERAL">General Physician</option>
+                <option value="CARDIOLOGY">Cardiology</option>
+                <option value="ORTHOPEDICS">Orthopedics</option>
+                <option value="DIABETOLOGY">Diabetology</option>
+                <option value="NEUROLOGY">Neurology</option>
+                <option value="DERMATOLOGY">Dermatology</option>
+                <option value="ENT">ENT</option>
+                <option value="OPHTHALMOLOGY">Ophthalmology</option>
+                <option value="GYNECOLOGY">Gynecology</option>
+                <option value="PEDIATRICS">Pediatrics</option>
+                <option value="PSYCHIATRY">Psychiatry</option>
+                <option value="UROLOGY">Urology</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Medical License Number</label>
+              <input type="text" class="form-control" id="licenseNumber" placeholder="e.g. TN-12345">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Years of Experience</label>
+              <input type="number" class="form-control" id="experienceYears" placeholder="e.g. 5" min="0" max="60">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Consultation Fee (₹)</label>
+              <div class="d-flex">
+                <span class="fee-prefix">₹</span>
+                <input type="number" class="form-control fee-input" id="consultationFee" placeholder="500" min="0">
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Qualifications</label>
+              <input type="text" class="form-control" id="qualifications" placeholder="e.g. MBBS, MD (Cardiology), DNB">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Clinic / Hospital Address</label>
+              <input type="text" class="form-control" id="clinicAddress" placeholder="Your clinic or hospital address">
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-title">
+            <div class="title-icon" style="background:linear-gradient(135deg,#F59E0B,#F97316)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+            About You
+          </div>
+          <label class="form-label">Bio / About</label>
+          <textarea class="form-control" id="bio" rows="4" placeholder="Tell patients about yourself — your experience, approach to care, areas of focus..."></textarea>
+          <div style="font-size:0.72rem;color:#475569;margin-top:4px;">Shown to patients on your profile page</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3 gap-3">
+      <button type="button" class="btn" style="border:1.5px solid rgba(255,255,255,0.12);color:#94A3B8;border-radius:12px;padding:11px 28px;background:transparent;font-family:'Poppins',sans-serif;" onclick="loadProfile()">Reset</button>
+      <button type="submit" class="btn-save">Save Profile</button>
+    </div>
+  </form>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '../login.html';
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+document.getElementById('sidebarName').textContent = user.fullName || 'Doctor';
+document.getElementById('sidebarAvatar').textContent = (user.fullName || 'D')[0].toUpperCase();
+
+let toastTimer;
+function showToast(type, title, msg) {
+    const t = document.getElementById('vToast'), ic = document.getElementById('vTI');
+    document.getElementById('vTT').textContent = title;
+    document.getElementById('vTM').textContent = msg;
+    t.classList.remove('err');
+    if(type==='error'){ t.classList.add('err'); ic.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'; }
+    else { ic.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'; }
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function showVerifBanner(status, reason) {
+    const banner = document.getElementById('verifBanner');
+    banner.className = 'verif-banner';
+    if(status==='APPROVED'){
+        banner.classList.add('approved');
+        document.getElementById('verifTitle').textContent = '✅ Profile Verified';
+        document.getElementById('verifMsg').textContent   = 'Your profile is verified. Patients can now book you.';
+    } else if(status==='REJECTED'){
+        banner.classList.add('rejected');
+        document.getElementById('verifTitle').textContent = '❌ Verification Rejected';
+        document.getElementById('verifMsg').textContent   = reason ? `Reason: ${reason}` : 'Your verification was rejected. Please update your details.';
+    } else {
+        banner.classList.add('pending');
+        document.getElementById('verifTitle').textContent = '⏳ Verification Pending';
+        document.getElementById('verifMsg').textContent   = 'Your profile is under review by the admin. You can still update your details.';
+    }
+    banner.style.display = 'flex';
+}
+
+async function loadProfile() {
+    try {
+        const data = await apiGet('/api/doctor/profile');
+        document.getElementById('fullName').value         = data.fullName        || '';
+        document.getElementById('mobileNumber').value    = data.mobileNumber    || '';
+        document.getElementById('speciality').value      = data.speciality      || '';
+        document.getElementById('licenseNumber').value   = data.licenseNumber   || '';
+        document.getElementById('experienceYears').value = data.experienceYears || '';
+        document.getElementById('consultationFee').value = data.consultationFee || '';
+        document.getElementById('qualifications').value  = data.qualifications  || '';
+        document.getElementById('clinicAddress').value   = data.clinicAddress   || '';
+        document.getElementById('bio').value             = data.bio             || '';
+        const initial = (data.fullName||'D')[0].toUpperCase();
+        document.getElementById('photoInitial').textContent  = initial;
+        document.getElementById('sidebarAvatar').textContent = initial;
+        document.getElementById('sidebarName').textContent   = data.fullName || 'Doctor';
+        if(data.photoUrl){
+            const img = document.getElementById('photoPreview');
+            img.src = data.photoUrl; img.style.display='block';
+            document.getElementById('photoInitial').style.display='none';
+        }
+        showVerifBanner(data.verificationStatus, data.rejectionReason);
+    } catch(e){ showToast('error','Load failed','Could not load profile.'); }
+}
+
+document.getElementById('photoInput').addEventListener('change', function(){
+    const file = this.files[0];
+    if(!file) return;
+    if(file.size > 2*1024*1024){ showToast('error','Too large','Max photo size is 2MB.'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+        const img = document.getElementById('photoPreview');
+        img.src = e.target.result; img.style.display='block';
+        document.getElementById('photoInitial').style.display='none';
+    };
+    reader.readAsDataURL(file);
+});
+
+document.getElementById('profileForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    document.getElementById('vOverlay').classList.add('show');
+    const payload = {
+        fullName: document.getElementById('fullName').value,
+        speciality: document.getElementById('speciality').value,
+        licenseNumber: document.getElementById('licenseNumber').value,
+        experienceYears: parseInt(document.getElementById('experienceYears').value)||null,
+        consultationFee: parseFloat(document.getElementById('consultationFee').value)||null,
+        qualifications: document.getElementById('qualifications').value,
+        clinicAddress: document.getElementById('clinicAddress').value,
+        bio: document.getElementById('bio').value
+    };
+    try {
+        const photoFile = document.getElementById('photoInput').files[0];
+        if(photoFile){
+            const formData = new FormData();
+            formData.append('photo', photoFile);
+            await fetch('https://vaidyo-backend.onrender.com/api/doctor/profile/photo',{
+                method:'POST', headers:{'Authorization':'Bearer '+token}, body:formData
+            });
+        }
+        await apiPut('/api/doctor/profile', payload);
+        showToast('success','Profile saved','Your profile has been updated.');
+        loadProfile();
+    } catch(e){ showToast('error','Save failed','Could not save profile.'); }
+    finally { document.getElementById('vOverlay').classList.remove('show'); }
+});
+
+function doLogout(){
+    if(!confirm('Log out?')) return;
+    localStorage.removeItem('token'); localStorage.removeItem('user');
+    window.location.href='../login.html';
+}
+
+loadProfile();
+</script>
+</body>
+</html>

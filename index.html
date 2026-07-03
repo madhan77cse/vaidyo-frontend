@@ -4,214 +4,747 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vaidyo - Your Doctor. Your Home. Your Health.</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
+<style>
+* { font-family: 'Poppins', sans-serif; }
+
+/* ── Navbar ── */
+.navbar-vaidyo {
+    background: rgba(11,18,32,0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 14px 0;
+    transition: all 0.3s ease;
+}
+.navbar-vaidyo .navbar-brand {
+    font-weight: 800; font-size: 1.4rem; color: #fff;
+    display: flex; align-items: center; gap: 10px;
+}
+.nav-logo-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, #10B981, #0891B2);
+    display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-icon svg { width: 18px; height: 18px; }
+.navbar-vaidyo .nav-link { color: rgba(255,255,255,0.8) !important; font-weight: 500; transition: color 0.2s; }
+.navbar-vaidyo .nav-link:hover { color: #10B981 !important; }
+.btn-nav-login { border: 1.5px solid rgba(255,255,255,0.3); color: #fff; border-radius: 10px; padding: 7px 20px; font-weight: 600; font-size: 0.88rem; transition: all 0.25s; }
+.btn-nav-login:hover { border-color: #10B981; color: #10B981; }
+.btn-nav-register { background: linear-gradient(90deg, #10B981, #2563EB); color: #fff; border: none; border-radius: 10px; padding: 7px 20px; font-weight: 600; font-size: 0.88rem; transition: all 0.25s; }
+.btn-nav-register:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16,185,129,0.35); color: #fff; }
+
+/* ── Shared dark background theme ── */
+.dark-section {
+    background:
+        radial-gradient(circle at 8% 12%, rgba(16,185,129,0.48), transparent 36%),
+        radial-gradient(circle at 92% 10%, rgba(245,158,11,0.44), transparent 38%),
+        radial-gradient(circle at 90% 88%, rgba(37,99,235,0.48), transparent 40%),
+        radial-gradient(circle at 6% 90%, rgba(249,115,22,0.44), transparent 38%),
+        radial-gradient(circle at 50% 45%, rgba(139,92,246,0.25), transparent 55%),
+        linear-gradient(135deg, #0B1220 0%, #0F1E33 35%, #102A2A 65%, #1A1730 100%);
+    position: relative; overflow: hidden;
+}
+.bg-blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(55px); opacity: 0.55;
+    animation: blob-float 9s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes blob-float { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(22px,-28px) scale(1.08);} }
+.blob-1{width:200px;height:200px;background:#10B981;top:2%;left:3%;animation-delay:0s;}
+.blob-2{width:180px;height:180px;background:#F59E0B;top:5%;right:5%;animation-delay:2s;}
+.blob-3{width:200px;height:200px;background:#2563EB;bottom:3%;right:3%;animation-delay:4s;}
+.blob-4{width:200px;height:200px;background:#F97316;bottom:2%;left:7%;animation-delay:1s;}
+
+/* ── Hero ── */
+.hero-section {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 120px 0 80px;
+    color: #fff;
+}
+.hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(16,185,129,0.15);
+    border: 1px solid rgba(16,185,129,0.4);
+    color: #6EE7B7; font-size: 0.82rem; font-weight: 600;
+    padding: 7px 16px; border-radius: 50px; margin-bottom: 24px;
+}
+.hero-section h1 {
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 800; line-height: 1.15; margin-bottom: 20px;
+}
+.hero-section h1 .highlight {
+    background: linear-gradient(90deg, #10B981, #F59E0B, #2563EB);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero-section .lead { color: #CBD5E1; font-size: 1.1rem; line-height: 1.7; margin-bottom: 36px; }
+.btn-hero-primary {
+    background: linear-gradient(90deg, #10B981, #2563EB);
+    color: #fff; border: none; border-radius: 12px;
+    font-weight: 700; padding: 14px 32px; font-size: 1rem;
+    box-shadow: 0 8px 24px rgba(16,185,129,0.4);
+    transition: all 0.3s; position: relative; overflow: hidden;
+}
+.btn-hero-primary::after { content:''; position:absolute; top:0;left:-75%;width:50%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,0.35),transparent);transform:skewX(-20deg);animation:shine 3s ease-in-out infinite; }
+@keyframes shine{0%{left:-75%;}50%,100%{left:130%;}}
+.btn-hero-primary:hover { transform:translateY(-3px); box-shadow:0 14px 30px rgba(16,185,129,0.5); color:#fff; }
+.btn-hero-outline { border: 2px solid rgba(255,255,255,0.35); color:#fff; border-radius:12px; font-weight:600; padding:14px 32px; font-size:1rem; background:transparent; transition:all 0.3s; }
+.btn-hero-outline:hover { border-color:#10B981; color:#10B981; }
+
+/* hero right panel - feature pills */
+.hero-right { position:relative; }
+.hero-visual-card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; padding: 28px 24px;
+    animation: card-float 5s ease-in-out infinite;
+}
+@keyframes card-float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-12px);} }
+.feature-pill {
+    display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px; padding: 14px 16px; margin-bottom: 12px;
+    transition: all 0.3s;
+}
+.feature-pill:last-child { margin-bottom: 0; }
+.feature-pill:hover { background: rgba(255,255,255,0.12); transform: translateX(4px); }
+.feature-pill .pill-icon {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; flex-shrink: 0;
+}
+.feature-pill .pill-title { font-weight: 700; color: #fff; font-size: 0.9rem; margin-bottom: 2px; }
+.feature-pill .pill-desc { font-size: 0.75rem; color: #94A3B8; }
+
+/* ── Scroll-reveal animation ── */
+.reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-left { opacity:0; transform:translateX(-40px); transition:opacity 0.7s ease,transform 0.7s ease; }
+.reveal-left.visible { opacity:1; transform:translateX(0); }
+.reveal-right { opacity:0; transform:translateX(40px); transition:opacity 0.7s ease,transform 0.7s ease; }
+.reveal-right.visible { opacity:1; transform:translateX(0); }
+
+/* ── Light section (alternating) ── */
+.light-section { background: #F8FAFC; padding: 90px 0; }
+.mid-section { background: #fff; padding: 90px 0; }
+
+.section-pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 6px 16px; border-radius: 50px;
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 14px;
+}
+.pill-green { background: rgba(16,185,129,0.12); color: #059669; }
+.pill-blue { background: rgba(37,99,235,0.10); color: #2563EB; }
+.pill-orange { background: rgba(249,115,22,0.10); color: #EA580C; }
+.pill-purple { background: rgba(139,92,246,0.10); color: #7C3AED; }
+.pill-red { background: rgba(220,38,38,0.10); color: #DC2626; }
+
+.section-title-lg { font-weight: 800; font-size: clamp(1.7rem,3vw,2.4rem); color: #1E293B; margin-bottom: 14px; }
+.section-sub { color: #64748B; font-size: 1rem; line-height: 1.7; }
+
+/* ── Feature detail cards ── */
+.detail-card {
+    border: none; border-radius: 20px;
+    box-shadow: 0 6px 24px rgba(15,23,42,0.07);
+    padding: 30px 26px; background: #fff;
+    transition: all 0.3s ease;
+    height: 100%;
+    border-top: 4px solid transparent;
+}
+.detail-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(15,23,42,0.12); }
+.detail-card.dc-green { border-top-color: #10B981; }
+.detail-card.dc-blue { border-top-color: #2563EB; }
+.detail-card.dc-orange { border-top-color: #F97316; }
+.detail-card.dc-purple { border-top-color: #7C3AED; }
+.detail-card.dc-red { border-top-color: #DC2626; }
+.detail-card.dc-gold { border-top-color: #F59E0B; }
+.detail-card.dc-cyan { border-top-color: #0891B2; }
+
+.detail-icon {
+    width: 58px; height: 58px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px; color: #fff;
+}
+.detail-card h5 { font-weight: 700; color: #1E293B; margin-bottom: 8px; }
+.detail-card p { color: #64748B; font-size: 0.9rem; line-height: 1.65; margin-bottom: 0; }
+
+/* ── Big feature split rows ── */
+.feature-split { padding: 70px 0; }
+.feature-split .split-img-box {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 22px; padding: 36px 30px;
+    color: #fff;
+}
+.split-stat { text-align: center; padding: 16px; border-radius: 14px; background: rgba(255,255,255,0.08); }
+.split-stat .stat-num { font-size: 1.6rem; font-weight: 800; margin-bottom: 2px; }
+.split-stat .stat-lab { font-size: 0.75rem; color: #94A3B8; }
+
+/* ── How it works ── */
+.how-step {
+    display: flex; gap: 20px; align-items: flex-start;
+    padding: 22px; border-radius: 16px;
+    background: #fff; box-shadow: 0 4px 18px rgba(15,23,42,0.06);
+    transition: all 0.3s; margin-bottom: 16px;
+}
+.how-step:hover { transform: translateX(6px); box-shadow: 0 8px 28px rgba(15,23,42,0.1); }
+.how-num {
+    width: 46px; height: 46px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1rem; color: #fff;
+    flex-shrink: 0;
+}
+.how-step h6 { font-weight: 700; color: #1E293B; margin-bottom: 4px; }
+.how-step p { font-size: 0.85rem; color: #64748B; margin-bottom: 0; }
+
+/* ── Role section ── */
+.role-showcase {
+    border-radius: 20px; padding: 30px;
+    height: 100%;
+    transition: all 0.3s;
+}
+.role-showcase:hover { transform: translateY(-6px); }
+.role-showcase .rs-icon {
+    width: 64px; height: 64px; border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px; color: #fff;
+}
+.role-showcase h4 { font-weight: 700; margin-bottom: 12px; }
+.role-showcase ul { padding-left: 0; list-style: none; }
+.role-showcase ul li { font-size: 0.88rem; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 8px; }
+.role-showcase ul li svg { flex-shrink: 0; margin-top: 3px; }
+
+.rs-patient { background: linear-gradient(140deg, #EFF6FF, #DBEAFE); color: #1E293B; }
+.rs-patient h4 { color: #1E40AF; }
+.rs-patient .rs-icon { background: linear-gradient(135deg, #2563EB, #60A5FA); }
+.rs-patient ul li svg { color: #2563EB; }
+
+.rs-doctor { background: linear-gradient(140deg, #ECFDF5, #D1FAE5); color: #1E293B; }
+.rs-doctor h4 { color: #065F46; }
+.rs-doctor .rs-icon { background: linear-gradient(135deg, #10B981, #34D399); }
+.rs-doctor ul li svg { color: #10B981; }
+
+.rs-nurse { background: linear-gradient(140deg, #FFF7ED, #FFEDD5); color: #1E293B; }
+.rs-nurse h4 { color: #9A3412; }
+.rs-nurse .rs-icon { background: linear-gradient(135deg, #F97316, #FB923C); }
+.rs-nurse ul li svg { color: #F97316; }
+
+.rs-caretaker { background: linear-gradient(140deg, #FFFBEB, #FEF3C7); color: #1E293B; }
+.rs-caretaker h4 { color: #92400E; }
+.rs-caretaker .rs-icon { background: linear-gradient(135deg, #F59E0B, #FCD34D); }
+.rs-caretaker ul li svg { color: #F59E0B; }
+
+/* ── AI section ── */
+.ai-card {
+    border-radius: 18px; padding: 26px 22px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s; color: #fff;
+}
+.ai-card:hover { background: rgba(255,255,255,0.11); transform: translateY(-4px); }
+.ai-card .ai-icon { width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;color:#fff; }
+.ai-card h6 { font-weight:700;margin-bottom:6px;font-size:1rem; }
+.ai-card p { font-size:0.82rem;color:#94A3B8;margin-bottom:0; }
+.ai-disclaimer { background:rgba(220,38,38,0.12);border:1px solid rgba(220,38,38,0.3);border-left:4px solid #DC2626;border-radius:12px;padding:14px 18px;color:#FCA5A5;font-size:0.82rem;font-weight:500;margin-top:24px; }
+
+/* ── Emergency section ── */
+.emergency-band {
+    background: linear-gradient(135deg, #DC2626, #F97316);
+    border-radius: 22px; padding: 50px 40px; color: #fff; text-align: center;
+    position: relative; overflow: hidden;
+}
+.emergency-band::before { content:''; position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+.sos-pulse { width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 0 0 0 rgba(255,255,255,0.4);animation:sos-anim 2s infinite; }
+@keyframes sos-anim { 0%{box-shadow:0 0 0 0 rgba(255,255,255,0.4);}70%{box-shadow:0 0 0 30px rgba(255,255,255,0);}100%{box-shadow:0 0 0 0 rgba(255,255,255,0);} }
+
+/* ── CTA ── */
+.cta-band {
+    background: linear-gradient(135deg, #0F1E33, #1A1730);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 90px 0; color: #fff; text-align: center;
+}
+.cta-band h2 { font-weight: 800; font-size: clamp(1.8rem, 3.5vw, 2.8rem); margin-bottom: 16px; }
+.cta-band p { color: #94A3B8; font-size: 1rem; margin-bottom: 36px; }
+
+/* ── Footer ── */
+footer { background: #0B1220; color: #CBD5E1; padding: 50px 0 24px; border-top: 1px solid rgba(255,255,255,0.05); }
+footer h5 { color: #fff; font-weight: 700; margin-bottom: 16px; }
+footer a { color: #94A3B8; text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+footer a:hover { color: #10B981; }
+footer p.small { color: #94A3B8; font-size: 0.85rem; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.07); margin-top: 30px; padding-top: 20px; text-align: center; font-size: 0.82rem; color: #64748B; }
+.footer-logo { display:flex;align-items:center;gap:10px;margin-bottom:12px; }
+.footer-logo-icon { width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#10B981,#0891B2);display:flex;align-items:center;justify-content:center; }
+</style>
 </head>
 <body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-vaidyo sticky-top">
   <div class="container">
-    <a class="navbar-brand" href="index.html"><i class="fa-solid fa-heart-pulse"></i> Vaidyo</a>
-    <div class="ms-auto d-flex gap-2">
-      <a href="login.html" class="btn btn-outline-light btn-sm">Login</a>
-      <a href="register.html" class="btn btn-light btn-sm">Register</a>
+    <a class="navbar-brand" href="index.html">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/><path d="M3.5 12h4l1.5-3 2 6 1.5-3h8"/></svg>
+      </div>
+      Vaidyo
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto me-3 gap-1">
+        <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="#how">How it Works</a></li>
+        <li class="nav-item"><a class="nav-link" href="#roles">Who is it For</a></li>
+        <li class="nav-item"><a class="nav-link" href="#ai">AI Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="#emergency">Emergency</a></li>
+      </ul>
+      <div class="d-flex gap-2">
+        <a href="login.html" class="btn btn-nav-login">Login</a>
+        <a href="register.html" class="btn btn-nav-register">Register</a>
+      </div>
     </div>
   </div>
 </nav>
 
-<!-- Hero -->
-<section class="hero-section">
+<!-- ══ HERO ══ -->
+<section class="hero-section dark-section">
+  <div class="bg-blob blob-1"></div><div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div><div class="bg-blob blob-4"></div>
+  <svg style="position:absolute;top:15%;left:42%;opacity:0.08;width:80px;height:80px;" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+  <svg style="position:absolute;bottom:20%;right:5%;opacity:0.07;width:90px;height:90px;" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+  <div class="container position-relative" style="z-index:1;">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 reveal-left">
+        <div class="hero-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          India's Home Healthcare Platform
+        </div>
+        <h1>Your Doctor.<br><span class="highlight">Your Home.</span><br>Your Health.</h1>
+        <p class="lead">Vaidyo is built for elderly patients and Indian families — connecting you with verified doctors, nurses, and caretakers with AI-powered health tools, medicine reminders via Telegram, emergency SOS, and multilingual support.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="login.html" class="btn btn-hero-primary">Login to Vaidyo</a>
+          <a href="register.html" class="btn btn-hero-outline">Create Account</a>
+        </div>
+        <div class="d-flex flex-wrap gap-4 mt-4">
+          <div class="d-flex align-items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span style="color:#94A3B8;font-size:0.85rem;">Free for patients</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span style="color:#94A3B8;font-size:0.85rem;">12+ Indian languages</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span style="color:#94A3B8;font-size:0.85rem;">24×7 Emergency SOS</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 reveal-right">
+        <div class="hero-visual-card">
+          <div style="color:#94A3B8;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;">Everything in one app</div>
+          <div class="feature-pill">
+            <div class="pill-icon" style="background:linear-gradient(135deg,#2563EB,#60A5FA)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div><div class="pill-title">Book Doctor Visits</div><div class="pill-desc">Home consultations with verified doctors</div></div>
+          </div>
+          <div class="feature-pill">
+            <div class="pill-icon" style="background:linear-gradient(135deg,#10B981,#34D399)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 16h.01M12 16h.01M17 16h.01"/></svg></div>
+            <div><div class="pill-title">Medicine Reminders via Telegram</div><div class="pill-desc">Reply YES to mark dose as taken</div></div>
+          </div>
+          <div class="feature-pill">
+            <div class="pill-icon" style="background:linear-gradient(135deg,#0891B2,#67E8F9)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+            <div><div class="pill-title">AI Symptom Checker</div><div class="pill-desc">Understand health in simple language</div></div>
+          </div>
+          <div class="feature-pill">
+            <div class="pill-icon" style="background:linear-gradient(135deg,#DC2626,#F87171)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div><div class="pill-title">Emergency SOS</div><div class="pill-desc">One tap alerts all emergency contacts</div></div>
+          </div>
+          <div class="feature-pill">
+            <div class="pill-icon" style="background:linear-gradient(135deg,#F59E0B,#FCD34D)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69s-7 7.44-7 11.31a7 7 0 0 0 14 0c0-3.87-7-11.31-7-11.31z"/></svg></div>
+            <div><div class="pill-title">Blood Donor Finder</div><div class="pill-desc">Find donors by blood group &amp; location</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES GRID ══ -->
+<section class="light-section" id="features">
   <div class="container">
-    <span class="badge-pill-soft"><i class="fa-solid fa-house-medical"></i> Home Healthcare Made Simple</span>
-    <h1>Your Doctor. Your Home. Your Health.</h1>
-    <p class="lead mt-3 mb-4">Vaidyo connects elderly patients, family caretakers, and verified doctors — all in one platform for medicine reminders, health tracking, and home visits.</p>
-    <div class="btn-group-hero">
-      <a href="register.html" class="btn btn-glow me-2"><i class="fa-solid fa-user-plus"></i> Get Started Free</a>
-      <a href="login.html" class="btn btn-outline-glow">Login</a>
+    <div class="text-center mb-5 reveal">
+      <div class="section-pill pill-blue">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        All Features
+      </div>
+      <h2 class="section-title-lg">Everything Your Family Needs</h2>
+      <p class="section-sub">A complete care ecosystem — from daily medicine tracking to AI-powered health tools, all in one place</p>
     </div>
-  </div>
-</section>
-
-<!-- Stats Strip -->
-<div class="container">
-  <div class="stats-strip">
-    <div class="row text-center">
-      <div class="col-6 col-md-3 mb-3 mb-md-0">
-        <h3>100+</h3>
-        <p>Patients Cared For</p>
-      </div>
-      <div class="col-6 col-md-3 mb-3 mb-md-0">
-        <h3>15+</h3>
-        <p>Verified Doctors</p>
-      </div>
-      <div class="col-6 col-md-3">
-        <h3>4+</h3>
-        <p>Specialities Covered</p>
-      </div>
-      <div class="col-6 col-md-3">
-        <h3>24/7</h3>
-        <p>Medicine Reminders</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Features -->
-<section class="container my-5 py-4">
-  <div class="text-center mb-5">
-    <h2 class="section-title">Everything Your Family Needs</h2>
-    <p class="section-subtitle">A complete care ecosystem built for elderly patients and their families</p>
-  </div>
-  <div class="row g-4">
-    <div class="col-md-4">
-      <div class="feature-card f-blue">
-        <div class="feature-icon-wrap"><i class="fa-solid fa-pills"></i></div>
-        <h4>Medicine Reminders</h4>
-        <p class="text-muted">Never miss a dose with timely Telegram alerts and easy "Mark as Taken" logging.</p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="feature-card f-green">
-        <div class="feature-icon-wrap"><i class="fa-solid fa-heart-pulse"></i></div>
-        <h4>Health Tracking</h4>
-        <p class="text-muted">Log BP, sugar, weight, pulse & temperature with visual trend charts and instant alerts.</p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="feature-card f-purple">
-        <div class="feature-icon-wrap"><i class="fa-solid fa-user-doctor"></i></div>
-        <h4>Home Doctor Visits</h4>
-        <p class="text-muted">Browse specialists by category and book home consultations in just a few taps.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- How it works -->
-<section class="container my-5 py-4">
-  <div class="text-center mb-5">
-    <h2 class="section-title">How It Works</h2>
-    <p class="section-subtitle">Get started in four simple steps</p>
-  </div>
-  <div class="row g-4">
-    <div class="col-md-3">
-      <div class="step-card">
-        <div class="step-number">1</div>
-        <h5>Register</h5>
-        <p class="text-muted small">Sign up as a Patient, Doctor, or Caretaker in minutes.</p>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="step-card">
-        <div class="step-number">2</div>
-        <h5>Track Health</h5>
-        <p class="text-muted small">Log medicines and vitals daily from your dashboard.</p>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="step-card">
-        <div class="step-number">3</div>
-        <h5>Book Doctor</h5>
-        <p class="text-muted small">Search specialists and request a home consultation.</p>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="step-card">
-        <div class="step-number">4</div>
-        <h5>Stay Healthy</h5>
-        <p class="text-muted small">Get reminders, alerts, and care updates round the clock.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Testimonials -->
-<section class="container my-5 py-4">
-  <div class="text-center mb-5">
-    <h2 class="section-title">Trusted by Families</h2>
-    <p class="section-subtitle">What our users say about Vaidyo</p>
-  </div>
-  <div class="row g-4">
-    <div class="col-md-4">
-      <div class="testimonial-card">
-        <i class="fa-solid fa-quote-left mb-2"></i>
-        <p>"Vaidyo helps me keep track of my father's medicines and BP readings without constantly calling him."</p>
-        <div class="d-flex align-items-center gap-2 mt-3">
-          <div class="avatar-circle">R</div>
-          <div>
-            <strong>Ramesh K.</strong><br>
-            <small class="text-muted">Caretaker</small>
-          </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="detail-card dc-green">
+          <div class="detail-icon" style="background:linear-gradient(135deg,#10B981,#34D399)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 16h.01M12 16h.01M17 16h.01"/></svg></div>
+          <h5>Medicine Reminders</h5>
+          <p>Get timely Telegram alerts for every medicine. Mark doses as taken simply by replying <strong>YES</strong>. Track expiry dates and get interaction warnings for dangerous drug combinations.</p>
         </div>
       </div>
-    </div>
-    <div class="col-md-4">
-      <div class="testimonial-card">
-        <i class="fa-solid fa-quote-left mb-2"></i>
-        <p>"The Telegram reminders are a lifesaver. I never miss my evening medicines anymore."</p>
-        <div class="d-flex align-items-center gap-2 mt-3">
-          <div class="avatar-circle">L</div>
-          <div>
-            <strong>Lakshmi V.</strong><br>
-            <small class="text-muted">Patient</small>
-          </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="detail-card dc-blue">
+          <div class="detail-icon" style="background:linear-gradient(135deg,#2563EB,#60A5FA)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h5>Doctor Booking</h5>
+          <p>Browse verified doctors filtered by speciality, experience, fee, and rating. Book home visits or online video consultations. View full profiles and patient reviews before booking.</p>
         </div>
       </div>
-    </div>
-    <div class="col-md-4">
-      <div class="testimonial-card">
-        <i class="fa-solid fa-quote-left mb-2"></i>
-        <p>"Managing home visit requests and patient history is so much easier through Vaidyo's dashboard."</p>
-        <div class="d-flex align-items-center gap-2 mt-3">
-          <div class="avatar-circle">D</div>
-          <div>
-            <strong>Dr. Anand S.</strong><br>
-            <small class="text-muted">Cardiologist</small>
-          </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="detail-card dc-purple">
+          <div class="detail-icon" style="background:linear-gradient(135deg,#7C3AED,#C4B5FD)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <h5>Health Logging</h5>
+          <p>Log BP, blood sugar, weight, pulse, and temperature daily. Get instant alerts when readings cross safe thresholds. View trend charts to track progress over time.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="detail-card dc-cyan">
+          <div class="detail-icon" style="background:linear-gradient(135deg,#0891B2,#67E8F9)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><path d="M8 16h.01M16 16h.01"/></svg></div>
+          <h5>AI Lab Report Reader</h5>
+          <p>Upload your lab reports (images or PDF) and get a plain-language summary — what was tested, what the values mean, and what to watch out for. No medical knowledge required.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="detail-card dc-red">
+          <div class="detail-icon" style="background:linear-gradient(135deg,#DC2626,#F87171)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <h5>Emergency SOS</h5>
+          <p>One big red button sends instant Telegram alerts to all your emergency contacts. Request ambulance, track status from REQUESTED → ARRIVED → COMPLETED in real time.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="detail-card dc-gold">
+          <div class="detail-icon" style="background:linear-gradient(135deg,#F59E0B,#FCD34D)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69s-7 7.44-7 11.31a7 7 0 0 0 14 0c0-3.87-7-11.31-7-11.31z"/></svg></div>
+          <h5>Blood Donor Finder</h5>
+          <p>Search for blood donors by blood group and location instantly. Register yourself as a donor with availability status. Connect families in need with willing donors nearby.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="detail-card dc-orange" style="border-top-color:#F97316;">
+          <div class="detail-icon" style="background:linear-gradient(135deg,#F97316,#FB923C)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+          <h5>AI Food Recommendations</h5>
+          <p>Get personalised diet tips based on your health conditions — foods to eat, foods to avoid, and general wellness tips. Helpful for diabetic, cardiac, and hypertensive patients.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="detail-card dc-blue">
+          <div class="detail-icon" style="background:linear-gradient(135deg,#2563EB,#7C3AED)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+          <h5>Online Video Consultations</h5>
+          <p>Doctors can toggle visits to "Online" and patients join a secure Jitsi Meet video room with one click. No app download required — works from any browser.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="detail-card dc-green">
+          <div class="detail-icon" style="background:linear-gradient(135deg,#10B981,#0891B2)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <h5>12+ Indian Languages</h5>
+          <p>Switch between English, தமிழ், हिंदी, తెలుగు, ಕನ್ನಡ, and more with a single toggle. All UI labels and AI responses adapt to your chosen language automatically.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section class="container">
-  <div class="cta-section">
-    <h2 class="mb-3">Ready to take control of your health?</h2>
-    <p class="mb-4">Join Vaidyo today — it's free for patients and caretakers.</p>
-    <a href="register.html" class="btn btn-light btn-lg fw-semibold">Create Free Account</a>
+<!-- ══ HOW IT WORKS ══ -->
+<section class="mid-section" id="how">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5 reveal-left">
+        <div class="section-pill pill-green">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Step by Step
+        </div>
+        <h2 class="section-title-lg">Get Started in Minutes</h2>
+        <p class="section-sub">No complicated setup. No technical knowledge needed. Vaidyo is designed to be simple enough for elderly users and powerful enough for doctors.</p>
+        <a href="register.html" class="btn mt-3" style="background:linear-gradient(90deg,#10B981,#2563EB);color:#fff;border-radius:12px;font-weight:700;padding:12px 28px;border:none;box-shadow:0 8px 20px rgba(16,185,129,0.3);">Join Vaidyo</a>
+      </div>
+      <div class="col-lg-7 reveal-right">
+        <div class="how-step">
+          <div class="how-num" style="background:linear-gradient(135deg,#2563EB,#60A5FA)">1</div>
+          <div><h6>Register your account</h6><p>Choose your role — Patient, Doctor, Nurse, or Caretaker. Fill in basic details. Doctors and nurses go through a quick council verification by the admin.</p></div>
+        </div>
+        <div class="how-step">
+          <div class="how-num" style="background:linear-gradient(135deg,#10B981,#34D399)">2</div>
+          <div><h6>Link your Telegram</h6><p>Connect your Telegram account using a simple command. This activates medicine reminders and emergency SOS alerts directly on your phone.</p></div>
+        </div>
+        <div class="how-step">
+          <div class="how-num" style="background:linear-gradient(135deg,#F59E0B,#FCD34D)">3</div>
+          <div><h6>Add medicines &amp; health data</h6><p>Add your prescriptions, set reminder times, log daily vitals like BP and sugar. Upload a photo of the medicine or lab report if needed.</p></div>
+        </div>
+        <div class="how-step">
+          <div class="how-num" style="background:linear-gradient(135deg,#F97316,#FB923C)">4</div>
+          <div><h6>Book a doctor or use AI tools</h6><p>Browse doctors by speciality, book home visits or video calls. Use the AI symptom checker, report reader, and food recommendation tools anytime.</p></div>
+        </div>
+        <div class="how-step">
+          <div class="how-num" style="background:linear-gradient(135deg,#DC2626,#F87171)">5</div>
+          <div><h6>Stay safe with Emergency SOS</h6><p>In any emergency, press the SOS button. All your saved contacts get an instant Telegram alert. Book an ambulance and track its arrival status live.</p></div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- Footer -->
+<!-- ══ WHO IS IT FOR ══ -->
+<section class="light-section" id="roles">
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <div class="section-pill pill-purple">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-5-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Who is Vaidyo For?
+      </div>
+      <h2 class="section-title-lg">Built for Every Role in the Family</h2>
+      <p class="section-sub">Whether you're a patient, a doctor, a nurse, or caring for a loved one — Vaidyo has a dedicated experience for you</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="role-showcase rs-patient">
+          <div class="rs-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <h4>Patient</h4>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Book doctor home visits</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Get Telegram medicine reminders</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Log daily health vitals</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Use AI symptom checker</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Upload &amp; read lab reports</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>SOS emergency contacts</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="role-showcase rs-doctor">
+          <div class="rs-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6a4 4 0 0 0 8 0V3"/><circle cx="18" cy="14" r="3"/><path d="M10 9v3a6 6 0 0 0 6 6"/></svg></div>
+          <h4>Doctor</h4>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Manage appointment requests</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Set availability calendar</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Start online video visits</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>View patient health logs</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Get rated by patients</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Council verification badge</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="role-showcase rs-nurse">
+          <div class="rs-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="12" y1="13" x2="12" y2="17"/><line x1="10" y1="15" x2="14" y2="15"/></svg></div>
+          <h4>Nurse</h4>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>View assigned patients</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Track today's appointments</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Upload council certificate</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Council verification status</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Manage care profile</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="role-showcase rs-caretaker">
+          <div class="rs-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h4>Caretaker</h4>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Monitor patient's medicines</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>View patient's health logs</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Get alerts for missed doses</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Book doctors on behalf</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Linked to patient account</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ AI FEATURES ══ -->
+<section class="dark-section py-5" id="ai" style="padding: 90px 0 !important;">
+  <div class="bg-blob blob-1"></div><div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div><div class="bg-blob blob-4"></div>
+  <div class="container position-relative" style="z-index:1;">
+    <div class="text-center mb-5 reveal">
+      <div class="section-pill" style="background:rgba(8,145,178,0.15);color:#67E8F9;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
+        AI Powered
+      </div>
+      <h2 class="section-title-lg" style="color:#fff;">Understand Your Health in Plain Language</h2>
+      <p class="section-sub" style="color:#94A3B8;">Vaidyo's AI tools make complex medical information simple — no doctor degree required to understand your own health</p>
+    </div>
+    <div class="row g-4 mb-4">
+      <div class="col-md-4 reveal">
+        <div class="ai-card">
+          <div class="ai-icon" style="background:linear-gradient(135deg,#0891B2,#67E8F9)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><path d="M8 16h.01M16 16h.01"/></svg></div>
+          <h6>AI Symptom Checker</h6>
+          <p>Describe your symptoms in plain words. Get possible causes and general guidance — in English or your chosen Indian language. Always with a clear doctor-consult reminder.</p>
+        </div>
+      </div>
+      <div class="col-md-4 reveal">
+        <div class="ai-card">
+          <div class="ai-icon" style="background:linear-gradient(135deg,#7C3AED,#C4B5FD)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+          <h6>AI Lab Report Reader</h6>
+          <p>Upload a photo or PDF of your blood test, urine test, or scan report. The AI explains what each value means, what's normal vs abnormal, and what to follow up on.</p>
+        </div>
+      </div>
+      <div class="col-md-4 reveal">
+        <div class="ai-card">
+          <div class="ai-icon" style="background:linear-gradient(135deg,#10B981,#34D399)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+          <h6>AI Food Recommendations</h6>
+          <p>Based on your health conditions logged in Vaidyo (like diabetes, hypertension, or heart disease), get personalised food advice — what to eat, what to avoid, and general diet tips.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ai-disclaimer reveal">
+      <strong>⚠️ Important:</strong> All AI features provide general health information only. They are not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified doctor for medical decisions.
+    </div>
+  </div>
+</section>
+
+<!-- ══ EMERGENCY ══ -->
+<section class="mid-section" id="emergency">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 reveal-left">
+        <div class="section-pill pill-red">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          Emergency Services
+        </div>
+        <h2 class="section-title-lg">Never Face an Emergency Alone</h2>
+        <p class="section-sub">Vaidyo's emergency features are built for the moments that matter most — fast, reliable, and easy enough to use under stress.</p>
+        <div class="mt-4">
+          <div class="how-step mb-3">
+            <div class="how-num" style="background:linear-gradient(135deg,#DC2626,#F87171)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+            <div><h6>One-tap SOS Alert</h6><p>Press the large red SOS button. After confirmation, all your emergency contacts receive an instant Telegram message with your name and distress alert.</p></div>
+          </div>
+          <div class="how-step mb-3">
+            <div class="how-num" style="background:linear-gradient(135deg,#F97316,#FB923C)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></div>
+            <div><h6>Ambulance Booking</h6><p>Enter pickup location and emergency details. Track the ambulance status live: REQUESTED → ASSIGNED → ARRIVED → COMPLETED.</p></div>
+          </div>
+          <div class="how-step">
+            <div class="how-num" style="background:linear-gradient(135deg,#F59E0B,#FCD34D)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div><h6>Blood Donor Network</h6><p>Search for blood donors instantly by blood group and location. Register yourself as a donor and set your availability on or off anytime.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 reveal-right">
+        <div class="emergency-band">
+          <div class="sos-pulse">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <h3 style="font-weight:800;margin-bottom:8px;">Emergency SOS</h3>
+          <p style="opacity:0.9;margin-bottom:24px;">One tap. All contacts alerted via Telegram instantly.</p>
+          <div class="row g-3">
+            <div class="col-4"><div class="split-stat"><div class="stat-num" style="color:#FEF3C7">1 tap</div><div class="stat-lab">to alert contacts</div></div></div>
+            <div class="col-4"><div class="split-stat"><div class="stat-num" style="color:#FEF3C7">24×7</div><div class="stat-lab">always available</div></div></div>
+            <div class="col-4"><div class="split-stat"><div class="stat-num" style="color:#FEF3C7">Live</div><div class="stat-lab">ambulance tracking</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section class="cta-band">
+  <div class="container reveal">
+    <h2>Start taking control of your health today</h2>
+    <p>Join Vaidyo — free for patients, families, and caretakers across India</p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a href="login.html" class="btn" style="background:linear-gradient(90deg,#10B981,#2563EB);color:#fff;border:none;border-radius:12px;font-weight:700;padding:14px 36px;font-size:1rem;box-shadow:0 8px 24px rgba(16,185,129,0.35);">Login to Vaidyo</a>
+      <a href="register.html" class="btn" style="border:2px solid rgba(255,255,255,0.3);color:#fff;border-radius:12px;font-weight:600;padding:14px 36px;font-size:1rem;background:transparent;">Create Account</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Footer ══ -->
 <footer>
   <div class="container">
     <div class="row g-4">
       <div class="col-md-4">
-        <h5><i class="fa-solid fa-heart-pulse"></i> Vaidyo</h5>
-        <p class="small">Your Doctor. Your Home. Your Health. Connecting families with verified doctors for compassionate home healthcare.</p>
+        <div class="footer-logo">
+          <div class="footer-logo-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/><path d="M3.5 12h4l1.5-3 2 6 1.5-3h8"/></svg></div>
+          <h5 style="margin-bottom:0;">Vaidyo</h5>
+        </div>
+        <p class="small">Your Doctor. Your Home. Your Health. Connecting Indian families with verified healthcare professionals for compassionate home-based care.</p>
+        <p class="small" style="color:#64748B;">Designed for elderly patients. Built with love.</p>
       </div>
-      <div class="col-md-4">
-        <h5>Quick Links</h5>
-        <p class="small mb-1"><a href="index.html">Home</a></p>
-        <p class="small mb-1"><a href="login.html">Login</a></p>
-        <p class="small mb-1"><a href="register.html">Register</a></p>
+      <div class="col-md-2">
+        <h5>Navigate</h5>
+        <p class="mb-2"><a href="#features">Features</a></p>
+        <p class="mb-2"><a href="#how">How it Works</a></p>
+        <p class="mb-2"><a href="#roles">Who is it For</a></p>
+        <p class="mb-2"><a href="#ai">AI Features</a></p>
+        <p class="mb-2"><a href="#emergency">Emergency</a></p>
+      </div>
+      <div class="col-md-2">
+        <h5>Access</h5>
+        <p class="mb-2"><a href="login.html">Login</a></p>
+        <p class="mb-2"><a href="register.html">Register</a></p>
       </div>
       <div class="col-md-4">
         <h5>For</h5>
-        <p class="small mb-1"><i class="fa-solid fa-user"></i> Patients</p>
-        <p class="small mb-1"><i class="fa-solid fa-user-nurse"></i> Caretakers</p>
-        <p class="small mb-1"><i class="fa-solid fa-user-doctor"></i> Doctors</p>
+        <div class="row g-2">
+          <div class="col-6">
+            <div style="background:rgba(37,99,235,0.1);border-radius:10px;padding:10px 12px;">
+              <div style="font-size:0.82rem;font-weight:600;color:#60A5FA;">Patient</div>
+              <div style="font-size:0.75rem;color:#64748B;">Health tracking, booking, AI tools</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div style="background:rgba(16,185,129,0.1);border-radius:10px;padding:10px 12px;">
+              <div style="font-size:0.82rem;font-weight:600;color:#34D399;">Doctor</div>
+              <div style="font-size:0.75rem;color:#64748B;">Appointments, video visits</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div style="background:rgba(249,115,22,0.1);border-radius:10px;padding:10px 12px;">
+              <div style="font-size:0.82rem;font-weight:600;color:#FB923C;">Nurse</div>
+              <div style="font-size:0.75rem;color:#64748B;">Care management, patients</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div style="background:rgba(245,158,11,0.1);border-radius:10px;padding:10px 12px;">
+              <div style="font-size:0.82rem;font-weight:600;color:#FCD34D;">Caretaker</div>
+              <div style="font-size:0.75rem;color:#64748B;">Monitor, book, alert</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="footer-bottom">
-      &copy; 2026 Vaidyo. All rights reserved.
-    </div>
+    <div class="footer-bottom">&copy; 2026 Vaidyo. All rights reserved. | Built for India's elderly healthcare needs.</div>
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+    observer.observe(el);
+});
+
+// Stagger reveal delays for grid items
+document.querySelectorAll('.row .reveal').forEach((el, i) => {
+    el.style.transitionDelay = (i % 3) * 0.12 + 's';
+});
+</script>
 </body>
 </html>

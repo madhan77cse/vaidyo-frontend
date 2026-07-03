@@ -4,154 +4,410 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Doctor Dashboard - Vaidyo</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="../css/style.css">
+<style>
+* { font-family: 'Poppins', sans-serif; }
+body { background: #0F1623; color: #E2E8F0; margin: 0; }
+
+/* ── Sidebar ── */
+.sidebar { width:240px;min-height:100vh;background:linear-gradient(180deg,#0D1B2A 0%,#0A1628 100%);border-right:1px solid rgba(16,185,129,0.12);position:fixed;top:0;left:0;z-index:100;display:flex;flex-direction:column; }
+.sidebar-brand { padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:10px; }
+.sidebar-logo { width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#10B981,#0891B2);display:flex;align-items:center;justify-content:center; }
+.sidebar-logo svg { width:18px;height:18px; }
+.brand-text { font-weight:800;font-size:1rem;color:#fff; }
+.brand-sub { font-size:0.65rem;color:#10B981;font-weight:600;text-transform:uppercase;letter-spacing:.05em; }
+.sidebar-section { padding:16px 14px 4px;font-size:0.65rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.07em; }
+.sidebar nav { flex:1;padding:6px 8px; }
+.nav-link-doc { display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,0.6);font-weight:500;font-size:0.84rem;text-decoration:none;transition:all 0.2s;margin-bottom:3px; }
+.nav-link-doc:hover { background:rgba(16,185,129,0.12);color:#6EE7B7; }
+.nav-link-doc.active { background:linear-gradient(90deg,rgba(16,185,129,0.25),rgba(8,145,178,0.15));color:#fff;border-left:3px solid #10B981;padding-left:9px; }
+.nav-link-doc .ni { width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.nav-link-doc.active .ni { background:rgba(16,185,129,0.25); }
+.sidebar-footer { padding:14px 10px;border-top:1px solid rgba(255,255,255,0.05); }
+.doc-user-row { display:flex;align-items:center;gap:9px;background:rgba(255,255,255,0.04);border-radius:10px;padding:9px 11px; }
+.doc-avatar { width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#10B981,#0891B2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;color:#fff;flex-shrink:0; }
+.doc-name-s { font-size:0.78rem;font-weight:600;color:#E2E8F0; }
+.doc-role-s { font-size:0.65rem;color:#10B981; }
+.logout-btn { margin-left:auto;background:none;border:none;color:#64748B;cursor:pointer;padding:3px; }
+.logout-btn:hover { color:#DC2626; }
+
+/* ── Main ── */
+.main-content { margin-left:240px;padding:28px;min-height:100vh; }
+
+/* ── Hero band ── */
+.hero-band {
+    background:
+        radial-gradient(circle at 10% 50%, rgba(16,185,129,0.35), transparent 50%),
+        radial-gradient(circle at 90% 50%, rgba(8,145,178,0.30), transparent 50%),
+        linear-gradient(135deg, #0D1B2A, #0A2A20);
+    border-radius:20px;padding:28px 30px;margin-bottom:26px;
+    display:flex;align-items:center;justify-content:space-between;
+    border:1px solid rgba(16,185,129,0.15);position:relative;overflow:hidden;
+}
+.hero-band::before { content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(255,255,255,0.04),transparent 60%); }
+.hero-band h2 { font-weight:800;font-size:1.5rem;color:#fff;margin-bottom:4px; }
+.hero-band p  { color:#94A3B8;font-size:0.85rem;margin:0; }
+.hero-icon { width:64px;height:64px;border-radius:18px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+
+/* ── Verification banner ── */
+.verif-banner { border-radius:14px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px; }
+.verif-banner.pending  { background:rgba(217,119,6,0.12);border:1px solid rgba(217,119,6,0.3); }
+.verif-banner.approved { background:rgba(5,150,105,0.12);border:1px solid rgba(5,150,105,0.3); }
+.verif-banner.rejected { background:rgba(220,38,38,0.12);border:1px solid rgba(220,38,38,0.3); }
+.verif-banner h6 { margin:0 0 2px;font-weight:700;font-size:0.85rem; }
+.verif-banner p  { margin:0;font-size:0.78rem;opacity:0.9; }
+.pending  h6,.pending  p { color:#FCD34D; }
+.approved h6,.approved p { color:#34D399; }
+.rejected h6,.rejected p { color:#FCA5A5; }
+
+/* ── Stat cards ── */
+.stat-card {
+    border-radius:18px;padding:22px;
+    display:flex;align-items:center;gap:16px;
+    transition:all 0.3s;position:relative;overflow:hidden;
+}
+.stat-card:hover { transform:translateY(-3px); }
+.stat-card::after { content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(255,255,255,0.08),transparent 60%); }
+.stat-card .sc-icon { width:50px;height:50px;border-radius:14px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.stat-card .sc-num   { font-size:2rem;font-weight:800;color:#fff;line-height:1;margin-bottom:2px; }
+.stat-card .sc-label { font-size:0.78rem;color:rgba(255,255,255,0.75);font-weight:500; }
+.sc-amber { background:linear-gradient(135deg,#D97706,#B45309);box-shadow:0 10px 28px rgba(217,119,6,0.3); }
+.sc-cyan  { background:linear-gradient(135deg,#0891B2,#0E7490);box-shadow:0 10px 28px rgba(8,145,178,0.3); }
+.sc-green { background:linear-gradient(135deg,#059669,#047857);box-shadow:0 10px 28px rgba(5,150,105,0.3); }
+
+/* ── Section card ── */
+.section-card { background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:24px;margin-bottom:20px; }
+.section-card-title { font-size:0.92rem;font-weight:700;color:#fff;margin-bottom:18px;display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.06); }
+.title-icon { width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0; }
+
+/* ── Appointment card ── */
+.appt-card {
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px;padding:18px;margin-bottom:12px;
+    transition:all 0.25s;
+}
+.appt-card:hover { background:rgba(255,255,255,0.07);border-color:rgba(16,185,129,0.2); }
+.appt-card:last-child { margin-bottom:0; }
+.appt-patient-name { font-weight:700;color:#fff;font-size:0.92rem;margin-bottom:2px; }
+.appt-date { font-size:0.75rem;color:#64748B; }
+.appt-symptoms { font-size:0.82rem;color:#94A3B8;margin-top:6px; }
+
+/* Online toggle */
+.online-switch-wrap { display:flex;align-items:center;gap:8px; }
+.online-switch { position:relative;width:44px;height:24px;flex-shrink:0; }
+.online-switch input { opacity:0;width:0;height:0; }
+.online-slider { position:absolute;inset:0;background:#2D3748;border-radius:50px;cursor:pointer;transition:0.3s; }
+.online-slider::before { content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s; }
+.online-switch input:checked + .online-slider { background:#10B981; }
+.online-switch input:checked + .online-slider::before { transform:translateX(20px); }
+.online-label { font-size:0.78rem;color:#94A3B8;font-weight:500; }
+
+/* Video call btn */
+.btn-video { background:linear-gradient(90deg,#0891B2,#7C3AED);border:none;border-radius:9px;color:#fff;font-size:0.78rem;font-weight:700;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all 0.25s;animation:fadeIn 0.25s ease;font-family:'Poppins',sans-serif; }
+.btn-video:hover { transform:translateY(-1px);box-shadow:0 6px 16px rgba(8,145,178,0.4);color:#fff; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+
+.btn-reply { background:linear-gradient(90deg,#10B981,#0891B2);border:none;border-radius:9px;color:#fff;font-size:0.78rem;font-weight:700;padding:7px 14px;cursor:pointer;transition:all 0.25s;font-family:'Poppins',sans-serif; }
+.btn-reply:hover { transform:translateY(-1px);box-shadow:0 6px 16px rgba(16,185,129,0.4); }
+
+/* Telegram section */
+.tg-connected { display:flex;align-items:center;gap:10px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:12px;padding:14px 16px; }
+.tg-connected svg { color:#34D399; }
+.tg-connected span { color:#34D399;font-weight:600;font-size:0.88rem; }
+.tg-code-box { background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 16px;font-size:0.85rem;color:#E2E8F0;margin-top:12px; }
+.tg-code-box strong { color:#10B981;font-size:1.1rem;letter-spacing:.1em; }
+.btn-tg-link { background:linear-gradient(90deg,#0891B2,#2563EB);border:none;border-radius:10px;color:#fff;font-size:0.82rem;font-weight:600;padding:9px 20px;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.25s; }
+.btn-tg-link:hover { transform:translateY(-1px);box-shadow:0 6px 16px rgba(8,145,178,0.35); }
+
+/* Empty state */
+.empty-state { text-align:center;padding:40px 20px;color:#475569; }
+.empty-state svg { opacity:0.25;margin-bottom:12px; }
+.empty-state p { font-size:0.85rem;margin:0; }
+
+/* Modal */
+.v-modal-overlay { position:fixed;inset:0;background:rgba(10,15,25,0.75);backdrop-filter:blur(4px);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px; }
+.v-modal-overlay.show { display:flex; }
+.v-modal-box { background:#0D1B2A;border:1px solid rgba(16,185,129,0.2);border-radius:22px;padding:32px;width:100%;max-width:460px;position:relative;box-shadow:0 30px 70px rgba(0,0,0,0.5); }
+.v-modal-box::before { content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#10B981,#0891B2);border-radius:22px 22px 0 0; }
+.v-modal-close { position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.07);border:none;border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;color:#94A3B8;cursor:pointer;transition:all 0.2s; }
+.v-modal-close:hover { background:rgba(220,38,38,0.2);color:#FCA5A5; }
+.v-modal-title { font-weight:800;font-size:1.1rem;color:#fff;margin-bottom:20px; }
+.modal-form-label { font-size:0.8rem;font-weight:600;color:#94A3B8;margin-bottom:5px;display:block; }
+.modal-input { width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 13px;color:#fff;font-size:0.88rem;font-family:'Poppins',sans-serif;transition:all 0.2s;outline:none; }
+.modal-input::placeholder { color:#475569; }
+.modal-input:focus { border-color:#10B981;background:rgba(16,185,129,0.08);box-shadow:0 0 0 3px rgba(16,185,129,0.1); }
+.btn-modal-submit { width:100%;background:linear-gradient(90deg,#10B981,#0891B2);border:none;border-radius:11px;color:#fff;font-weight:700;padding:12px;font-family:'Poppins',sans-serif;cursor:pointer;margin-top:6px;transition:all 0.25s;font-size:0.92rem; }
+.btn-modal-submit:hover { transform:translateY(-2px);box-shadow:0 10px 24px rgba(16,185,129,0.4); }
+
+/* loading / toast */
+.v-overlay { position:fixed;inset:0;background:rgba(10,15,25,0.7);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:9999; }
+.v-overlay.show { display:flex; }
+.v-box { background:#0D1B2A;border:1px solid rgba(16,185,129,0.3);border-radius:18px;padding:28px 40px;display:flex;flex-direction:column;align-items:center;gap:12px; }
+.spin { width:38px;height:38px;border:3px solid rgba(16,185,129,0.2);border-top-color:#10B981;border-radius:50%;animation:spin 0.9s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.spin-text { color:#6EE7B7;font-weight:600;font-size:0.85rem; }
+.v-toast { position:fixed;top:22px;right:22px;min-width:290px;background:#0D1B2A;border:1px solid rgba(16,185,129,0.2);border-left:5px solid #10B981;border-radius:13px;box-shadow:0 14px 36px rgba(0,0,0,0.4);padding:13px 16px;display:flex;align-items:flex-start;gap:11px;transform:translateX(400px);opacity:0;transition:all 0.4s cubic-bezier(.4,0,.2,1);z-index:10000; }
+.v-toast.show { transform:translateX(0);opacity:1; }
+.v-toast.err  { border-left-color:#DC2626; }
+.v-toast .ti  { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;background:#10B981; }
+.v-toast.err .ti { background:#DC2626; }
+.v-toast .tt  { font-weight:700;font-size:0.83rem;color:#E2E8F0;margin-bottom:2px; }
+.v-toast .tm  { font-size:0.76rem;color:#94A3B8; }
+
+@media(max-width:900px){ .sidebar{display:none;} .main-content{margin-left:0;padding:16px;} }
+</style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-vaidyo">
-  <div class="container">
-    <a class="navbar-brand" href="dashboard.html"><i class="fa-solid fa-heart-pulse"></i> Vaidyo</a>
-    <div class="ms-auto d-flex gap-2">
-      <a href="appointments.html" class="btn btn-sm btn-outline-light">Appointments</a>
-      <a href="availability.html" class="btn btn-sm btn-outline-light">Availability</a>
-      <button class="btn btn-sm btn-light" onclick="logout()">Logout</button>
+<div class="v-overlay" id="vOverlay"><div class="v-box"><div class="spin"></div><div class="spin-text">Processing...</div></div></div>
+<div id="vToast" class="v-toast"><div class="ti" id="vTI"></div><div><div class="tt" id="vTT"></div><div class="tm" id="vTM"></div></div></div>
+
+<!-- Reply Modal -->
+<div class="v-modal-overlay" id="replyModal">
+  <div class="v-modal-box">
+    <button class="v-modal-close" onclick="closeReplyModal()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="v-modal-title">Reply to Appointment</div>
+    <form id="replyForm">
+      <input type="hidden" id="replyApptId">
+      <div class="mb-3">
+        <label class="modal-form-label">Date & Time</label>
+        <input type="datetime-local" class="modal-input" id="scheduledAt" required>
+      </div>
+      <div class="mb-3">
+        <label class="modal-form-label">Fee (₹)</label>
+        <input type="number" class="modal-input" id="fee" placeholder="e.g. 500" required>
+      </div>
+      <div class="mb-3">
+        <label class="modal-form-label">Notes (optional)</label>
+        <textarea class="modal-input" id="replyNotes" rows="3" placeholder="Any instructions or notes for the patient..."></textarea>
+      </div>
+      <button type="submit" class="btn-modal-submit">Send Reply to Patient</button>
+    </form>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/><path d="M3.5 12h4l1.5-3 2 6 1.5-3h8"/></svg>
+    </div>
+    <div><div class="brand-text">Vaidyo</div><div class="brand-sub">Doctor Portal</div></div>
+  </div>
+  <div class="sidebar-section">Main</div>
+  <nav>
+    <a href="dashboard.html" class="nav-link-doc active">
+      <div class="ni"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+      Dashboard
+    </a>
+    <a href="appointments.html" class="nav-link-doc">
+      <div class="ni"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      Appointments
+    </a>
+    <a href="availability.html" class="nav-link-doc">
+      <div class="ni"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      Availability
+    </a>
+    <a href="profile.html" class="nav-link-doc">
+      <div class="ni"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      My Profile
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="doc-user-row">
+      <div class="doc-avatar" id="sidebarAvatar">D</div>
+      <div><div class="doc-name-s" id="sidebarName">Doctor</div><div class="doc-role-s">Doctor</div></div>
+      <button class="logout-btn" onclick="logout()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
     </div>
   </div>
-</nav>
+</div>
 
-<div class="container my-4">
+<!-- Main content -->
+<div class="main-content">
 
-  <div class="card-custom mb-4">
-    <h3 id="welcomeMsg">Good Morning, Dr.!</h3>
-    <p class="text-muted mb-0">Here's your activity summary.</p>
+  <!-- Hero band -->
+  <div class="hero-band">
+    <div>
+      <h2 id="welcomeMsg">Good Morning, Dr.!</h2>
+      <p>Here's your activity summary for today</p>
+    </div>
+    <div class="hero-icon">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6a4 4 0 0 0 8 0V3"/><circle cx="18" cy="14" r="3"/><path d="M10 9v3a6 6 0 0 0 6 6"/></svg>
+    </div>
   </div>
+
+  <!-- Verification banner -->
+  <div id="verificationBanner"></div>
 
   <!-- Stats -->
   <div class="row g-3 mb-4">
     <div class="col-md-4 col-6">
-      <div class="card-custom text-center">
-        <i class="fa-solid fa-clock text-warning fs-3 mb-2"></i>
-        <h4 id="pendingCount">0</h4>
-        <p class="text-muted small mb-0">Pending Requests</p>
+      <div class="stat-card sc-amber">
+        <div class="sc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div><div class="sc-num" id="pendingCount">0</div><div class="sc-label">Pending Requests</div></div>
       </div>
     </div>
     <div class="col-md-4 col-6">
-      <div class="card-custom text-center">
-        <i class="fa-solid fa-calendar-day text-info fs-3 mb-2"></i>
-        <h4 id="todayCount">0</h4>
-        <p class="text-muted small mb-0">Today's Appointments</p>
+      <div class="stat-card sc-cyan">
+        <div class="sc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div><div class="sc-num" id="todayCount">0</div><div class="sc-label">Today's Appointments</div></div>
       </div>
     </div>
     <div class="col-md-4 col-6">
-      <div class="card-custom text-center">
-        <i class="fa-solid fa-circle-check text-success fs-3 mb-2"></i>
-        <h4 id="completedCount">0</h4>
-        <p class="text-muted small mb-0">Total Completed</p>
+      <div class="stat-card sc-green">
+        <div class="sc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div><div class="sc-num" id="completedCount">0</div><div class="sc-label">Total Completed</div></div>
       </div>
     </div>
   </div>
 
-  <!-- Pending Appointments -->
-  <!-- Pending Appointments -->
-  <div class="card-custom mb-4">
-    <h5><i class="fa-solid fa-bell"></i> Pending Appointment Requests</h5>
-    <div id="pendingList" class="mt-3">
-      <p class="text-muted text-center">Loading...</p>
+  <!-- Pending appointments -->
+  <div class="section-card">
+    <div class="section-card-title">
+      <div class="title-icon" style="background:linear-gradient(135deg,#D97706,#B45309)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      Pending Appointment Requests
+    </div>
+    <div id="pendingList">
+      <div class="empty-state"><div class="spin" style="margin:0 auto 12px;"></div><p>Loading...</p></div>
     </div>
   </div>
 
   <!-- Telegram -->
-  <div class="card-custom">
-    <h5><i class="fa-brands fa-telegram"></i> Telegram Alerts</h5>
-    <div id="telegramSection" class="mt-2">
-      <p class="text-muted small">Loading...</p>
+  <div class="section-card">
+    <div class="section-card-title">
+      <div class="title-icon" style="background:linear-gradient(135deg,#2563EB,#0891B2)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </div>
+      Telegram Alerts
+    </div>
+    <div id="telegramSection">
+      <div class="empty-state"><div class="spin" style="margin:0 auto 12px;border-top-color:#2563EB;"></div><p>Checking Telegram status...</p></div>
     </div>
   </div>
 
 </div>
 
-<!-- Reply Modal -->
-<div class="modal fade" id="replyModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Reply to Appointment</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="replyForm">
-          <input type="hidden" id="replyApptId">
-          <div class="mb-3">
-            <label class="form-label">Date & Time</label>
-            <input type="datetime-local" class="form-control" id="scheduledAt" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Fee (₹)</label>
-            <input type="number" class="form-control" id="fee" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Notes</label>
-            <textarea class="form-control" id="replyNotes" rows="2"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Send Reply</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../js/api.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/utils.js"></script>
 <script>
-if (!checkAuth('DOCTOR')) { }
+if (!checkAuth('DOCTOR')) {}
 const auth = getAuth();
-document.getElementById('welcomeMsg').textContent = 'Good Morning, Dr. ' + auth.fullName + '!';
 
+/* ── Setup sidebar ── */
+document.getElementById('sidebarName').textContent = auth.fullName || 'Doctor';
+document.getElementById('sidebarAvatar').textContent = (auth.fullName || 'D')[0].toUpperCase();
+
+/* ── Greeting ── */
+const hour = new Date().getHours();
+const greet = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+document.getElementById('welcomeMsg').textContent = `${greet}, Dr. ${auth.fullName || ''}!`;
+
+/* ── Toast ── */
+let toastTimer;
+function showToast(type, title, msg) {
+    const t = document.getElementById('vToast'), ic = document.getElementById('vTI');
+    document.getElementById('vTT').textContent = title;
+    document.getElementById('vTM').textContent = msg;
+    t.classList.remove('err');
+    if(type==='error'){ t.classList.add('err'); ic.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'; }
+    else { ic.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'; }
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ── Online visit state ── */
+const onlineVisitState = {};
+
+function videoBtnHtml(id) {
+    return `<a href="https://meet.jit.si/vaidyo-${id}" target="_blank" class="btn-video">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        Join Video Call</a>`;
+}
+
+function toggleOnline(id, isOn) {
+    onlineVisitState[id] = isOn;
+    const wrap = document.getElementById('videoBtnWrap' + id);
+    if(wrap) wrap.innerHTML = isOn ? videoBtnHtml(id) : '';
+}
+
+/* ── Load dashboard ── */
 async function loadDashboard() {
     try {
         const appts = await apiGet('/api/doctor/appointments?doctorId=' + auth.userId);
-
-        const pending = appts.filter(a => a.status === 'PENDING');
+        const pending   = appts.filter(a => a.status === 'PENDING');
         const completed = appts.filter(a => a.status === 'COMPLETED');
-
-        const today = new Date().toDateString();
+        const today     = new Date().toDateString();
         const todayAppts = appts.filter(a => a.scheduledAt && new Date(a.scheduledAt).toDateString() === today);
 
-        document.getElementById('pendingCount').textContent = pending.length;
-        document.getElementById('todayCount').textContent = todayAppts.length;
+        document.getElementById('pendingCount').textContent   = pending.length;
+        document.getElementById('todayCount').textContent     = todayAppts.length;
         document.getElementById('completedCount').textContent = completed.length;
 
-        if (pending.length === 0) {
-            document.getElementById('pendingList').innerHTML = '<p class="text-muted text-center">No pending requests.</p>';
-        } else {
-            let html = '';
-            pending.forEach(a => {
-                html += '<div class="card-custom mb-3">'
-                    + '<div class="row align-items-center">'
-                    + '<div class="col-md-3"><strong>' + a.patientName + '</strong><br><small class="text-muted">' + formatDate(a.createdAt) + '</small></div>'
-                    + '<div class="col-md-6"><small class="text-muted">Symptoms:</small> ' + (a.symptoms || '-') + '</div>'
-                    + '<div class="col-md-3 text-end"><button class="btn btn-sm btn-primary" onclick="openReply(' + a.id + ')">Reply</button></div>'
-                    + '</div>'
-                    + '</div>';
-            });
-            document.getElementById('pendingList').innerHTML = html;
+        if (!pending.length) {
+            document.getElementById('pendingList').innerHTML = `
+                <div class="empty-state">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <p>No pending appointment requests</p>
+                </div>`;
+            return;
         }
-    } catch (e) {
-        document.getElementById('pendingList').innerHTML = '<p class="text-danger text-center">Failed to load appointments.</p>';
+
+        document.getElementById('pendingList').innerHTML = pending.map(a => {
+            const isOnline = !!onlineVisitState[a.id];
+            return `
+            <div class="appt-card">
+              <div class="row align-items-center g-3">
+                <div class="col-md-3">
+                  <div class="appt-patient-name">${a.patientName || '—'}</div>
+                  <div class="appt-date">${formatDate(a.createdAt)}</div>
+                </div>
+                <div class="col-md-4">
+                  <div class="appt-symptoms"><span style="color:#64748B;font-size:0.75rem;">Symptoms:</span> ${a.symptoms || '—'}</div>
+                </div>
+                <div class="col-md-2">
+                  <div class="online-switch-wrap">
+                    <label class="online-switch">
+                      <input type="checkbox" ${isOnline?'checked':''} onchange="toggleOnline(${a.id}, this.checked)">
+                      <span class="online-slider"></span>
+                    </label>
+                    <span class="online-label">Online Visit</span>
+                  </div>
+                </div>
+                <div class="col-md-3 d-flex gap-2 flex-wrap justify-content-md-end">
+                  <span id="videoBtnWrap${a.id}">${isOnline ? videoBtnHtml(a.id) : ''}</span>
+                  <button class="btn-reply" onclick="openReply(${a.id})">Reply</button>
+                </div>
+              </div>
+            </div>`;
+        }).join('');
+    } catch(e) {
+        document.getElementById('pendingList').innerHTML = `<div class="empty-state"><p style="color:#DC2626;">Failed to load appointments.</p></div>`;
     }
 }
 
+/* ── Reply modal ── */
 function openReply(id) {
     document.getElementById('replyForm').reset();
     document.getElementById('replyApptId').value = id;
-    new bootstrap.Modal(document.getElementById('replyModal')).show();
+    document.getElementById('replyModal').classList.add('show');
 }
+function closeReplyModal() { document.getElementById('replyModal').classList.remove('show'); }
+document.getElementById('replyModal').addEventListener('click', function(e){ if(e.target===this) closeReplyModal(); });
 
 document.getElementById('replyForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -159,52 +415,81 @@ document.getElementById('replyForm').addEventListener('submit', async function(e
     const payload = {
         scheduledAt: document.getElementById('scheduledAt').value + ':00',
         fee: parseFloat(document.getElementById('fee').value),
-        notes: document.getElementById('replyNotes').value
+        notes: document.getElementById('replyNotes').value,
+        online: !!onlineVisitState[id]
     };
-    showLoading();
+    document.getElementById('vOverlay').classList.add('show');
     try {
         await apiPut('/api/doctor/appointments/' + id + '/reply', payload);
-        hideLoading();
-        showSuccess('Reply sent to patient!');
-        bootstrap.Modal.getInstance(document.getElementById('replyModal')).hide();
+        document.getElementById('vOverlay').classList.remove('show');
+        closeReplyModal();
+        showToast('success', 'Reply sent!', 'The patient has been notified.');
         loadDashboard();
-    } catch (err) {
-        hideLoading();
-        showError('Failed to send reply.');
+    } catch(err) {
+        document.getElementById('vOverlay').classList.remove('show');
+        showToast('error', 'Failed', 'Could not send reply. Try again.');
     }
 });
 
+/* ── Telegram ── */
 async function loadTelegram() {
     try {
         const status = await apiGet('/api/telegram/status/' + auth.userId);
         if (status.linked) {
-            document.getElementById('telegramSection').innerHTML = '<p class="text-success mb-0"><i class="fa-solid fa-circle-check"></i> Telegram Connected</p>';
+            document.getElementById('telegramSection').innerHTML = `
+                <div class="tg-connected">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Telegram Connected — you'll receive appointment alerts</span>
+                </div>`;
         } else {
-            document.getElementById('telegramSection').innerHTML =
-                '<p class="text-muted small">Link your Telegram to receive appointment and reply alerts.</p>'
-                + '<button class="btn btn-primary btn-sm" onclick="linkTelegram()">Generate Link Code</button>'
-                + '<div id="telegramCode" class="mt-2"></div>';
+            document.getElementById('telegramSection').innerHTML = `
+                <p style="color:#94A3B8;font-size:0.85rem;margin-bottom:14px;">Link your Telegram to receive appointment and reply alerts directly on your phone.</p>
+                <button class="btn-tg-link" onclick="linkTelegram()">Generate Link Code</button>
+                <div id="telegramCode"></div>`;
         }
-    } catch (e) {
-        document.getElementById('telegramSection').innerHTML = '<p class="text-muted small">Unable to check Telegram status.</p>';
+    } catch(e) {
+        document.getElementById('telegramSection').innerHTML = `<p style="color:#64748B;font-size:0.85rem;">Unable to check Telegram status.</p>`;
     }
 }
 
 async function linkTelegram() {
     try {
         const data = await apiGet('/api/telegram/generate/' + auth.userId);
-        document.getElementById('telegramCode').innerHTML =
-            '<div class="alert alert-info small mb-0">'
-            + 'Open <strong>@' + data.botUsername + '</strong> on Telegram and send code: <strong>' + data.code + '</strong>'
-            + '</div>';
-    } catch (e) {
-        showError('Failed to generate code.');
-    }
+        document.getElementById('telegramCode').innerHTML = `
+            <div class="tg-code-box">
+              Open <strong>@${data.botUsername}</strong> on Telegram and send:<br>
+              <strong>${data.code}</strong>
+            </div>`;
+    } catch(e) { showToast('error', 'Failed', 'Could not generate Telegram code.'); }
+}
+
+/* ── Verification banner ── */
+async function loadVerificationStatus() {
+    const banner = document.getElementById('verificationBanner');
+    try {
+        const profile = await apiGet('/api/doctor/profile');
+        const status  = (profile.verificationStatus || '').toUpperCase();
+        if (status === 'PENDING') {
+            banner.innerHTML = `<div class="verif-banner pending mb-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <div><h6>⏳ Verification Pending</h6><p>Your profile is under review. Some features may be limited until verification is complete.</p></div></div>`;
+        } else if (status === 'REJECTED') {
+            banner.innerHTML = `<div class="verif-banner rejected mb-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                <div><h6>❌ Verification Rejected</h6><p>${profile.rejectionReason || 'No reason provided.'} Please update your <a href="profile.html" style="color:#FCA5A5;">profile</a> and contact admin.</p></div></div>`;
+        } else { banner.innerHTML = ''; }
+    } catch(e) { banner.innerHTML = ''; }
+}
+
+function logout() {
+    if(!confirm('Log out?')) return;
+    localStorage.removeItem('token'); localStorage.removeItem('user');
+    window.location.href = '../login.html';
 }
 
 loadDashboard();
 loadTelegram();
+loadVerificationStatus();
 </script>
-
 </body>
 </html>

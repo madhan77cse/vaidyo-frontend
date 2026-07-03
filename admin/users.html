@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Users - Vaidyo Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+* { font-family: 'Poppins', sans-serif; }
+body { background: #0F0E1A; color: #E2E8F0; margin: 0; }
+
+.sidebar { width:260px;min-height:100vh;background:linear-gradient(180deg,#1A1145 0%,#0D0B1E 100%);border-right:1px solid rgba(139,92,246,0.15);position:fixed;top:0;left:0;z-index:100;display:flex;flex-direction:column; }
+.sidebar-brand { padding:24px 22px 20px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:12px; }
+.sidebar-logo { width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#7C3AED,#4338CA);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(124,58,237,0.4); }
+.sidebar-logo svg { width:20px;height:20px; }
+.brand-text { font-weight:800;font-size:1.1rem;color:#fff; }
+.brand-sub  { font-size:0.68rem;color:#7C3AED;font-weight:600;text-transform:uppercase;letter-spacing:.05em; }
+.sidebar-section { padding:18px 14px 4px;font-size:0.68rem;font-weight:700;color:#4B5563;text-transform:uppercase;letter-spacing:.07em; }
+.sidebar nav { flex:1;padding:8px 10px; }
+.nav-item-admin { display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;color:rgba(255,255,255,0.65);font-weight:500;font-size:0.88rem;text-decoration:none;transition:all 0.25s;margin-bottom:4px; }
+.nav-item-admin:hover { background:rgba(124,58,237,0.15);color:#C4B5FD; }
+.nav-item-admin.active { background:linear-gradient(90deg,rgba(124,58,237,0.3),rgba(67,56,202,0.2));color:#fff;border-left:3px solid #7C3AED;padding-left:11px; }
+.nav-item-admin .ni-icon { width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.nav-item-admin.active .ni-icon { background:rgba(124,58,237,0.3); }
+.sidebar-footer { padding:16px 14px;border-top:1px solid rgba(255,255,255,0.06); }
+.admin-user-row { display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border-radius:12px;padding:10px 12px; }
+.admin-avatar { width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4338CA);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#fff;flex-shrink:0; }
+.admin-name { font-size:0.82rem;font-weight:600;color:#E2E8F0; }
+.admin-role-label { font-size:0.7rem;color:#7C3AED; }
+.logout-btn { margin-left:auto;background:none;border:none;color:#64748B;cursor:pointer;padding:4px; }
+.logout-btn:hover { color:#DC2626; }
+
+.main-content { margin-left:260px;padding:32px;min-height:100vh; }
+.topbar { display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px; }
+.topbar h1 { font-size:1.6rem;font-weight:800;color:#fff;margin:0; }
+.topbar .sub { color:#64748B;font-size:0.85rem;margin-top:2px; }
+
+/* stat strip */
+.role-stat-strip { display:flex;gap:14px;margin-bottom:24px;flex-wrap:wrap; }
+.role-stat { flex:1;min-width:130px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:18px 16px;display:flex;align-items:center;gap:14px;transition:all 0.25s; }
+.role-stat:hover { background:rgba(255,255,255,0.08); }
+.rs-icon { width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff; }
+.rs-num   { font-size:1.5rem;font-weight:800;color:#fff;line-height:1; }
+.rs-label { font-size:0.72rem;color:#64748B;margin-top:2px;font-weight:500; }
+
+/* filter bar */
+.filter-bar { background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px; }
+.filter-btn { padding:7px 16px;border-radius:50px;font-size:0.8rem;font-weight:600;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.2s;font-family:'Poppins',sans-serif; }
+.filter-btn:hover { border-color:#7C3AED;color:#C4B5FD; }
+.filter-btn.active { background:linear-gradient(90deg,#7C3AED,#4338CA);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(124,58,237,0.3); }
+.filter-btn.fb-patient.active  { background:linear-gradient(90deg,#2563EB,#1D4ED8);box-shadow:0 4px 14px rgba(37,99,235,0.3); }
+.filter-btn.fb-doctor.active   { background:linear-gradient(90deg,#059669,#047857);box-shadow:0 4px 14px rgba(5,150,105,0.3); }
+.filter-btn.fb-nurse.active    { background:linear-gradient(90deg,#F97316,#EA580C);box-shadow:0 4px 14px rgba(249,115,22,0.3); }
+.filter-btn.fb-caretaker.active{ background:linear-gradient(90deg,#D97706,#B45309);box-shadow:0 4px 14px rgba(217,119,6,0.3); }
+.search-wrap { margin-left:auto;position:relative; }
+.search-icon { position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#475569;pointer-events:none; }
+.filter-search { background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:8px 14px 8px 36px;color:#fff;font-size:0.83rem;font-family:'Poppins',sans-serif;outline:none;width:220px; }
+.filter-search::placeholder { color:#475569; }
+.filter-search:focus { border-color:#7C3AED;background:rgba(124,58,237,0.1); }
+
+/* user cards */
+.user-card { background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:20px;transition:all 0.3s;position:relative;overflow:hidden;height:100%; }
+.user-card:hover { background:rgba(255,255,255,0.07);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.3); }
+.user-card::before { content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:18px 18px 0 0; }
+.uc-patient::before   { background:linear-gradient(90deg,#2563EB,#60A5FA); }
+.uc-doctor::before    { background:linear-gradient(90deg,#059669,#34D399); }
+.uc-nurse::before     { background:linear-gradient(90deg,#F97316,#FB923C); }
+.uc-caretaker::before { background:linear-gradient(90deg,#D97706,#FCD34D); }
+
+.uc-header { display:flex;align-items:center;gap:12px;margin-bottom:14px; }
+.uc-avatar { width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;color:#fff;flex-shrink:0; }
+.uc-name   { font-weight:700;color:#fff;font-size:0.92rem;margin-bottom:2px; }
+.uc-mobile { font-size:0.75rem;color:#64748B; }
+
+.role-badge { display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;margin-left:auto;flex-shrink:0; }
+.rb-PATIENT   { background:rgba(37,99,235,0.15);color:#60A5FA; }
+.rb-DOCTOR    { background:rgba(5,150,105,0.15);color:#34D399; }
+.rb-NURSE     { background:rgba(249,115,22,0.15);color:#FB923C; }
+.rb-CARETAKER { background:rgba(217,119,6,0.15);color:#FCD34D; }
+
+.uc-detail { font-size:0.78rem;color:#94A3B8;display:flex;align-items:center;gap:6px;margin-bottom:6px; }
+.uc-detail svg { color:#475569;flex-shrink:0; }
+
+.verif-badge { display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;margin-top:8px; }
+.vb-approved { background:rgba(5,150,105,0.15);color:#34D399; }
+.vb-pending  { background:rgba(217,119,6,0.15);color:#FCD34D; }
+.vb-rejected { background:rgba(220,38,38,0.15);color:#FCA5A5; }
+.vb-na       { background:rgba(255,255,255,0.07);color:#64748B; }
+
+/* empty / loading */
+.empty-state { text-align:center;padding:60px 20px;color:#475569; }
+.empty-state svg { opacity:0.25;margin-bottom:16px; }
+.empty-state h5 { color:#64748B;font-weight:600; }
+.spin { width:40px;height:40px;border:3px solid rgba(124,58,237,0.2);border-top-color:#7C3AED;border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 16px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* toast */
+.v-toast { position:fixed;top:24px;right:24px;min-width:300px;background:#1E1B4B;border:1px solid rgba(139,92,246,0.25);border-left:5px solid #7C3AED;border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,0.4);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;transform:translateX(420px);opacity:0;transition:all 0.4s cubic-bezier(.4,0,.2,1);z-index:10000; }
+.v-toast.show { transform:translateX(0);opacity:1; }
+.v-toast.err  { border-left-color:#DC2626; }
+.v-toast .ti  { width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;background:#7C3AED; }
+.v-toast.err .ti { background:#DC2626; }
+.v-toast .tt  { font-weight:700;font-size:0.85rem;color:#E2E8F0;margin-bottom:2px; }
+.v-toast .tm  { font-size:0.78rem;color:#94A3B8; }
+
+@media(max-width:900px){ .sidebar{display:none;} .main-content{margin-left:0;padding:20px;} }
+</style>
+</head>
+<body>
+
+<div id="vToast" class="v-toast"><div class="ti" id="vTI"></div><div><div class="tt" id="vTT"></div><div class="tm" id="vTM"></div></div></div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+    <div><div class="brand-text">Vaidyo</div><div class="brand-sub">Admin Portal</div></div>
+  </div>
+  <div class="sidebar-section">Main</div>
+  <nav>
+    <a href="dashboard.html" class="nav-item-admin">
+      <div class="ni-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+      Dashboard
+    </a>
+    <div class="sidebar-section">Verification</div>
+    <a href="doctor-verification.html" class="nav-item-admin">
+      <div class="ni-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6a4 4 0 0 0 8 0V3"/><circle cx="18" cy="14" r="3"/><path d="M10 9v3a6 6 0 0 0 6 6"/></svg></div>
+      Doctor Verification
+    </a>
+    <a href="nurse-verification.html" class="nav-item-admin">
+      <div class="ni-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="12" y1="13" x2="12" y2="17"/><line x1="10" y1="15" x2="14" y2="15"/></svg></div>
+      Nurse Verification
+    </a>
+    <div class="sidebar-section">Users</div>
+    <a href="users.html" class="nav-item-admin active">
+      <div class="ni-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-5-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      All Users
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="admin-user-row">
+      <div class="admin-avatar" id="adminAvatarLetter">A</div>
+      <div><div class="admin-name" id="adminNameLabel">Admin</div><div class="admin-role-label">Super Admin</div></div>
+      <button class="logout-btn" onclick="adminLogout()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main-content">
+  <div class="topbar">
+    <div>
+      <h1>All Users</h1>
+      <div class="sub" id="countLabel">Loading users...</div>
+    </div>
+  </div>
+
+  <!-- Role stat strip -->
+  <div class="role-stat-strip">
+    <div class="role-stat">
+      <div class="rs-icon" style="background:linear-gradient(135deg,#2563EB,#60A5FA)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div><div class="rs-num" id="countPatient">—</div><div class="rs-label">Patients</div></div>
+    </div>
+    <div class="role-stat">
+      <div class="rs-icon" style="background:linear-gradient(135deg,#059669,#34D399)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6a4 4 0 0 0 8 0V3"/><circle cx="18" cy="14" r="3"/><path d="M10 9v3a6 6 0 0 0 6 6"/></svg>
+      </div>
+      <div><div class="rs-num" id="countDoctor">—</div><div class="rs-label">Doctors</div></div>
+    </div>
+    <div class="role-stat">
+      <div class="rs-icon" style="background:linear-gradient(135deg,#F97316,#FB923C)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="12" y1="13" x2="12" y2="17"/><line x1="10" y1="15" x2="14" y2="15"/></svg>
+      </div>
+      <div><div class="rs-num" id="countNurse">—</div><div class="rs-label">Nurses</div></div>
+    </div>
+    <div class="role-stat">
+      <div class="rs-icon" style="background:linear-gradient(135deg,#D97706,#FCD34D)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-5-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div><div class="rs-num" id="countCaretaker">—</div><div class="rs-label">Caretakers</div></div>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setFilter('ALL',this)">All Roles</button>
+    <button class="filter-btn fb-patient"   onclick="setFilter('PATIENT',this)">Patient</button>
+    <button class="filter-btn fb-doctor"    onclick="setFilter('DOCTOR',this)">Doctor</button>
+    <button class="filter-btn fb-nurse"     onclick="setFilter('NURSE',this)">Nurse</button>
+    <button class="filter-btn fb-caretaker" onclick="setFilter('CARETAKER',this)">Caretaker</button>
+    <div class="search-wrap">
+      <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="filter-search" id="searchInput" placeholder="Search name or mobile..." oninput="renderCards()">
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="row g-3" id="cardsContainer">
+    <div class="col-12"><div class="empty-state"><div class="spin"></div><h5>Loading users...</h5></div></div>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+const adminToken = localStorage.getItem('adminToken');
+if (!adminToken) window.location.href = 'login.html';
+
+const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
+document.getElementById('adminNameLabel').textContent = adminUser.username || 'Admin';
+document.getElementById('adminAvatarLetter').textContent = (adminUser.username || 'A')[0].toUpperCase();
+
+const avatarGradients = {
+    PATIENT:   'linear-gradient(135deg,#2563EB,#60A5FA)',
+    DOCTOR:    'linear-gradient(135deg,#059669,#34D399)',
+    NURSE:     'linear-gradient(135deg,#F97316,#FB923C)',
+    CARETAKER: 'linear-gradient(135deg,#D97706,#FCD34D)'
+};
+
+let allUsers = [];
+let currentFilter = 'ALL';
+
+let toastTimer;
+function showToast(type, title, msg) {
+    const t = document.getElementById('vToast'), ic = document.getElementById('vTI');
+    document.getElementById('vTT').textContent = title;
+    document.getElementById('vTM').textContent = msg;
+    t.classList.remove('err');
+    if(type==='error'){ t.classList.add('err'); ic.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'; }
+    else { ic.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'; }
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function setFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards();
+}
+
+function updateStats() {
+    ['PATIENT','DOCTOR','NURSE','CARETAKER'].forEach(role => {
+        const count = allUsers.filter(u => u.role === role).length;
+        const el = document.getElementById('count' + role.charAt(0) + role.slice(1).toLowerCase());
+        if(el) el.textContent = count;
+    });
+}
+
+function verifBadge(u) {
+    if(u.role !== 'DOCTOR' && u.role !== 'NURSE') return `<span class="verif-badge vb-na">N/A</span>`;
+    const s = u.verificationStatus || 'PENDING';
+    if(s === 'APPROVED') return `<span class="verif-badge vb-approved">✅ Verified</span>`;
+    if(s === 'REJECTED') return `<span class="verif-badge vb-rejected">❌ Rejected</span>`;
+    return `<span class="verif-badge vb-pending">⏳ Pending</span>`;
+}
+
+function renderCards() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = allUsers.filter(u => {
+        const matchRole   = currentFilter === 'ALL' || u.role === currentFilter;
+        const matchSearch = !search || (u.fullName||'').toLowerCase().includes(search) || (u.mobileNumber||'').includes(search);
+        return matchRole && matchSearch;
+    });
+
+    document.getElementById('countLabel').textContent = `${filtered.length} user${filtered.length!==1?'s':''} found`;
+
+    if (!filtered.length) {
+        document.getElementById('cardsContainer').innerHTML = `
+            <div class="col-12"><div class="empty-state">
+              <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-5-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <h5>No users found</h5><p style="font-size:0.85rem;">Try changing the filter or search term</p>
+            </div></div>`;
+        return;
+    }
+
+    document.getElementById('cardsContainer').innerHTML = filtered.map(u => {
+        const role = u.role || 'PATIENT';
+        const grad = avatarGradients[role] || avatarGradients.PATIENT;
+        const roleClass = 'uc-' + role.toLowerCase();
+        let extraInfo = '';
+        if(role === 'DOCTOR')    extraInfo = `<div class="uc-detail"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6a4 4 0 0 0 8 0V3"/></svg>${u.speciality||'—'} &bull; ₹${u.consultationFee||'—'}</div>`;
+        if(role === 'NURSE')     extraInfo = `<div class="uc-detail"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>${u.nursingCouncilNumber||'No council no.'}</div>`;
+        if(role === 'PATIENT')   extraInfo = `<div class="uc-detail"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69s-7 7.44-7 11.31a7 7 0 0 0 14 0c0-3.87-7-11.31-7-11.31z"/></svg>${u.bloodGroup||'Blood group not set'} &bull; Age: ${u.age||'—'}</div>`;
+        if(role === 'CARETAKER') extraInfo = `<div class="uc-detail"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Linked to patient</div>`;
+        return `
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+          <div class="user-card ${roleClass}">
+            <div class="uc-header">
+              <div class="uc-avatar" style="background:${grad}">${(u.fullName||'U')[0].toUpperCase()}</div>
+              <div style="flex:1;min-width:0;">
+                <div class="uc-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.fullName||'—'}</div>
+                <div class="uc-mobile">${u.mobileNumber||'—'}</div>
+              </div>
+              <span class="role-badge rb-${role}">${role}</span>
+            </div>
+            ${extraInfo}
+            <div class="uc-detail"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ID: ${u.id||'—'}</div>
+            ${verifBadge(u)}
+          </div>
+        </div>`;
+    }).join('');
+}
+
+async function loadUsers() {
+    try {
+        const data = await apiGet('/api/admin/users', adminToken);
+        allUsers = Array.isArray(data) ? data : [];
+        updateStats();
+        renderCards();
+    } catch(e) {
+        showToast('error','Load failed','Could not fetch users. Check admin token.');
+        document.getElementById('cardsContainer').innerHTML = `<div class="col-12"><div class="empty-state"><h5 style="color:#DC2626;">Failed to load users</h5></div></div>`;
+    }
+}
+
+function adminLogout() {
+    if(!confirm('Log out?')) return;
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    window.location.href = 'login.html';
+}
+
+loadUsers();
+</script>
+</body>
+</html>
