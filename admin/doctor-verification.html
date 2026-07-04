@@ -358,8 +358,8 @@ async function approveDoctor(id) {
     if (!confirm('Approve this doctor?')) return;
     document.getElementById('vOverlay').classList.add('show');
     try {
-        const res = await fetch(`${BASE_URL}/api/admin/doctors/${id}/approve`, {
-            method: 'PUT',
+        const res = await fetch(`https://vaidyo-backend.onrender.com/api/admin/doctors/${id}/approve`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + adminToken
@@ -369,7 +369,7 @@ async function approveDoctor(id) {
         if (!res.ok) {
             const err = await res.text();
             console.error('Approve failed:', res.status, err);
-            showToast('error', 'Failed', `Server returned ${res.status}: ${err}`);
+            showToast('error', 'Failed', `Server returned ${res.status}`);
             return;
         }
 
@@ -389,10 +389,9 @@ async function rejectDoctor(id) {
     const reason = prompt('Enter rejection reason (optional):') || '';
     document.getElementById('vOverlay').classList.add('show');
     try {
-        // reason as query param (Spring Boot @RequestParam style)
-        const url = `${BASE_URL}/api/admin/doctors/${id}/reject${reason ? `?reason=${encodeURIComponent(reason)}` : ''}`;
+        const url = `https://vaidyo-backend.onrender.com/api/admin/doctors/${id}/reject${reason ? `?reason=${encodeURIComponent(reason)}` : ''}`;
         const res = await fetch(url, {
-            method: 'PUT',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + adminToken
@@ -402,7 +401,7 @@ async function rejectDoctor(id) {
         if (!res.ok) {
             const err = await res.text();
             console.error('Reject failed:', res.status, err);
-            showToast('error', 'Failed', `Server returned ${res.status}: ${err}`);
+            showToast('error', 'Failed', `Server returned ${res.status}`);
             return;
         }
 
