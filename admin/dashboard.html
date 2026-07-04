@@ -332,6 +332,23 @@ function hideOverlay() {
 const avatarColors = ['#7C3AED','#2563EB','#059669','#D97706','#DC2626','#0891B2'];
 function avatarColor(i) { return avatarColors[i % avatarColors.length]; }
 
+// ── Core fetch helper (POST, checks res.ok) ──────────────────
+async function adminPost(path) {
+    const res = await fetch(`https://vaidyo-backend.onrender.com${path}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + adminToken
+        }
+    });
+    if (!res.ok) {
+        const err = await res.text();
+        console.error(`POST ${path} failed:`, res.status, err);
+        throw new Error(`${res.status}`);
+    }
+    return res;
+}
+
 async function loadStats() {
     try {
         const data = await apiGet('/api/admin/stats', adminToken);
@@ -354,8 +371,11 @@ async function loadPendingDoctors() {
             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#64748B;padding:30px;">No pending doctor verifications 🎉</td></tr>';
             return;
         }
-        tbody.innerHTML = list.slice(0,5).map((d,i) => `
-            <tr>
+        tbody.innerHTML = list.slice(0,5).map((d,i) => {
+            // use doctorProfileId first, fall back to id
+            const did = d.doctorProfileId || d.id;
+            return `
+            <tr id="doc-row-${did}">
               <td><div class="td-name">
                 <div class="td-avatar" style="background:${avatarColor(i)}">${(d.fullName||'D')[0].toUpperCase()}</div>
                 <div><div class="td-name-text">${d.fullName||'—'}</div><div class="td-sub">${d.mobileNumber||''}</div></div>
@@ -364,10 +384,11 @@ async function loadPendingDoctors() {
               <td><span class="status-badge sb-pending">⏳ Pending</span></td>
               <td style="display:flex;gap:6px;flex-wrap:wrap;">
                 <button class="act-btn view"    onclick="window.location.href='doctor-verification.html'">View</button>
-                <button class="act-btn approve" onclick="approveDoctor(${d.id})">Approve</button>
-                <button class="act-btn reject"  onclick="rejectDoctor(${d.id})">Reject</button>
+                <button class="act-btn approve" onclick="approveDoctor(${did})">Approve</button>
+                <button class="act-btn reject"  onclick="rejectDoctor(${did})">Reject</button>
               </td>
-            </tr>`).join('');
+            </tr>`;
+        }).join('');
     } catch(e) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#DC2626;padding:24px;">Failed to load</td></tr>'; }
 }
 
@@ -379,8 +400,10 @@ async function loadPendingNurses() {
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#64748B;padding:30px;">No pending nurse verifications 🎉</td></tr>';
             return;
         }
-        tbody.innerHTML = list.slice(0,5).map((n,i) => `
-            <tr>
+        tbody.innerHTML = list.slice(0,5).map((n,i) => {
+            const nid = n.nurseProfileId || n.id;
+            return `
+            <tr id="nurse-row-${nid}">
               <td><div class="td-name">
                 <div class="td-avatar" style="background:${avatarColor(i+3)}">${(n.fullName||'N')[0].toUpperCase()}</div>
                 <div><div class="td-name-text">${n.fullName||'—'}</div><div class="td-sub">${n.mobileNumber||''}</div></div>
@@ -390,10 +413,11 @@ async function loadPendingNurses() {
               <td><span class="status-badge sb-pending">⏳ Pending</span></td>
               <td style="display:flex;gap:6px;flex-wrap:wrap;">
                 <button class="act-btn view"    onclick="window.location.href='nurse-verification.html'">View</button>
-                <button class="act-btn approve" onclick="approveNurse(${n.id})">Approve</button>
-                <button class="act-btn reject"  onclick="rejectNurse(${n.id})">Reject</button>
+                <button class="act-btn approve" onclick="approveNurse(${nid})">Approve</button>
+                <button class="act-btn reject"  onclick="rejectNurse(${nid})">Reject</button>
               </td>
-            </tr>`).join('');
+            </tr>`;
+        }).join('');
     } catch(e) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#DC2626;padding:24px;">Failed to load</td></tr>'; }
 }
 
@@ -401,60 +425,57 @@ async function approveDoctor(id) {
     if(!confirm('Approve this doctor?')) return;
     showOverlay('Approving doctor...');
     try {
-        await apiPost(`/api/admin/doctors/${id}/approve`, {}, adminToken);
-        showToast('success','Doctor approved','Verification status updated.');
-        await loadPendingDoctors();
-        await loadStats();
+        await adminPost(`/api/admin/doctors/${id}/approve`);
+        // remove row instantly, no refresh needed
+        const row = document.getElementById(`doc-row-${id}`);
+        if (row) row.remove();
+        showToast('success', 'Doctor Approved', 'Verification status updated.');
+        await loadStats(); // updates all counts live
     } catch(e) {
-        showToast('error','Failed','Could not approve doctor.');
-    } finally {
-        hideOverlay();
-    }
+        showToast('error', 'Failed', `Could not approve doctor. (${e.message})`);
+    } finally { hideOverlay(); }
 }
 
 async function rejectDoctor(id) {
     const reason = prompt('Enter rejection reason (optional):') || '';
     showOverlay('Rejecting doctor...');
     try {
-        await apiPost(`/api/admin/doctors/${id}/reject?reason=${encodeURIComponent(reason)}`, {}, adminToken);
-        showToast('success','Doctor rejected','Verification status updated.');
-        await loadPendingDoctors();
+        await adminPost(`/api/admin/doctors/${id}/reject${reason ? `?reason=${encodeURIComponent(reason)}` : ''}`);
+        const row = document.getElementById(`doc-row-${id}`);
+        if (row) row.remove();
+        showToast('success', 'Doctor Rejected', 'Verification status updated.');
         await loadStats();
     } catch(e) {
-        showToast('error','Failed','Could not reject doctor.');
-    } finally {
-        hideOverlay();
-    }
+        showToast('error', 'Failed', `Could not reject doctor. (${e.message})`);
+    } finally { hideOverlay(); }
 }
 
 async function approveNurse(id) {
     if(!confirm('Approve this nurse?')) return;
     showOverlay('Approving nurse...');
     try {
-        await apiPost(`/api/admin/nurses/${id}/approve`, {}, adminToken);
-        showToast('success','Nurse approved','Verification status updated.');
-        await loadPendingNurses();
+        await adminPost(`/api/admin/nurses/${id}/approve`);
+        const row = document.getElementById(`nurse-row-${id}`);
+        if (row) row.remove();
+        showToast('success', 'Nurse Approved', 'Verification status updated.');
         await loadStats();
     } catch(e) {
-        showToast('error','Failed','Could not approve nurse.');
-    } finally {
-        hideOverlay();
-    }
+        showToast('error', 'Failed', `Could not approve nurse. (${e.message})`);
+    } finally { hideOverlay(); }
 }
 
 async function rejectNurse(id) {
     const reason = prompt('Enter rejection reason (optional):') || '';
     showOverlay('Rejecting nurse...');
     try {
-        await apiPost(`/api/admin/nurses/${id}/reject?reason=${encodeURIComponent(reason)}`, {}, adminToken);
-        showToast('success','Nurse rejected','Verification status updated.');
-        await loadPendingNurses();
+        await adminPost(`/api/admin/nurses/${id}/reject${reason ? `?reason=${encodeURIComponent(reason)}` : ''}`);
+        const row = document.getElementById(`nurse-row-${id}`);
+        if (row) row.remove();
+        showToast('success', 'Nurse Rejected', 'Verification status updated.');
         await loadStats();
     } catch(e) {
-        showToast('error','Failed','Could not reject nurse.');
-    } finally {
-        hideOverlay();
-    }
+        showToast('error', 'Failed', `Could not reject nurse. (${e.message})`);
+    } finally { hideOverlay(); }
 }
 
 function adminLogout() {
