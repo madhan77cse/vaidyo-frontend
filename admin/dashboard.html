@@ -242,8 +242,8 @@ body { background: #0F0E1A; color: #E2E8F0; margin: 0; }
       <div class="stat-card sc-purple">
         <div class="sc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6a4 4 0 0 0 8 0V3"/><circle cx="18" cy="14" r="3"/><path d="M10 9v3a6 6 0 0 0 6 6"/></svg></div>
         <div class="sc-num" id="totalDoctors">--</div>
-        <div class="sc-label">Total Doctors</div>
-        <div class="sc-trend">Verified &amp; pending</div>
+        <div class="sc-label">Verified Doctors</div>
+        <div class="sc-trend">Approved by admin</div>
       </div>
     </div>
     <div class="col-6 col-lg-3">
@@ -395,8 +395,8 @@ async function loadStats() {
     try {
         const data = await apiGet('/api/admin/stats', adminToken);
         document.getElementById('totalPatients').textContent        = data.totalPatients              ?? '--';
-        document.getElementById('totalDoctors').textContent         = data.totalDoctors               ?? '--';
-        document.getElementById('pendingVerifications').textContent = (data.pendingDoctorVerifications??0)+(data.pendingNurses??0);
+        document.getElementById('totalDoctors').textContent         = data.approvedDoctors            ?? '--';
+        document.getElementById('pendingVerifications').textContent = data.pendingDoctorVerifications ?? '--';
         document.getElementById('totalNurses').textContent          = data.totalNurses                ?? '--';
         document.getElementById('docBadge').textContent             = data.pendingDoctorVerifications ?? 0;
         document.getElementById('nurseBadge').textContent           = data.pendingNurses              ?? 0;
