@@ -588,3 +588,117 @@ label, .form-label {
 }
 
 h1, h2, h3 { letter-spacing: -0.02em; }
+/* ============================================================
+   NEW — additions for patient/doctors.html (Step 11)
+   Append these to the end of css/style.css
+   ============================================================ */
+
+.filter-bar {
+    background: #fff;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.view-toggle-btn.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+.doctor-card {
+    background: #fff;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 22px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.doctor-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.doctor-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 12px;
+}
+
+.doctor-avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    font-size: 2rem;
+}
+
+.doctor-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+/* Specialization badges — cycled palette across the 12 specialities */
+.badge-spec {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.badge-spec.spec-1 { background: rgba(37,99,235,0.12); color: var(--primary); }
+.badge-spec.spec-2 { background: rgba(139,92,246,0.12); color: var(--accent); }
+.badge-spec.spec-3 { background: rgba(8,145,178,0.12); color: var(--info); }
+.badge-spec.spec-4 { background: rgba(5,150,105,0.12); color: var(--success-deep); }
+.badge-spec.spec-5 { background: rgba(217,119,6,0.12); color: var(--warning-deep); }
+.badge-spec.spec-6 { background: rgba(220,38,38,0.12); color: var(--danger-deep); }
+
+/* Star ratings (used on doctor cards, profile page, rate-doctor page) */
+.stars i,
+.stars-large i,
+.star-selector i {
+    color: var(--gold);
+}
+
+.stars i.fa-regular,
+.stars-large i.fa-regular,
+.star-selector i.fa-regular {
+    color: #E2E8F0;
+}
+
+.stars-large i {
+    font-size: 1.6rem;
+}
+
+.star-selector i {
+    font-size: 2rem;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.star-selector i:hover {
+    transform: scale(1.15);
+}
+
+/* Map view */
+.doctorsMap {
+    height: 420px;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    margin-bottom: 24px;
+}
