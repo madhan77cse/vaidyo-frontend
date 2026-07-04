@@ -354,31 +354,68 @@ document.getElementById('detailModal').addEventListener('click', function(e){ if
 
 /* ── Approve / Reject ── */
 async function approveDoctor(id) {
-    if(!confirm('Approve this doctor?')) return;
+    if (!confirm('Approve this doctor?')) return;
     document.getElementById('vOverlay').classList.add('show');
     try {
-        await apiPut(`/api/admin/doctors/${id}/approve`, {}, adminToken);
-        const doc = allDoctors.find(d=>(d.doctorProfileId||d.id)===id);
-        if(doc) doc.verificationStatus = 'APPROVED';
+        const res = await fetch(`${BASE_URL}/api/admin/doctors/${id}/approve`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + adminToken
+            }
+        });
+
+        if (!res.ok) {
+            const err = await res.text();
+            console.error('Approve failed:', res.status, err);
+            showToast('error', 'Failed', `Server returned ${res.status}: ${err}`);
+            return;
+        }
+
+        const doc = allDoctors.find(d => (d.doctorProfileId || d.id) === id);
+        if (doc) doc.verificationStatus = 'APPROVED';
         renderCards();
-        showToast('success','Doctor Approved','Verification status updated successfully.');
-    } catch(e) { showToast('error','Failed','Could not approve doctor. Try again.'); }
-    finally { document.getElementById('vOverlay').classList.remove('show'); }
+        showToast('success', 'Doctor Approved', 'Verification status updated successfully.');
+    } catch (e) {
+        console.error('Approve error:', e);
+        showToast('error', 'Failed', 'Could not approve doctor. Try again.');
+    } finally {
+        document.getElementById('vOverlay').classList.remove('show');
+    }
 }
 
 async function rejectDoctor(id) {
     const reason = prompt('Enter rejection reason (optional):') || '';
     document.getElementById('vOverlay').classList.add('show');
     try {
-        await apiPut(`/api/admin/doctors/${id}/reject`, { reason }, adminToken);
-        const doc = allDoctors.find(d=>(d.doctorProfileId||d.id)===id);
-        if(doc){ doc.verificationStatus='REJECTED'; doc.rejectionReason=reason; }
-        renderCards();
-        showToast('success','Doctor Rejected','Verification status updated.');
-    } catch(e) { showToast('error','Failed','Could not reject doctor. Try again.'); }
-    finally { document.getElementById('vOverlay').classList.remove('show'); }
-}
+        // reason as query param (Spring Boot @RequestParam style)
+        const url = `${BASE_URL}/api/admin/doctors/${id}/reject${reason ? `?reason=${encodeURIComponent(reason)}` : ''}`;
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + adminToken
+            }
+        });
 
+        if (!res.ok) {
+            const err = await res.text();
+            console.error('Reject failed:', res.status, err);
+            showToast('error', 'Failed', `Server returned ${res.status}: ${err}`);
+            return;
+        }
+
+        const doc = allDoctors.find(d => (d.doctorProfileId || d.id) === id);
+        if (doc) { doc.verificationStatus = 'REJECTED'; doc.rejectionReason = reason; }
+        renderCards();
+        showToast('success', 'Doctor Rejected', 'Verification status updated.');
+    } catch (e) {
+        console.error('Reject error:', e);
+        showToast('error', 'Failed', 'Could not reject doctor. Try again.');
+    } finally {
+        document.getElementById('vOverlay').classList.remove('show');
+    }
+}
 function adminLogout() {
     if(!confirm('Log out?')) return;
     localStorage.removeItem('adminToken');
