@@ -311,6 +311,7 @@ async function loadDoctors() {
     try {
         const data = await apiGet('/api/admin/doctors', adminToken);
         allDoctors = Array.isArray(data) ? data : [];
+        console.log('First doctor object:', allDoctors[0]);
         renderCards();
     } catch(e) {
         document.getElementById('cardsContainer').innerHTML = `<div class="col-12"><div class="empty-state"><h5 style="color:#DC2626;">Failed to load doctors</h5><p>Check your connection or admin token.</p></div></div>`;
