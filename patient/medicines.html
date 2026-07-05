@@ -8,253 +8,592 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="../css/style.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;}
+html,body{height:100%;margin:0;padding:0;}
+
+/* ── Dark background ── */
+body {
+  font-family:'Poppins',sans-serif;
+  min-height:100vh;
+  background:#060D1F;
+  background-image:
+    radial-gradient(ellipse 700px 500px at 0% 0%,    rgba(6,182,212,.13) 0%,transparent 65%),
+    radial-gradient(ellipse 600px 400px at 100% 0%,  rgba(139,92,246,.11) 0%,transparent 60%),
+    radial-gradient(ellipse 500px 400px at 0% 100%,  rgba(16,185,129,.09) 0%,transparent 60%),
+    radial-gradient(ellipse 600px 350px at 100% 80%, rgba(239,68,68,.07)  0%,transparent 55%);
+  color:#E2E8F0;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(6,182,212,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(6,182,212,.03) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+/* ── Layout ── */
+.app-layout{display:flex;min-height:100vh;position:relative;z-index:1;}
+
+/* ── Fixed Left Sidebar ── */
+.sidebar{
+  width:240px;flex-shrink:0;
+  background:rgba(8,15,35,.92);
+  backdrop-filter:blur(20px);
+  border-right:1px solid rgba(6,182,212,.12);
+  position:fixed;top:0;left:0;bottom:0;
+  display:flex;flex-direction:column;
+  z-index:100;overflow-y:auto;overflow-x:hidden;
+}
+.sidebar-brand{
+  padding:24px 20px 20px;
+  display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;
+}
+.sidebar-brand .brand-icon{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,#0E7490,#2563EB);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:1rem;
+}
+.sidebar-brand span{font-weight:700;font-size:1.1rem;color:#fff;}
+.sidebar-user{
+  margin:14px 14px 6px;
+  background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.15);
+  border-radius:12px;padding:10px 12px;
+  display:flex;align-items:center;gap:10px;
+}
+.user-avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,#0E7490,#7C3AED);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0;
+}
+.user-name{font-size:.8rem;font-weight:600;color:#E2E8F0;line-height:1.2;}
+.user-role{font-size:.68rem;color:#64748B;}
+.nav-label{
+  font-size:.62rem;font-weight:700;letter-spacing:.8px;
+  text-transform:uppercase;color:#334155;padding:14px 20px 6px;
+}
+.sidebar-nav{flex:1;padding:4px 10px;}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 14px;border-radius:12px;
+  color:rgba(255,255,255,.55);font-size:.85rem;font-weight:500;
+  text-decoration:none;margin-bottom:2px;
+  transition:all .2s;cursor:pointer;border:none;background:none;width:100%;text-align:left;
+}
+.nav-item i{width:18px;text-align:center;font-size:.9rem;flex-shrink:0;}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff;}
+.nav-item.active{
+  background:linear-gradient(135deg,rgba(14,116,144,.3),rgba(37,99,235,.2));
+  color:#22D3EE;border:1px solid rgba(6,182,212,.2);
+}
+.nav-item.active i{color:#22D3EE;}
+.nav-sos{
+  margin:8px 10px;display:flex;align-items:center;gap:10px;
+  padding:12px 14px;border-radius:12px;
+  background:linear-gradient(135deg,#7F1D1D,#DC2626);
+  color:#fff;font-size:.85rem;font-weight:700;
+  text-decoration:none;border:none;cursor:pointer;
+  animation:sos-glow 2.5s ease-in-out infinite;transition:transform .2s;
+}
+.nav-sos:hover{transform:scale(1.02);color:#fff;}
+@keyframes sos-glow{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.5);}50%{box-shadow:0 0 0 10px rgba(220,38,38,0);}}
+.nav-blood{
+  margin:4px 10px;display:flex;align-items:center;gap:10px;
+  padding:11px 14px;border-radius:12px;
+  background:linear-gradient(135deg,#881337,#E11D48);
+  color:#fff;font-size:.85rem;font-weight:600;
+  text-decoration:none;border:none;cursor:pointer;transition:all .2s;
+}
+.nav-blood:hover{filter:brightness(1.1);color:#fff;}
+.nav-ambulance{
+  margin:4px 10px;display:flex;align-items:center;gap:10px;
+  padding:11px 14px;border-radius:12px;
+  background:linear-gradient(135deg,#78350F,#D97706);
+  color:#fff;font-size:.85rem;font-weight:600;
+  text-decoration:none;border:none;cursor:pointer;transition:all .2s;
+}
+.nav-ambulance:hover{filter:brightness(1.1);color:#fff;}
+.sidebar-footer{padding:12px 10px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;}
+.btn-logout{
+  width:100%;padding:10px 14px;border-radius:10px;
+  background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.2);
+  color:#F87171;font-size:.82rem;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:10px;
+}
+.btn-logout:hover{background:rgba(220,38,38,.2);}
+.sidebar-toggle{
+  display:none;position:fixed;top:14px;left:14px;z-index:200;
+  width:40px;height:40px;border-radius:10px;
+  background:rgba(8,15,35,.9);border:1px solid rgba(6,182,212,.2);
+  color:#fff;font-size:1rem;cursor:pointer;
+  align-items:center;justify-content:center;
+}
+.sidebar-overlay{display:none;position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.5);}
+
+/* ── Main content ── */
+.main-content{margin-left:240px;flex:1;padding:28px 28px 40px;min-width:0;}
+
+/* ── Page header ── */
+.page-header{
+  background:linear-gradient(135deg,#0C1445 0%,#0E7490 40%,#2563EB 75%,#7C3AED 100%);
+  border-radius:20px;padding:28px 32px;color:#fff;
+  position:relative;overflow:hidden;margin-bottom:28px;
+  border:1px solid rgba(255,255,255,.07);
+}
+.page-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 300px 200px at 90% 50%,rgba(16,185,129,.2) 0%,transparent 65%);
+}
+.page-header>*{position:relative;z-index:1;}
+.page-header h2{font-weight:800;font-size:1.6rem;margin-bottom:4px;}
+.page-header p{opacity:.75;margin:0;font-size:.88rem;}
+
+/* ── Telegram banner ── */
+.telegram-banner{
+  background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);
+  border-left:4px solid #22D3EE;border-radius:12px;
+  padding:12px 18px;margin-bottom:24px;
+  display:flex;align-items:center;gap:12px;font-size:.85rem;color:#93C5FD;
+}
+
+/* ── Glass cards ── */
+.glass-card{
+  background:rgba(13,20,45,.8);backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.08);border-radius:18px;
+  padding:24px;margin-bottom:24px;
+  transition:border-color .3s;
+}
+.glass-card:hover{border-color:rgba(6,182,212,.2);}
+.glass-card h5{
+  font-weight:700;font-size:.95rem;color:#E2E8F0;
+  margin-bottom:20px;display:flex;align-items:center;gap:10px;
+  padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.06);
+}
+.glass-card h5 i{color:#22D3EE;}
+
+/* ── Form inputs ── */
+.form-label{color:rgba(255,255,255,.6);font-size:.82rem;font-weight:500;}
+.form-control,.form-select{
+  background:rgba(255,255,255,.07)!important;
+  border:1.5px solid rgba(255,255,255,.1)!important;
+  color:#E2E8F0!important;border-radius:10px;font-size:.88rem;
+}
+.form-control::placeholder{color:#334155!important;}
+.form-control:focus,.form-select:focus{
+  border-color:#22D3EE!important;
+  box-shadow:0 0 0 3px rgba(6,182,212,.15)!important;
+  background:rgba(255,255,255,.1)!important;
+}
+.form-select option{background:#0F172A;color:#E2E8F0;}
+
+/* ── Buttons ── */
+.btn-add{
+  background:linear-gradient(135deg,#0E7490,#2563EB);
+  color:#fff;border:none;border-radius:10px;font-weight:600;
+  padding:10px 24px;cursor:pointer;transition:all .25s;font-size:.88rem;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-add:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(14,116,144,.4);}
+.btn-taken{
+  background:rgba(5,150,105,.15);color:#34D399;
+  border:1px solid rgba(5,150,105,.3);border-radius:8px;
+  font-size:.75rem;font-weight:600;padding:5px 10px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.btn-taken:hover{background:rgba(5,150,105,.25);}
+.btn-delete{
+  background:rgba(220,38,38,.12);color:#F87171;
+  border:1px solid rgba(220,38,38,.25);border-radius:8px;
+  font-size:.75rem;font-weight:600;padding:5px 10px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.btn-delete:hover{background:rgba(220,38,38,.25);}
+
+/* ── Medicine cards ── */
+.med-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;padding:16px 18px;margin-bottom:12px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;transition:all .2s;
+}
+.med-card:hover{border-color:rgba(6,182,212,.2);background:rgba(255,255,255,.06);}
+.med-card.ok    {border-left:4px solid #34D399;}
+.med-card.warn  {border-left:4px solid #FCD34D;}
+.med-card.expired{border-left:4px solid #F87171;}
+.med-name{font-weight:700;font-size:.9rem;color:#F1F5F9;margin-bottom:3px;}
+.med-detail{font-size:.76rem;color:#475569;}
+.expiry-badge{display:inline-block;padding:2px 10px;border-radius:50px;font-size:.7rem;font-weight:700;margin-left:8px;}
+.expiry-ok     {background:rgba(5,150,105,.15);color:#34D399;}
+.expiry-warn   {background:rgba(217,119,6,.15);color:#FCD34D;}
+.expiry-expired{background:rgba(220,38,38,.15);color:#F87171;}
+
+/* ── Log table ── */
+.log-table{width:100%;border-collapse:collapse;}
+.log-table th{
+  font-size:.72rem;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;color:#475569;
+  padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;
+}
+.log-table td{
+  padding:10px 14px;font-size:.85rem;color:#94A3B8;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.log-table tr:last-child td{border-bottom:none;}
+.badge-taken  {background:rgba(5,150,105,.15);color:#34D399;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:700;}
+.badge-missed {background:rgba(220,38,38,.15);color:#F87171;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:700;}
+.badge-pending{background:rgba(217,119,6,.15);color:#FCD34D;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:700;}
+
+/* ── Scroll reveal ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .55s ease,transform .55s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}.d4{transition-delay:.32s;}
+
+/* ── Mobile ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s ease;}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay.open{display:block;}
+  .sidebar-toggle{display:flex;}
+  .main-content{margin-left:0;padding:20px 16px 40px;padding-top:64px;}
+}
+</style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-vaidyo">
-  <div class="container">
-    <a class="navbar-brand" href="dashboard.html"><i class="fa-solid fa-heart-pulse"></i> Vaidyo</a>
-    <div class="ms-auto d-flex gap-2">
-      <a href="dashboard.html" class="btn btn-sm btn-outline-light">Dashboard</a>
-      <a href="health.html" class="btn btn-sm btn-outline-light">Health</a>
-      <a href="doctors.html" class="btn btn-sm btn-outline-light">Doctors</a>
-      <a href="appointments.html" class="btn btn-sm btn-outline-light">Appointments</a>
-      <button class="btn btn-sm btn-light" onclick="logout()">Logout</button>
+<button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="app-layout">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+      <span>Vaidyo</span>
     </div>
-  </div>
-</nav>
-
-<div class="container my-4">
-
-  <!-- Add Medicine -->
-  <div class="card-custom mb-4">
-    <h5><i class="fa-solid fa-pills"></i> Add Medicine</h5>
-    <form id="medForm" class="row g-3 mt-2">
-      <div class="col-md-3">
-        <label class="form-label">Medicine Name</label>
-        <input type="text" class="form-control" id="medicineName" required>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userInitial">P</div>
+      <div>
+        <div class="user-name" id="userName">Patient</div>
+        <div class="user-role">Patient</div>
       </div>
-      <div class="col-md-2">
-        <label class="form-label">Dosage</label>
-        <input type="text" class="form-control" id="dosage" placeholder="e.g. 1 tablet" required>
-      </div>
-      <div class="col-md-3">
-        <label class="form-label">Frequency</label>
-        <input type="text" class="form-control" id="frequency" placeholder="e.g. Twice daily" required>
-      </div>
-      <div class="col-md-2">
-        <label class="form-label">Reminder Time</label>
-        <input type="time" class="form-control" id="reminderTime" required>
-      </div>
-      <div class="col-md-2">
-        <label class="form-label">Notes</label>
-        <input type="text" class="form-control" id="notes">
-      </div>
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary">Add Medicine</button>
-      </div>
-    </form>
-  </div>
-
-  <!-- Active Medicines -->
-  <div class="card-custom mb-4">
-    <h5><i class="fa-solid fa-list"></i> Active Medicines</h5>
-    <div class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead>
-          <tr><th>Name</th><th>Dosage</th><th>Frequency</th><th>Reminder</th><th>Actions</th></tr>
-        </thead>
-        <tbody id="medTableBody">
-          <tr><td colspan="5" class="text-muted text-center">Loading...</td></tr>
-        </tbody>
-      </table>
     </div>
-  </div>
 
-  <!-- Medicine Log -->
-  <div class="card-custom mb-4">
-    <h5><i class="fa-solid fa-clock-rotate-left"></i> Medicine Log History</h5>
-    <div class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead>
-          <tr><th>Medicine</th><th>Status</th><th>Time</th></tr>
-        </thead>
-        <tbody id="logTableBody">
-          <tr><td colspan="3" class="text-muted text-center">Loading...</td></tr>
-        </tbody>
-      </table>
+    <div class="nav-label">Main Menu</div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+      <a href="doctors.html"   class="nav-item"><i class="fa-solid fa-user-doctor"></i> Find Doctors</a>
+      <a href="appointments.html" class="nav-item"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
+      <a href="medicines.html" class="nav-item active"><i class="fa-solid fa-pills"></i> Medicines</a>
+      <a href="health.html"    class="nav-item"><i class="fa-solid fa-heart-pulse"></i> Health Logs</a>
+    </nav>
+
+    <div class="nav-label">⚠ Important</div>
+    <a href="emergency.html"     class="nav-sos"><i class="fa-solid fa-bell"></i> Emergency SOS</a>
+    <a href="blood-donation.html" class="nav-blood"><i class="fa-solid fa-droplet"></i> Blood Donation</a>
+    <a href="ambulance.html"     class="nav-ambulance"><i class="fa-solid fa-truck-medical"></i> Book Ambulance</a>
+
+    <div class="nav-label">AI Tools</div>
+    <nav class="sidebar-nav">
+      <a href="symptom-checker.html"    class="nav-item"><i class="fa-solid fa-robot"></i> Symptom Checker</a>
+      <a href="report-reader.html"      class="nav-item"><i class="fa-solid fa-file-medical"></i> Report Reader</a>
+      <a href="food-recommendation.html" class="nav-item"><i class="fa-solid fa-apple-alt"></i> Food Guide</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
     </div>
-  </div>
+  </aside>
 
-  <!-- Telegram -->
-  <div class="card-custom">
-    <h5><i class="fa-brands fa-telegram"></i> Telegram Reminders</h5>
-    <div id="telegramSection">
-      <p class="text-muted small">Loading...</p>
+  <!-- ── Main ── -->
+  <main class="main-content">
+
+    <!-- Page header -->
+    <div class="page-header reveal">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <h2><i class="fa-solid fa-pills me-2"></i>My Medicines</h2>
+          <p>Manage your daily medicines and track reminders.</p>
+        </div>
+        <div style="font-size:3rem;opacity:.2;"><i class="fa-solid fa-pills"></i></div>
+      </div>
     </div>
-  </div>
 
+    <!-- Telegram banner -->
+    <div class="telegram-banner reveal d1">
+      <i class="fa-brands fa-telegram fa-lg"></i>
+      <span>📱 Reply <strong>YES</strong> to your Telegram medicine reminder to mark dose as taken automatically.</span>
+    </div>
+
+    <!-- Add Medicine -->
+    <div class="glass-card reveal d2">
+      <h5><i class="fa-solid fa-circle-plus"></i> Add New Medicine</h5>
+      <form id="medForm">
+        <div class="row g-3">
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label">Medicine Name</label>
+            <input type="text" class="form-control" id="medicineName" placeholder="e.g. Aspirin" required>
+          </div>
+          <div class="col-md-2 col-sm-6">
+            <label class="form-label">Dosage</label>
+            <input type="text" class="form-control" id="dosage" placeholder="e.g. 1 tablet" required>
+          </div>
+          <div class="col-md-2 col-sm-6">
+            <label class="form-label">Frequency</label>
+            <input type="text" class="form-control" id="frequency" placeholder="e.g. Twice daily" required>
+          </div>
+          <div class="col-md-2 col-sm-6">
+            <label class="form-label">Reminder Time</label>
+            <input type="time" class="form-control" id="reminderTime" required>
+          </div>
+          <div class="col-md-2 col-sm-6">
+            <label class="form-label">Expiry Date</label>
+            <input type="date" class="form-control" id="expiryDate">
+          </div>
+          <div class="col-md-1 col-sm-6">
+            <label class="form-label">Notes</label>
+            <input type="text" class="form-control" id="notes" placeholder="Optional">
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn-add">
+              <i class="fa-solid fa-plus"></i> Add Medicine
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Active Medicines -->
+    <div class="glass-card reveal d3">
+      <h5><i class="fa-solid fa-list-check"></i> Active Medicines</h5>
+      <div id="medList"><p style="color:#475569;font-size:.85rem;">Loading...</p></div>
+    </div>
+
+    <!-- Log History -->
+    <div class="glass-card reveal d4">
+      <h5><i class="fa-solid fa-clock-rotate-left"></i> Medicine Log History</h5>
+      <div class="table-responsive">
+        <table class="log-table">
+          <thead>
+            <tr><th>Medicine</th><th>Status</th><th>Time</th></tr>
+          </thead>
+          <tbody id="logTableBody">
+            <tr><td colspan="3" style="color:#475569;text-align:center;padding:20px;">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Telegram -->
+    <div class="glass-card reveal">
+      <h5><i class="fa-brands fa-telegram"></i> Telegram Reminders</h5>
+      <div id="telegramSection"><p style="color:#475569;font-size:.85rem;">Loading...</p></div>
+    </div>
+
+  </main>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../js/api.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/utils.js"></script>
 <script>
-if (!checkAuth('PATIENT')) { }
+if (!checkAuth('PATIENT')) {}
 const auth = getAuth();
+const pid = localStorage.getItem('userId') || auth.userId;
 
-function convertTo12Hr(time) {
-    if (!time) return '-';
-    const [h, m] = time.split(':').map(Number);
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    const hour = h % 12 || 12;
-    return hour + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+/* ── Sidebar ── */
+document.getElementById('userName').textContent    = auth.fullName || 'Patient';
+document.getElementById('userInitial').textContent = (auth.fullName || 'P').charAt(0).toUpperCase();
+const sidebar  = document.getElementById('sidebar');
+const overlay  = document.getElementById('sidebarOverlay');
+document.getElementById('sidebarToggle').addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); });
+overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+
+/* ── Scroll reveal ── */
+const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting){ x.target.classList.add('visible'); obs.unobserve(x.target); } }), {threshold:.1});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+/* ── Helpers ── */
+function to12Hr(t){
+  if(!t) return '-';
+  const [h,m] = t.split(':').map(Number);
+  return (h%12||12)+':'+String(m).padStart(2,'0')+(h>=12?' PM':' AM');
 }
 
-function getLogBadge(status) {
-    if (status === 'TAKEN') return '<span class="badge bg-success">TAKEN</span>';
-    if (status === 'MISSED') return '<span class="badge bg-danger">MISSED</span>';
-    return '<span class="badge bg-warning text-dark">PENDING</span>';
+function expiryStatus(dateStr){
+  if(!dateStr) return null;
+  const exp  = new Date(dateStr);
+  const now  = new Date();
+  const diff = Math.ceil((exp - now) / (1000*60*60*24));
+  if(diff < 0)  return 'expired';
+  if(diff <= 30) return 'warn';
+  return 'ok';
 }
 
-async function loadMedicines() {
-    try {
-        const meds = await apiGet('/api/patient/medicines?patientId=' + auth.userId);
-        if (meds.length === 0) {
-            document.getElementById('medTableBody').innerHTML =
-                '<tr><td colspan="5" class="text-muted text-center">No medicines added yet.</td></tr>';
-        } else {
-            let html = '';
-            meds.forEach(m => {
-                html += '<tr>'
-                    + '<td><strong>' + m.medicineName + '</strong></td>'
-                    + '<td>' + m.dosage + '</td>'
-                    + '<td>' + m.frequency + '</td>'
-                    + '<td>' + convertTo12Hr(m.reminderTime) + '</td>'
-                    + '<td>'
-                    + '<button class="btn btn-sm btn-success me-1" onclick="markTaken(' + m.id + ')">Taken</button>'
-                    + '<button class="btn btn-sm btn-danger" onclick="deleteMed(' + m.id + ')">Delete</button>'
-                    + '</td>'
-                    + '</tr>';
-            });
-            document.getElementById('medTableBody').innerHTML = html;
-        }
-    } catch (e) {
-        document.getElementById('medTableBody').innerHTML =
-            '<tr><td colspan="5" class="text-danger text-center">Failed to load medicines.</td></tr>';
+function expiryBadge(dateStr){
+  const s = expiryStatus(dateStr);
+  if(!s) return '';
+  if(s==='expired') return '<span class="expiry-badge expiry-expired">❌ Expired</span>';
+  if(s==='warn')    return '<span class="expiry-badge expiry-warn">⚠️ Expiring Soon</span>';
+  return '<span class="expiry-badge expiry-ok">✅ Good</span>';
+}
+
+/* ── Load medicines ── */
+async function loadMedicines(){
+  try{
+    const meds = await apiGet('/api/patient/medicines?patientId='+pid);
+    const el   = document.getElementById('medList');
+    if(!meds.length){
+      el.innerHTML='<p style="color:#475569;font-size:.85rem;">No medicines added yet.</p>';
+      return;
     }
+    el.innerHTML = meds.map(m => {
+      const status = expiryStatus(m.expiryDate);
+      const cardCls = status ? (status==='ok'?'ok':status==='warn'?'warn':'expired') : '';
+      return `
+      <div class="med-card ${cardCls}" id="medCard${m.id}">
+        <div style="flex:1;min-width:0;">
+          <div class="med-name">
+            <i class="fa-solid fa-capsules me-2" style="color:#22D3EE;"></i>
+            ${m.medicineName}
+            ${expiryBadge(m.expiryDate)}
+          </div>
+          <div class="med-detail">
+            <span class="me-3"><i class="fa-solid fa-prescription-bottle me-1"></i>${m.dosage}</span>
+            <span class="me-3"><i class="fa-regular fa-clock me-1"></i>${to12Hr(m.reminderTime)}</span>
+            <span><i class="fa-solid fa-rotate me-1"></i>${m.frequency}</span>
+            ${m.expiryDate ? `<span class="ms-3"><i class="fa-regular fa-calendar me-1"></i>Expires: ${m.expiryDate}</span>` : ''}
+          </div>
+          ${m.notes ? `<div class="med-detail mt-1"><i class="fa-solid fa-note-sticky me-1"></i>${m.notes}</div>` : ''}
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-shrink-0">
+          <button class="btn-taken" onclick="markTaken(${m.id})"><i class="fa-solid fa-check me-1"></i>Taken</button>
+          <button class="btn-delete" onclick="deleteMed(${m.id})"><i class="fa-solid fa-trash me-1"></i>Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+  }catch{
+    document.getElementById('medList').innerHTML='<p style="color:#F87171;font-size:.85rem;">Failed to load medicines.</p>';
+  }
 }
 
-async function loadLogs() {
-    try {
-        const logs = await apiGet('/api/patient/medicines/logs?patientId=' + auth.userId);
-        if (logs.length === 0) {
-            document.getElementById('logTableBody').innerHTML =
-                '<tr><td colspan="3" class="text-muted text-center">No logs yet.</td></tr>';
-        } else {
-            let html = '';
-            logs.forEach(l => {
-                html += '<tr>'
-                    + '<td>' + (l.medicine ? l.medicine.medicineName : '-') + '</td>'
-                    + '<td>' + getLogBadge(l.status) + '</td>'
-                    + '<td>' + formatDate(l.takenAt || l.scheduledTime || l.createdAt) + '</td>'
-                    + '</tr>';
-            });
-            document.getElementById('logTableBody').innerHTML = html;
-        }
-    } catch (e) {
-        document.getElementById('logTableBody').innerHTML =
-            '<tr><td colspan="3" class="text-danger text-center">Failed to load logs.</td></tr>';
+/* ── Load logs ── */
+async function loadLogs(){
+  try{
+    const logs = await apiGet('/api/patient/medicines/logs?patientId='+pid);
+    const el = document.getElementById('logTableBody');
+    if(!logs.length){
+      el.innerHTML='<tr><td colspan="3" style="color:#475569;text-align:center;padding:20px;">No logs yet.</td></tr>';
+      return;
     }
+    el.innerHTML = logs.map(l => {
+      const badge = l.status==='TAKEN'
+        ? '<span class="badge-taken">TAKEN</span>'
+        : l.status==='MISSED'
+        ? '<span class="badge-missed">MISSED</span>'
+        : '<span class="badge-pending">PENDING</span>';
+      const time = l.takenAt||l.scheduledTime||l.createdAt;
+      return`<tr>
+        <td style="color:#E2E8F0;font-weight:500;">${l.medicine?l.medicine.medicineName:'-'}</td>
+        <td>${badge}</td>
+        <td>${time ? new Date(time).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '-'}</td>
+      </tr>`;
+    }).join('');
+  }catch{
+    document.getElementById('logTableBody').innerHTML='<tr><td colspan="3" style="color:#F87171;text-align:center;">Failed to load logs.</td></tr>';
+  }
 }
 
-document.getElementById('medForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const payload = {
-        medicineName: document.getElementById('medicineName').value,
-        dosage: document.getElementById('dosage').value,
-        frequency: document.getElementById('frequency').value,
-        reminderTime: document.getElementById('reminderTime').value,
-        notes: document.getElementById('notes').value
-    };
-    showLoading();
-    try {
-        await apiPost('/api/patient/medicines?patientId=' + auth.userId, payload);
-        hideLoading();
-        showSuccess('Medicine added!');
-        document.getElementById('medForm').reset();
-        loadMedicines();
-    } catch (err) {
-        hideLoading();
-        showError('Failed to add medicine.');
-    }
+/* ── Add medicine ── */
+document.getElementById('medForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const payload = {
+    medicineName: document.getElementById('medicineName').value,
+    dosage:       document.getElementById('dosage').value,
+    frequency:    document.getElementById('frequency').value,
+    reminderTime: document.getElementById('reminderTime').value,
+    expiryDate:   document.getElementById('expiryDate').value || null,
+    notes:        document.getElementById('notes').value
+  };
+  showLoading();
+  try{
+    await apiPost('/api/patient/medicines?patientId='+pid, payload);
+    hideLoading();
+    showSuccess('Medicine added!');
+    document.getElementById('medForm').reset();
+    loadMedicines();
+  }catch{
+    hideLoading();
+    showError('Failed to add medicine.');
+  }
 });
 
-async function markTaken(id) {
-    try {
-        await apiPost('/api/patient/medicines/' + id + '/taken?patientId=' + auth.userId, {});
-        showSuccess('Marked as taken!');
-        loadMedicines();
-        loadLogs();
-    } catch (e) {
-        showError('Failed to update.');
-    }
+/* ── Mark taken ── */
+async function markTaken(id){
+  try{
+    await apiPost('/api/patient/medicines/'+id+'/taken?patientId='+pid, {});
+    showSuccess('Marked as taken!');
+    loadMedicines();
+    loadLogs();
+  }catch{ showError('Failed to update.'); }
 }
 
-async function deleteMed(id) {
-    const result = await Swal.fire({
-        title: 'Delete this medicine?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete',
-        confirmButtonColor: '#F44336'
-    });
-    if (result.isConfirmed) {
-        try {
-            await apiDelete('/api/patient/medicines/' + id);
-            showSuccess('Medicine removed!');
-            loadMedicines();
-        } catch (e) {
-            showError('Failed to delete.');
-        }
-    }
+/* ── Delete ── */
+async function deleteMed(id){
+  const r = await Swal.fire({
+    title:'Delete this medicine?',
+    icon:'warning',
+    showCancelButton:true,
+    confirmButtonText:'Yes, delete',
+    confirmButtonColor:'#DC2626',
+    background:'#0F172A',
+    color:'#E2E8F0'
+  });
+  if(r.isConfirmed){
+    try{
+      await apiDelete('/api/patient/medicines/'+id);
+      showSuccess('Medicine removed!');
+      loadMedicines();
+    }catch{ showError('Failed to delete.'); }
+  }
 }
 
-async function loadTelegram() {
-    try {
-        const status = await apiGet('/api/telegram/status/' + auth.userId);
-        if (status.linked) {
-            document.getElementById('telegramSection').innerHTML =
-                '<p class="text-success mb-0"><i class="fa-solid fa-circle-check"></i> Telegram Connected</p>';
-        } else {
-            document.getElementById('telegramSection').innerHTML =
-                '<p class="text-muted small">Link Telegram to receive medicine reminders.</p>'
-                + '<button class="btn btn-primary btn-sm" onclick="linkTelegram()">Generate Link Code</button>'
-                + '<div id="telegramCode" class="mt-2"></div>';
-        }
-    } catch (e) {
-        document.getElementById('telegramSection').innerHTML =
-            '<p class="text-muted small">Unable to check Telegram status.</p>';
-    }
+/* ── Telegram ── */
+async function loadTelegram(){
+  try{
+    const s = await apiGet('/api/telegram/status/'+pid);
+    document.getElementById('telegramSection').innerHTML = s.linked
+      ? '<p style="color:#34D399;" class="mb-0"><i class="fa-solid fa-circle-check me-2"></i>Telegram Connected — reminders are active</p>'
+      : '<p style="color:#475569;font-size:.85rem;" class="mb-2">Link Telegram to receive medicine reminders.</p>'
+        + '<button class="btn-add" onclick="linkTelegram()"><i class="fa-brands fa-telegram"></i> Generate Link Code</button>'
+        + '<div id="telegramCode" class="mt-3"></div>';
+  }catch{
+    document.getElementById('telegramSection').innerHTML='<p style="color:#475569;font-size:.85rem;">Unable to check Telegram status.</p>';
+  }
 }
 
-async function linkTelegram() {
-    try {
-        const data = await apiGet('/api/telegram/generate/' + auth.userId);
-        document.getElementById('telegramCode').innerHTML =
-            '<div class="alert alert-info small mb-0">'
-            + 'Open <strong>@' + data.botUsername + '</strong> on Telegram and send code: <strong>' + data.code + '</strong>'
-            + '</div>';
-    } catch (e) {
-        showError('Failed to generate code.');
-    }
+async function linkTelegram(){
+  try{
+    const d = await apiGet('/api/telegram/generate/'+pid);
+    document.getElementById('telegramCode').innerHTML=
+      `<div style="background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.25);border-radius:10px;padding:12px 16px;font-size:.85rem;color:#93C5FD;">
+        Open <strong>@${d.botUsername}</strong> on Telegram and send code: <strong style="color:#22D3EE;">${d.code}</strong>
+      </div>`;
+  }catch{ showError('Failed to generate code.'); }
 }
 
 loadMedicines();
 loadLogs();
 loadTelegram();
 </script>
-
 </body>
 </html>

@@ -8,102 +8,370 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="../css/style.css">
+<style>
+body {
+  min-height: 100vh;
+  background: #060D1F;
+  background-image:
+    radial-gradient(ellipse 520px 380px at -5% 0%,   rgba(6,182,212,.13)  0%, transparent 65%),
+    radial-gradient(ellipse 480px 320px at 105% 5%,  rgba(239,68,68,.10)  0%, transparent 60%),
+    radial-gradient(ellipse 400px 350px at 0%  55%,  rgba(16,185,129,.09) 0%, transparent 60%),
+    radial-gradient(ellipse 450px 300px at 100% 50%, rgba(139,92,246,.09) 0%, transparent 55%),
+    radial-gradient(ellipse 700px 350px at 50% 110%, rgba(59,130,246,.08) 0%, transparent 60%);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 40px 40px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(6,182,212,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,182,212,.04) 1px, transparent 1px),
+    linear-gradient(rgba(6,182,212,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,182,212,.025) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 300px 200px at 20% 30%, rgba(6,182,212,.07) 0%, transparent 70%),
+    radial-gradient(ellipse 250px 180px at 75% 65%, rgba(16,185,129,.07) 0%, transparent 70%),
+    radial-gradient(ellipse 200px 150px at 50% 20%, rgba(239,68,68,.05)  0%, transparent 65%);
+}
+.container, .page-header { position: relative; z-index: 1; }
+
+/* ── SIDEBAR NAV (same as other pages) ── */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: 260px;
+  background: #0B1226;
+  border-right: 1px solid rgba(255,255,255,.06);
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  overflow-y: auto;
+}
+.sidebar-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 22px 22px 18px;
+  color: #fff; font-weight: 800; font-size: 1.15rem;
+}
+.sidebar-brand .brand-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: linear-gradient(135deg,#2563EB,#22D3EE);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem;
+}
+.sidebar-user {
+  margin: 0 16px 18px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-user .avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg,#7C3AED,#2563EB);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: .9rem; flex-shrink: 0;
+}
+.sidebar-user .u-name { color: #E2E8F0; font-weight: 600; font-size: .88rem; line-height: 1.2; }
+.sidebar-user .u-role { color: #64748B; font-size: .74rem; }
+.sidebar-section-label {
+  padding: 4px 22px; margin-top: 10px; margin-bottom: 4px;
+  font-size: .68rem; letter-spacing: .8px; text-transform: uppercase;
+  color: #475569; font-weight: 700;
+}
+.sidebar-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 22px;
+  margin: 2px 12px;
+  border-radius: 10px;
+  color: rgba(255,255,255,.65);
+  font-size: .9rem; font-weight: 500;
+  text-decoration: none;
+  border: none; background: none; width: calc(100% - 24px); text-align: left;
+  cursor: pointer;
+  transition: all .18s ease;
+}
+.sidebar-link i { width: 18px; text-align: center; font-size: .95rem; }
+.sidebar-link:hover { background: rgba(255,255,255,.06); color: #fff; }
+.sidebar-link.active { background: linear-gradient(135deg,#2563EB,#0E7490); color: #fff; box-shadow: 0 4px 16px rgba(37,99,235,.35); }
+.sidebar-logout {
+  margin-top: auto;
+  padding: 16px 22px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.sidebar-logout button {
+  width: 100%;
+  background: rgba(255,255,255,.06);
+  color: #E2E8F0; border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px; padding: 9px; font-size: .85rem; font-weight: 600;
+}
+.sidebar-logout button:hover { background: rgba(255,255,255,.1); }
+
+.main-content { margin-left: 260px; position: relative; z-index: 1; }
+
+@media (max-width: 991px) {
+  .sidebar { transform: translateX(-100%); transition: transform .25s ease; }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .mobile-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #0B1226; padding: 14px 18px; position: relative; z-index: 1;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+}
+@media (min-width: 992px) {
+  .mobile-topbar { display: none; }
+}
+.mobile-topbar .brand { color: #fff; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.mobile-topbar button { background: none; border: none; color: #fff; font-size: 1.3rem; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  padding: 42px 0 30px;
+  color: #fff;
+  background: linear-gradient(135deg, #0F172A 0%, #0E7490 45%, #2563EB 100%);
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 400px 200px at 80% 50%, rgba(16,185,129,.18) 0%, transparent 65%),
+    radial-gradient(ellipse 300px 200px at 10% 80%, rgba(239,68,68,.12) 0%, transparent 60%);
+}
+.page-header > .container { position: relative; z-index: 1; }
+.page-header h2 { font-weight: 800; font-size: 2rem; letter-spacing: -.02em; margin-bottom: 4px; }
+.page-header p { color: rgba(255,255,255,.72); margin-bottom: 0; }
+
+/* ── ALERT BANNER ── */
+#alertBanner .alert {
+  border-radius: 14px;
+  border: 1px solid;
+  backdrop-filter: blur(10px);
+  font-size: .9rem;
+}
+#alertBanner .alert-danger {
+  background: rgba(220,38,38,.12); border-color: rgba(220,38,38,.35); color: #FCA5A5;
+}
+#alertBanner .alert-warning {
+  background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.35); color: #FCD34D;
+}
+
+/* ── GLASS CARD ── */
+.glass-card {
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(13,20,45,.75);
+  backdrop-filter: blur(14px);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
+}
+.glass-card h5, .glass-card h6 {
+  color: #F1F5F9; font-weight: 700; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.glass-card h5 i, .glass-card h6 i { color: #60A5FA; }
+
+/* ── FORM ── */
+.glass-card .form-label { color: rgba(255,255,255,.55); font-size: .82rem; font-weight: 500; }
+.glass-card .form-control {
+  background: rgba(255,255,255,.07);
+  border: 1.5px solid rgba(255,255,255,.1);
+  color: #E2E8F0;
+  border-radius: 10px;
+}
+.glass-card .form-control::placeholder { color: #475569; }
+.glass-card .form-control:focus {
+  border-color: #22D3EE;
+  box-shadow: 0 0 0 3px rgba(6,182,212,.15);
+  background: rgba(255,255,255,.1);
+  color: #fff;
+}
+.btn-submit-reading {
+  background: linear-gradient(135deg,#2563EB,#7C3AED);
+  color: #fff; border: none; border-radius: 11px;
+  padding: 10px 28px; font-weight: 600; font-size: .9rem;
+  transition: all .25s ease;
+}
+.btn-submit-reading:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(124,58,237,.4);
+  color: #fff;
+}
+
+/* ── METRIC ICON HEADERS FOR CHART CARDS ── */
+.metric-card h6 { justify-content: space-between; }
+.metric-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem; color: #fff;
+}
+.metric-icon.bp     { background: linear-gradient(135deg,#2563EB,#60A5FA); }
+.metric-icon.sugar  { background: linear-gradient(135deg,#D97706,#FBBF24); }
+.metric-icon.weight { background: linear-gradient(135deg,#059669,#34D399); }
+.metric-card canvas { max-height: 220px; }
+
+/* ── HISTORY TABLE ── */
+.table-dark-custom { color: #E2E8F0; margin-bottom: 0; }
+.table-dark-custom thead th {
+  color: rgba(255,255,255,.45); font-size: .74rem; text-transform: uppercase;
+  letter-spacing: .5px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,.08);
+  padding-bottom: 12px;
+}
+.table-dark-custom tbody td {
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  padding: 13px 8px; font-size: .88rem; vertical-align: middle;
+}
+.table-dark-custom tbody tr:hover { background: rgba(255,255,255,.03); }
+.table-dark-custom tbody tr:last-child td { border-bottom: none; }
+.bp-value { font-weight: 700; color: #93C5FD; }
+
+.status-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 50px;
+  font-size: .72rem; font-weight: 700; letter-spacing: .3px;
+}
+.status-NORMAL   { background: rgba(16,185,129,.15); color: #6EE7B7; border: 1px solid rgba(16,185,129,.35); }
+.status-WARNING  { background: rgba(245,158,11,.15); color: #FBBF24; border: 1px solid rgba(245,158,11,.35); }
+.status-CRITICAL { background: rgba(220,38,38,.15);  color: #FCA5A5; border: 1px solid rgba(220,38,38,.35); }
+
+.empty-row, .error-row { color: rgba(255,255,255,.4); }
+</style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-vaidyo">
-  <div class="container">
-    <a class="navbar-brand" href="dashboard.html"><i class="fa-solid fa-heart-pulse"></i> Vaidyo</a>
-    <div class="ms-auto d-flex gap-2">
-      <a href="dashboard.html" class="btn btn-sm btn-outline-light">Dashboard</a>
-      <a href="medicines.html" class="btn btn-sm btn-outline-light">Medicines</a>
-      <a href="doctors.html" class="btn btn-sm btn-outline-light">Doctors</a>
-      <a href="appointments.html" class="btn btn-sm btn-outline-light">Appointments</a>
-      <button class="btn btn-sm btn-light" onclick="logout()">Logout</button>
-    </div>
-  </div>
-</nav>
-
-<div class="container my-4">
-
-  <div id="alertBanner"></div>
-
-  <!-- Add Health Log -->
-  <div class="card-custom mb-4">
-    <h5><i class="fa-solid fa-heart-pulse"></i> Log Health Reading</h5>
-    <form id="healthForm" class="row g-3 mt-2">
-      <div class="col-md-2">
-        <label class="form-label">BP Systolic</label>
-        <input type="number" class="form-control" id="bpSystolic" required>
-      </div>
-      <div class="col-md-2">
-        <label class="form-label">BP Diastolic</label>
-        <input type="number" class="form-control" id="bpDiastolic" required>
-      </div>
-      <div class="col-md-2">
-        <label class="form-label">Sugar Level</label>
-        <input type="number" class="form-control" id="sugarLevel" required>
-      </div>
-      <div class="col-md-2">
-        <label class="form-label">Weight (kg)</label>
-        <input type="number" step="0.1" class="form-control" id="weight" required>
-      </div>
-      <div class="col-md-2">
-        <label class="form-label">Pulse Rate</label>
-        <input type="number" class="form-control" id="pulseRate" required>
-      </div>
-      <div class="col-md-2">
-        <label class="form-label">Temperature</label>
-        <input type="number" step="0.1" class="form-control" id="temperature" required>
-      </div>
-      <div class="col-md-12">
-        <label class="form-label">Notes</label>
-        <input type="text" class="form-control" id="notes">
-      </div>
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary">Submit Reading</button>
-      </div>
-    </form>
-  </div>
-
-  <!-- Charts -->
-  <div class="row g-3 mb-4">
-    <div class="col-md-4">
-      <div class="card-custom">
-        <h6>BP Trend</h6>
-        <canvas id="bpChart"></canvas>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card-custom">
-        <h6>Sugar Trend</h6>
-        <canvas id="sugarChart"></canvas>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card-custom">
-        <h6>Weight Trend</h6>
-        <canvas id="weightChart"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <!-- History Table -->
-  <div class="card-custom">
-    <h5><i class="fa-solid fa-clock-rotate-left"></i> Health History</h5>
-    <div class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead>
-          <tr><th>Date</th><th>BP</th><th>Sugar</th><th>Weight</th><th>Pulse</th><th>Temp</th><th>Status</th></tr>
-        </thead>
-        <tbody id="historyBody">
-          <tr><td colspan="7" class="text-muted text-center">Loading...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
+<!-- Mobile top bar -->
+<div class="mobile-topbar">
+  <div class="brand"><i class="fa-solid fa-heart-pulse"></i> Vaidyo</div>
+  <button onclick="document.getElementById('sidebar').classList.toggle('open')">
+    <i class="fa-solid fa-bars"></i>
+  </button>
 </div>
+
+<!-- Sidebar Nav -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+    Vaidyo
+  </div>
+
+  <div class="sidebar-user">
+    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+    <div>
+      <div class="u-name">Patient</div>
+      <div class="u-role">Patient Account</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section-label">Main Menu</div>
+  <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Dashboard</a>
+  <a href="doctors.html" class="sidebar-link"><i class="fa-solid fa-stethoscope"></i> Find Doctors</a>
+  <a href="appointments.html" class="sidebar-link"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
+  <a href="medicines.html" class="sidebar-link"><i class="fa-solid fa-pills"></i> Medicines</a>
+  <a href="health.html" class="sidebar-link active"><i class="fa-solid fa-heart-pulse"></i> Health</a>
+
+  <div class="sidebar-logout">
+    <button onclick="logout()"><i class="fa-solid fa-right-from-bracket me-1"></i> Logout</button>
+  </div>
+</aside>
+
+<div class="main-content">
+
+  <div class="page-header">
+    <div class="container">
+      <h2><i class="fa-solid fa-heart-pulse me-2" style="color:#60A5FA;"></i>Health Tracking</h2>
+      <p>Log your vitals and keep an eye on trends over time.</p>
+    </div>
+  </div>
+
+  <div class="container py-4">
+
+    <div id="alertBanner"></div>
+
+    <!-- Add Health Log -->
+    <div class="glass-card">
+      <h5><i class="fa-solid fa-notes-medical"></i> Log Health Reading</h5>
+      <form id="healthForm" class="row g-3 mt-1">
+        <div class="col-md-2">
+          <label class="form-label">BP Systolic</label>
+          <input type="number" class="form-control" id="bpSystolic" required>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">BP Diastolic</label>
+          <input type="number" class="form-control" id="bpDiastolic" required>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Sugar Level</label>
+          <input type="number" class="form-control" id="sugarLevel" required>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Weight (kg)</label>
+          <input type="number" step="0.1" class="form-control" id="weight" required>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Pulse Rate</label>
+          <input type="number" class="form-control" id="pulseRate" required>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Temperature</label>
+          <input type="number" step="0.1" class="form-control" id="temperature" required>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label">Notes</label>
+          <input type="text" class="form-control" id="notes">
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn-submit-reading"><i class="fa-solid fa-paper-plane me-2"></i>Submit Reading</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Charts -->
+    <div class="row g-3 mb-1">
+      <div class="col-md-4">
+        <div class="glass-card metric-card">
+          <h6><span><i class="fa-solid fa-heart-pulse"></i> BP Trend</span><span class="metric-icon bp"><i class="fa-solid fa-droplet"></i></span></h6>
+          <canvas id="bpChart"></canvas>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card metric-card">
+          <h6><span><i class="fa-solid fa-droplet"></i> Sugar Trend</span><span class="metric-icon sugar"><i class="fa-solid fa-cube"></i></span></h6>
+          <canvas id="sugarChart"></canvas>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card metric-card">
+          <h6><span><i class="fa-solid fa-weight-scale"></i> Weight Trend</span><span class="metric-icon weight"><i class="fa-solid fa-scale-balanced"></i></span></h6>
+          <canvas id="weightChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Table -->
+    <div class="glass-card">
+      <h5><i class="fa-solid fa-clock-rotate-left"></i> Health History</h5>
+      <div class="table-responsive">
+        <table class="table table-dark-custom align-middle">
+          <thead>
+            <tr><th>Date</th><th>BP</th><th>Sugar</th><th>Weight</th><th>Pulse</th><th>Temp</th><th>Status</th></tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr><td colspan="7" class="text-center empty-row">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /.main-content -->
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -116,6 +384,13 @@ const auth = getAuth();
 
 let bpChart, sugarChart, weightChart;
 
+const chartGridColor = 'rgba(255,255,255,.06)';
+const chartTickColor = 'rgba(255,255,255,.45)';
+
+function statusPill(status) {
+    return '<span class="status-pill status-' + status + '">' + status + '</span>';
+}
+
 async function loadHealth() {
     try {
         const logs = await apiGet('/api/patient/health?patientId=' + auth.userId);
@@ -125,27 +400,29 @@ async function loadHealth() {
             const latest = logs[0];
             if (latest.alertStatus === 'CRITICAL') {
                 document.getElementById('alertBanner').innerHTML =
-                    '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation"></i> Your latest reading is <strong>CRITICAL</strong>. Please consult a doctor.</div>';
+                    '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation me-2"></i> Your latest reading is <strong>CRITICAL</strong>. Please consult a doctor.</div>';
             } else if (latest.alertStatus === 'WARNING') {
                 document.getElementById('alertBanner').innerHTML =
-                    '<div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation"></i> Your latest reading shows a <strong>WARNING</strong>. Keep monitoring.</div>';
+                    '<div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation me-2"></i> Your latest reading shows a <strong>WARNING</strong>. Keep monitoring.</div>';
+            } else {
+                document.getElementById('alertBanner').innerHTML = '';
             }
         }
 
         // History table
         if (logs.length === 0) {
-            document.getElementById('historyBody').innerHTML = '<tr><td colspan="7" class="text-muted text-center">No health logs yet.</td></tr>';
+            document.getElementById('historyBody').innerHTML = '<tr><td colspan="7" class="text-center empty-row">No health logs yet.</td></tr>';
         } else {
             let html = '';
             logs.forEach(l => {
                 html += '<tr>'
                     + '<td>' + formatDate(l.loggedAt) + '</td>'
-                    + '<td>' + l.bpSystolic + '/' + l.bpDiastolic + '</td>'
+                    + '<td class="bp-value">' + l.bpSystolic + '/' + l.bpDiastolic + '</td>'
                     + '<td>' + l.sugarLevel + '</td>'
                     + '<td>' + l.weight + '</td>'
                     + '<td>' + l.pulseRate + '</td>'
                     + '<td>' + l.temperature + '</td>'
-                    + '<td>' + getStatusBadge(l.alertStatus) + '</td>'
+                    + '<td>' + statusPill(l.alertStatus) + '</td>'
                     + '</tr>';
             });
             document.getElementById('historyBody').innerHTML = html;
@@ -159,38 +436,43 @@ async function loadHealth() {
         if (sugarChart) sugarChart.destroy();
         if (weightChart) weightChart.destroy();
 
+        const commonScales = {
+            x: { ticks: { color: chartTickColor }, grid: { color: chartGridColor } },
+            y: { ticks: { color: chartTickColor }, grid: { color: chartGridColor } }
+        };
+
         bpChart = new Chart(document.getElementById('bpChart'), {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [
-                    { label: 'Systolic', data: recent.map(l => l.bpSystolic), borderColor: '#2196F3', tension: 0.3 },
-                    { label: 'Diastolic', data: recent.map(l => l.bpDiastolic), borderColor: '#F44336', tension: 0.3 }
+                    { label: 'Systolic', data: recent.map(l => l.bpSystolic), borderColor: '#60A5FA', backgroundColor: 'rgba(96,165,250,.15)', tension: 0.35, fill: true },
+                    { label: 'Diastolic', data: recent.map(l => l.bpDiastolic), borderColor: '#F87171', backgroundColor: 'rgba(248,113,113,.12)', tension: 0.35, fill: true }
                 ]
             },
-            options: { responsive: true, plugins: { legend: { display: true } } }
+            options: { responsive: true, plugins: { legend: { display: true, labels: { color: '#CBD5E1', boxWidth: 12 } } }, scales: commonScales }
         });
 
         sugarChart = new Chart(document.getElementById('sugarChart'), {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{ label: 'Sugar', data: recent.map(l => l.sugarLevel), borderColor: '#FF9800', tension: 0.3 }]
+                datasets: [{ label: 'Sugar', data: recent.map(l => l.sugarLevel), borderColor: '#FBBF24', backgroundColor: 'rgba(251,191,36,.15)', tension: 0.35, fill: true }]
             },
-            options: { responsive: true, plugins: { legend: { display: false } } }
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: commonScales }
         });
 
         weightChart = new Chart(document.getElementById('weightChart'), {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{ label: 'Weight', data: recent.map(l => l.weight), borderColor: '#4CAF50', tension: 0.3 }]
+                datasets: [{ label: 'Weight', data: recent.map(l => l.weight), borderColor: '#34D399', backgroundColor: 'rgba(52,211,153,.15)', tension: 0.35, fill: true }]
             },
-            options: { responsive: true, plugins: { legend: { display: false } } }
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: commonScales }
         });
 
     } catch (e) {
-        document.getElementById('historyBody').innerHTML = '<tr><td colspan="7" class="text-danger text-center">Failed to load health data.</td></tr>';
+        document.getElementById('historyBody').innerHTML = '<tr><td colspan="7" class="text-center error-row" style="color:#F87171;">Failed to load health data.</td></tr>';
     }
 }
 

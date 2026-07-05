@@ -39,11 +39,107 @@ body::after {
     radial-gradient(ellipse 250px 180px at 75% 65%, rgba(16,185,129,.07) 0%, transparent 70%),
     radial-gradient(ellipse 200px 150px at 50% 20%, rgba(239,68,68,.05)  0%, transparent 65%);
 }
-nav, .find-header, .container { position: relative; z-index: 1; }
+.find-header, .container { position: relative; z-index: 1; }
 .modal { position: fixed !important; z-index: 1055 !important; }
 .modal-backdrop { z-index: 1050 !important; }
 .find-header { background: transparent !important; }
-.navbar-vaidyo { background: linear-gradient(135deg, #0F172A, #0E7490, #2563EB) !important; }
+
+/* ── SIDEBAR NAV ── */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: 260px;
+  background: #0B1226;
+  border-right: 1px solid rgba(255,255,255,.06);
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  overflow-y: auto;
+}
+.sidebar-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 22px 22px 18px;
+  color: #fff; font-weight: 800; font-size: 1.15rem;
+}
+.sidebar-brand .brand-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: linear-gradient(135deg,#2563EB,#22D3EE);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem;
+}
+.sidebar-user {
+  margin: 0 16px 18px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-user .avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg,#7C3AED,#2563EB);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: .9rem; flex-shrink: 0;
+}
+.sidebar-user .u-name { color: #E2E8F0; font-weight: 600; font-size: .88rem; line-height: 1.2; }
+.sidebar-user .u-role { color: #64748B; font-size: .74rem; }
+.sidebar-section-label {
+  padding: 4px 22px; margin-top: 10px; margin-bottom: 4px;
+  font-size: .68rem; letter-spacing: .8px; text-transform: uppercase;
+  color: #475569; font-weight: 700;
+}
+.sidebar-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 22px;
+  margin: 2px 12px;
+  border-radius: 10px;
+  color: rgba(255,255,255,.65);
+  font-size: .9rem; font-weight: 500;
+  text-decoration: none;
+  border: none; background: none; width: calc(100% - 24px); text-align: left;
+  cursor: pointer;
+  transition: all .18s ease;
+}
+.sidebar-link i { width: 18px; text-align: center; font-size: .95rem; }
+.sidebar-link:hover { background: rgba(255,255,255,.06); color: #fff; }
+.sidebar-link.active { background: linear-gradient(135deg,#2563EB,#0E7490); color: #fff; box-shadow: 0 4px 16px rgba(37,99,235,.35); }
+.sidebar-link.danger { color: #FCA5A5; }
+.sidebar-link.danger:hover { background: rgba(220,38,38,.15); color: #FCA5A5; }
+.sidebar-link.blood { color: #FDA4AF; }
+.sidebar-link.blood:hover { background: rgba(225,29,72,.15); }
+.sidebar-link.amber { color: #FCD34D; }
+.sidebar-link.amber:hover { background: rgba(217,119,6,.15); }
+.sidebar-logout {
+  margin-top: auto;
+  padding: 16px 22px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.sidebar-logout button {
+  width: 100%;
+  background: rgba(255,255,255,.06);
+  color: #E2E8F0; border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px; padding: 9px; font-size: .85rem; font-weight: 600;
+}
+.sidebar-logout button:hover { background: rgba(255,255,255,.1); }
+
+.main-content { margin-left: 260px; position: relative; z-index: 1; }
+
+@media (max-width: 991px) {
+  .sidebar { transform: translateX(-100%); transition: transform .25s ease; }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .mobile-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #0B1226; padding: 14px 18px; position: relative; z-index: 1;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+}
+@media (min-width: 992px) {
+  .mobile-topbar { display: none; }
+}
+.mobile-topbar .brand { color: #fff; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.mobile-topbar button { background: none; border: none; color: #fff; font-size: 1.3rem; }
+
 .find-header {
   padding: 42px 0 32px;
   color: #fff;
@@ -282,18 +378,42 @@ nav, .find-header, .container { position: relative; z-index: 1; }
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-vaidyo">
-  <div class="container">
-    <a class="navbar-brand" href="dashboard.html"><i class="fa-solid fa-heart-pulse"></i> Vaidyo</a>
-    <div class="ms-auto d-flex gap-2">
-      <a href="dashboard.html" class="btn btn-sm btn-outline-light">Dashboard</a>
-      <a href="medicines.html" class="btn btn-sm btn-outline-light">Medicines</a>
-      <a href="health.html" class="btn btn-sm btn-outline-light">Health</a>
-      <a href="appointments.html" class="btn btn-sm btn-outline-light">Appointments</a>
-      <button class="btn btn-sm btn-light" onclick="logout()">Logout</button>
+<!-- Mobile top bar (shown only on small screens) -->
+<div class="mobile-topbar">
+  <div class="brand"><i class="fa-solid fa-heart-pulse"></i> Vaidyo</div>
+  <button onclick="document.getElementById('sidebar').classList.toggle('open')">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+</div>
+
+<!-- Sidebar Nav (replaces top navbar) -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+    Vaidyo
+  </div>
+
+  <div class="sidebar-user">
+    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+    <div>
+      <div class="u-name">Patient</div>
+      <div class="u-role">Patient Account</div>
     </div>
   </div>
-</nav>
+
+  <div class="sidebar-section-label">Main Menu</div>
+  <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Dashboard</a>
+  <a href="doctors.html" class="sidebar-link active"><i class="fa-solid fa-stethoscope"></i> Find Doctors</a>
+  <a href="appointments.html" class="sidebar-link"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
+  <a href="medicines.html" class="sidebar-link"><i class="fa-solid fa-pills"></i> Medicines</a>
+  <a href="health.html" class="sidebar-link"><i class="fa-solid fa-heart-pulse"></i> Health</a>
+
+  <div class="sidebar-logout">
+    <button onclick="logout()"><i class="fa-solid fa-right-from-bracket me-1"></i> Logout</button>
+  </div>
+</aside>
+
+<div class="main-content">
 
 <div class="find-header">
   <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -390,6 +510,8 @@ nav, .find-header, .container { position: relative; z-index: 1; }
   <div id="doctorsMap" class="doctorsMap d-none"></div>
 
 </div>
+
+</div><!-- /.main-content -->
 
 <!-- Book Modal -->
 <div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
