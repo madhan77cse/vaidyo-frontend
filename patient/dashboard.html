@@ -8,270 +8,796 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="../css/style.css">
+<style>
+/* ══════════════════════════════════════════
+   BASE & DARK BACKGROUND
+══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #060D1F;
+  background-image:
+    radial-gradient(ellipse 700px 500px at 0%   0%,   rgba(6,182,212,.13)  0%, transparent 65%),
+    radial-gradient(ellipse 600px 400px at 100% 0%,   rgba(139,92,246,.11) 0%, transparent 60%),
+    radial-gradient(ellipse 500px 400px at 0%   100%, rgba(16,185,129,.09) 0%, transparent 60%),
+    radial-gradient(ellipse 600px 350px at 100% 80%,  rgba(239,68,68,.07)  0%, transparent 55%);
+  color: #E2E8F0;
+  overflow-x: hidden;
+}
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(6,182,212,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,182,212,.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ══════════════════════════════════════════
+   LAYOUT — sidebar + main
+══════════════════════════════════════════ */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ══════════════════════════════════════════
+   FIXED LEFT SIDEBAR
+══════════════════════════════════════════ */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: rgba(8,15,35,.92);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(6,182,212,.12);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* brand */
+.sidebar-brand {
+  padding: 24px 20px 20px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  flex-shrink: 0;
+}
+.sidebar-brand .brand-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg,#0E7490,#2563EB);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1rem;
+}
+.sidebar-brand span { font-weight: 700; font-size: 1.1rem; color: #fff; }
+
+/* user pill */
+.sidebar-user {
+  margin: 14px 14px 6px;
+  background: rgba(6,182,212,.08);
+  border: 1px solid rgba(6,182,212,.15);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.user-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg,#0E7490,#7C3AED);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: .85rem; color: #fff; flex-shrink: 0;
+}
+.user-name  { font-size: .8rem; font-weight: 600; color: #E2E8F0; line-height: 1.2; }
+.user-role  { font-size: .68rem; color: #64748B; }
+
+/* nav label */
+.nav-label {
+  font-size: .62rem; font-weight: 700; letter-spacing: .8px;
+  text-transform: uppercase; color: #334155;
+  padding: 14px 20px 6px;
+}
+
+/* nav links */
+.sidebar-nav { flex: 1; padding: 4px 10px; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  color: rgba(255,255,255,.55);
+  font-size: .85rem; font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 2px;
+  transition: all .2s ease;
+  cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-item i { width: 18px; text-align: center; font-size: .9rem; flex-shrink: 0; }
+.nav-item:hover {
+  background: rgba(255,255,255,.06);
+  color: #fff;
+}
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(14,116,144,.3), rgba(37,99,235,.2));
+  color: #22D3EE;
+  border: 1px solid rgba(6,182,212,.2);
+}
+.nav-item.active i { color: #22D3EE; }
+
+/* ── EMERGENCY SOS — special highlighted item ── */
+.nav-sos {
+  margin: 8px 10px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7F1D1D, #DC2626);
+  color: #fff; font-size: .85rem; font-weight: 700;
+  text-decoration: none; border: none; cursor: pointer;
+  animation: sos-glow 2.5s ease-in-out infinite;
+  transition: transform .2s ease;
+}
+.nav-sos:hover { transform: scale(1.02); color: #fff; }
+.nav-sos i { font-size: 1rem; }
+@keyframes sos-glow {
+  0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,.5); }
+  50%      { box-shadow: 0 0 0 10px rgba(220,38,38,0); }
+}
+
+/* ── Blood Donation — highlighted ── */
+.nav-blood {
+  margin: 4px 10px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #881337, #E11D48);
+  color: #fff; font-size: .85rem; font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-blood:hover { filter: brightness(1.1); color: #fff; }
+
+/* ── Ambulance — highlighted ── */
+.nav-ambulance {
+  margin: 4px 10px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #78350F, #D97706);
+  color: #fff; font-size: .85rem; font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-ambulance:hover { filter: brightness(1.1); color: #fff; }
+
+/* logout at bottom */
+.sidebar-footer {
+  padding: 12px 10px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  flex-shrink: 0;
+}
+.btn-logout {
+  width: 100%; padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(220,38,38,.1);
+  border: 1px solid rgba(220,38,38,.2);
+  color: #F87171; font-size: .82rem; font-weight: 600;
+  cursor: pointer; transition: all .2s ease;
+  display: flex; align-items: center; gap: 10px;
+}
+.btn-logout:hover { background: rgba(220,38,38,.2); }
+
+/* mobile toggle */
+.sidebar-toggle {
+  display: none;
+  position: fixed; top: 14px; left: 14px; z-index: 200;
+  width: 40px; height: 40px; border-radius: 10px;
+  background: rgba(8,15,35,.9); border: 1px solid rgba(6,182,212,.2);
+  color: #fff; font-size: 1rem; cursor: pointer;
+  align-items: center; justify-content: center;
+}
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 99;
+  background: rgba(0,0,0,.5);
+}
+
+/* ══════════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════════ */
+.main-content {
+  margin-left: 240px;
+  flex: 1;
+  padding: 28px 28px 40px;
+  min-width: 0;
+}
+
+/* ══════════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════════ */
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.d1 { transition-delay: .08s; } .d2 { transition-delay: .16s; }
+.d3 { transition-delay: .24s; } .d4 { transition-delay: .32s; }
+.d5 { transition-delay: .40s; } .d6 { transition-delay: .48s; }
+
+/* ══════════════════════════════════════════
+   WELCOME BANNER
+══════════════════════════════════════════ */
+.welcome-banner {
+  background: linear-gradient(135deg, #0C1445 0%, #0E7490 40%, #2563EB 75%, #7C3AED 100%);
+  border-radius: 20px; padding: 28px 32px; color: #fff;
+  position: relative; overflow: hidden; margin-bottom: 24px;
+  border: 1px solid rgba(255,255,255,.07);
+}
+.welcome-banner::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse 300px 200px at 95% 50%, rgba(16,185,129,.2) 0%, transparent 65%);
+}
+.welcome-banner::after {
+  content:''; position:absolute;
+  width:260px; height:260px; border-radius:50%;
+  border:1px solid rgba(255,255,255,.06);
+  top:-80px; right:-60px;
+  animation: ring 5s ease-in-out infinite;
+}
+@keyframes ring { 0%,100%{transform:scale(1);opacity:.4;} 50%{transform:scale(1.2);opacity:.1;} }
+.wb-inner { position:relative; z-index:1; }
+.welcome-banner h3 { font-weight:800; font-size:1.5rem; margin-bottom:4px; }
+.welcome-banner p  { opacity:.72; margin:0; font-size:.88rem; }
+
+/* ══════════════════════════════════════════
+   STAT CARDS
+══════════════════════════════════════════ */
+.stat-card-v {
+  border-radius: 16px; padding: 20px;
+  display: flex; align-items: center; gap: 14px;
+  border: 1px solid rgba(255,255,255,.06);
+  transition: transform .3s, box-shadow .3s;
+  position: relative; overflow: hidden;
+}
+.stat-card-v::after {
+  content:''; position:absolute; top:-20px; right:-20px;
+  width:80px; height:80px; border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.stat-card-v:hover { transform:translateY(-5px); }
+.sc-blue  { background:linear-gradient(135deg,#1D3A8A,#2563EB); box-shadow:0 8px 28px rgba(37,99,235,.25); }
+.sc-teal  { background:linear-gradient(135deg,#0C4A6E,#0E7490); box-shadow:0 8px 28px rgba(6,182,212,.25); }
+.sc-green { background:linear-gradient(135deg,#064E3B,#059669); box-shadow:0 8px 28px rgba(5,150,105,.25); }
+.sc-amber { background:linear-gradient(135deg,#78350F,#D97706); box-shadow:0 8px 28px rgba(217,119,6,.25); }
+.sc-blue:hover  { box-shadow:0 14px 36px rgba(37,99,235,.4); }
+.sc-teal:hover  { box-shadow:0 14px 36px rgba(6,182,212,.4); }
+.sc-green:hover { box-shadow:0 14px 36px rgba(5,150,105,.4); }
+.sc-amber:hover { box-shadow:0 14px 36px rgba(217,119,6,.4); }
+.stat-icon-v {
+  width:50px; height:50px; border-radius:13px;
+  background:rgba(255,255,255,.15);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.25rem; color:#fff; flex-shrink:0;
+}
+.stat-val { font-size:1.5rem; font-weight:800; color:#fff; line-height:1.1; }
+.stat-lbl { font-size:.72rem; color:rgba(255,255,255,.6); margin-top:2px; }
+
+/* ══════════════════════════════════════════
+   SECTION CARDS
+══════════════════════════════════════════ */
+.section-card {
+  background: rgba(13,20,45,.75);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px; padding: 22px; height:100%;
+  transition: border-color .3s, box-shadow .3s;
+}
+.section-card:hover {
+  border-color: rgba(6,182,212,.2);
+  box-shadow: 0 6px 24px rgba(6,182,212,.07);
+}
+.section-card h5 {
+  font-weight:700; font-size:.88rem; color:#E2E8F0;
+  margin-bottom:14px; display:flex; align-items:center; gap:8px;
+  padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.05);
+}
+.section-card h5 i { color:#22D3EE; }
+
+/* rows */
+.med-row, .appt-row {
+  display:flex; justify-content:space-between; align-items:center;
+  border-bottom:1px solid rgba(255,255,255,.04); padding:9px 0;
+}
+.med-row:last-child, .appt-row:last-child { border-bottom:none; }
+.med-name, .appt-doc { font-weight:600; font-size:.85rem; color:#F1F5F9; }
+.med-meta, .appt-spec { font-size:.73rem; color:#475569; }
+
+/* health grid */
+.health-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.health-cell {
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
+  border-radius:10px; padding:9px; text-align:center;
+}
+.hc-lbl { font-size:.68rem; color:#475569; display:block; }
+.hc-val { font-size:.95rem; font-weight:700; color:#E2E8F0; }
+
+/* badges */
+.badge-status { display:inline-block; padding:3px 10px; border-radius:50px; font-size:.7rem; font-weight:600; }
+.badge-normal    { background:rgba(5,150,105,.18);  color:#34D399; }
+.badge-warning   { background:rgba(217,119,6,.18);  color:#FCD34D; }
+.badge-critical  { background:rgba(220,38,38,.18);  color:#F87171; }
+.badge-pending   { background:rgba(217,119,6,.18);  color:#FCD34D; }
+.badge-approved  { background:rgba(5,150,105,.18);  color:#34D399; }
+.badge-rejected  { background:rgba(220,38,38,.18);  color:#F87171; }
+.badge-completed { background:rgba(37,99,235,.18);  color:#93C5FD; }
+.badge-confirmed { background:rgba(5,150,105,.18);  color:#34D399; }
+
+/* ══════════════════════════════════════════
+   SECTION LABEL DIVIDERS
+══════════════════════════════════════════ */
+.section-label {
+  font-size:.68rem; font-weight:700; letter-spacing:.7px;
+  text-transform:uppercase; color:#334155;
+  margin-bottom:14px; margin-top:4px;
+  display:flex; align-items:center; gap:8px;
+}
+.section-label i { color:#22D3EE; }
+.section-label::after { content:''; flex:1; height:1px; background:rgba(255,255,255,.05); }
+
+/* ══════════════════════════════════════════
+   QUICK ACTION CARDS
+══════════════════════════════════════════ */
+.quick-card {
+  border-radius:16px; padding:22px 12px;
+  text-align:center; text-decoration:none;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:10px; height:100%;
+  border:1px solid rgba(255,255,255,.06);
+  position:relative; overflow:hidden;
+  transition:transform .3s, box-shadow .3s;
+}
+.quick-card::before {
+  content:''; position:absolute; top:-40px; right:-40px;
+  width:110px; height:110px; border-radius:50%;
+  background:rgba(255,255,255,.05);
+  transition:transform .3s;
+}
+.quick-card:hover::before { transform:scale(1.5); }
+.quick-card:hover { transform:translateY(-6px); text-decoration:none; }
+.qc-icon {
+  width:50px; height:50px; border-radius:13px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.2rem; color:#fff; position:relative; z-index:1;
+}
+.quick-card span {
+  font-size:.76rem; font-weight:600; line-height:1.35;
+  color:rgba(255,255,255,.8); position:relative; z-index:1;
+}
+.quick-card:hover span { color:#fff; }
+
+.qc-cyan    { background:linear-gradient(135deg,#0C4A6E,#0E7490); }
+.qc-cyan    .qc-icon { background:rgba(6,182,212,.25); }
+.qc-cyan:hover { box-shadow:0 14px 36px rgba(6,182,212,.3); }
+
+.qc-indigo  { background:linear-gradient(135deg,#312E81,#4F46E5); }
+.qc-indigo  .qc-icon { background:rgba(79,70,229,.25); }
+.qc-indigo:hover { box-shadow:0 14px 36px rgba(79,70,229,.3); }
+
+.qc-emerald { background:linear-gradient(135deg,#064E3B,#059669); }
+.qc-emerald .qc-icon { background:rgba(16,185,129,.25); }
+.qc-emerald:hover { box-shadow:0 14px 36px rgba(16,185,129,.3); }
+
+.qc-red     { background:linear-gradient(135deg,#7F1D1D,#DC2626); }
+.qc-red     .qc-icon { background:rgba(220,38,38,.25); }
+.qc-red:hover { box-shadow:0 14px 36px rgba(220,38,38,.3); }
+
+.qc-rose    { background:linear-gradient(135deg,#881337,#E11D48); }
+.qc-rose    .qc-icon { background:rgba(225,29,72,.25); }
+.qc-rose:hover { box-shadow:0 14px 36px rgba(225,29,72,.3); }
+
+.qc-orange  { background:linear-gradient(135deg,#78350F,#D97706); }
+.qc-orange  .qc-icon { background:rgba(217,119,6,.25); }
+.qc-orange:hover { box-shadow:0 14px 36px rgba(217,119,6,.3); }
+
+.qc-blue    { background:linear-gradient(135deg,#1E3A8A,#2563EB); }
+.qc-blue    .qc-icon { background:rgba(37,99,235,.25); }
+.qc-blue:hover { box-shadow:0 14px 36px rgba(37,99,235,.3); }
+
+.qc-purple  { background:linear-gradient(135deg,#4C1D95,#7C3AED); }
+.qc-purple  .qc-icon { background:rgba(124,58,237,.25); }
+.qc-purple:hover { box-shadow:0 14px 36px rgba(124,58,237,.3); }
+
+/* took-it button */
+.btn-took {
+  background:linear-gradient(135deg,#059669,#34D399);
+  color:#fff; border:none; border-radius:8px;
+  font-size:.74rem; font-weight:600; padding:6px 11px;
+  cursor:pointer; white-space:nowrap; transition:all .2s;
+}
+.btn-took:hover { transform:scale(1.05); box-shadow:0 4px 12px rgba(5,150,105,.4); }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE MOBILE
+══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); transition: transform .3s ease; }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.open { display: block; }
+  .sidebar-toggle { display: flex; }
+  .main-content { margin-left: 0; padding: 20px 16px 40px; padding-top: 64px; }
+}
+</style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-vaidyo">
-  <div class="container">
-    <a class="navbar-brand" href="dashboard.html"><i class="fa-solid fa-heart-pulse"></i> Vaidyo</a>
-    <div class="ms-auto d-flex gap-2">
-      <a href="medicines.html" class="btn btn-sm btn-outline-light">Medicines</a>
-      <a href="health.html" class="btn btn-sm btn-outline-light">Health</a>
-      <a href="doctors.html" class="btn btn-sm btn-outline-light">Doctors</a>
-      <a href="appointments.html" class="btn btn-sm btn-outline-light">Appointments</a>
-      <button class="btn btn-sm btn-light" onclick="logout()">Logout</button>
+<!-- Mobile toggle -->
+<button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="app-layout">
+
+  <!-- ══ FIXED LEFT SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Brand -->
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+      <span>Vaidyo</span>
     </div>
-  </div>
-</nav>
 
-<div class="container my-4">
-
-  <div class="card-custom mb-4">
-    <h3 id="welcomeMsg">Good Morning!</h3>
-    <p class="text-muted mb-0">Here's your health summary for today.</p>
-  </div>
-
-  <div class="row g-3 mb-4">
-    <div class="col-md-3 col-6">
-      <div class="card-custom text-center">
-        <i class="fa-solid fa-pills text-primary fs-3 mb-2"></i>
-        <h4 id="medCount">0</h4>
-        <p class="text-muted small mb-0">Today's Medicines</p>
+    <!-- User pill -->
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userInitial">M</div>
+      <div>
+        <div class="user-name" id="userName">Patient</div>
+        <div class="user-role">Patient</div>
       </div>
     </div>
-    <div class="col-md-3 col-6">
-      <div class="card-custom text-center">
-        <i class="fa-solid fa-heart-pulse text-success fs-3 mb-2"></i>
-        <h4 id="healthStatus">--</h4>
-        <p class="text-muted small mb-0">Health Status</p>
-      </div>
-    </div>
-    <div class="col-md-3 col-6">
-      <div class="card-custom text-center">
-        <i class="fa-solid fa-calendar-check text-info fs-3 mb-2"></i>
-        <h4 id="apptCount">0</h4>
-        <p class="text-muted small mb-0">Appointments</p>
-      </div>
-    </div>
-    <div class="col-md-3 col-6">
-      <div class="card-custom text-center">
-        <i class="fa-solid fa-triangle-exclamation text-warning fs-3 mb-2"></i>
-        <h4 id="alertCount">0</h4>
-        <p class="text-muted small mb-0">Alerts</p>
-      </div>
-    </div>
-  </div>
 
-  <div class="row g-3">
-    <div class="col-md-6">
-      <div class="card-custom">
-        <h5><i class="fa-solid fa-pills"></i> Today's Medicines</h5>
-        <div id="medicineList">
-          <p class="text-muted small">Loading...</p>
+    <!-- 1. Main Menu -->
+    <div class="nav-label">Main Menu</div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item active">
+        <i class="fa-solid fa-house"></i> Dashboard
+      </a>
+      <a href="doctors.html" class="nav-item">
+        <i class="fa-solid fa-user-doctor"></i> Find Doctors
+      </a>
+      <a href="appointments.html" class="nav-item">
+        <i class="fa-solid fa-calendar-check"></i> Appointments
+      </a>
+      <a href="medicines.html" class="nav-item">
+        <i class="fa-solid fa-pills"></i> Medicines
+      </a>
+      <a href="health.html" class="nav-item">
+        <i class="fa-solid fa-heart-pulse"></i> Health Logs
+      </a>
+    </nav>
+
+    <!-- 2. Important / Emergency -->
+    <div class="nav-label">⚠ Important</div>
+    <a href="emergency.html" class="nav-sos">
+      <i class="fa-solid fa-bell"></i> Emergency SOS
+    </a>
+    <a href="blood-donation.html" class="nav-blood">
+      <i class="fa-solid fa-droplet"></i> Blood Donation
+    </a>
+    <a href="ambulance.html" class="nav-ambulance">
+      <i class="fa-solid fa-truck-medical"></i> Book Ambulance
+    </a>
+
+    <!-- 3. AI Tools -->
+    <div class="nav-label">AI Tools</div>
+    <nav class="sidebar-nav">
+      <a href="symptom-checker.html" class="nav-item">
+        <i class="fa-solid fa-robot"></i> Symptom Checker
+      </a>
+      <a href="report-reader.html" class="nav-item">
+        <i class="fa-solid fa-file-medical"></i> Report Reader
+      </a>
+      <a href="food-recommendation.html" class="nav-item">
+        <i class="fa-solid fa-apple-alt"></i> Food Guide
+      </a>
+    </nav>
+
+    <!-- Logout -->
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ══ MAIN CONTENT ══ -->
+  <main class="main-content">
+
+    <!-- Welcome -->
+    <div class="welcome-banner reveal">
+      <div class="wb-inner d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <h3 id="welcomeMsg">Good Evening!</h3>
+          <p>Here's your health summary for today.</p>
+        </div>
+        <div style="font-size:3rem;opacity:.2;"><i class="fa-solid fa-heart-pulse"></i></div>
+      </div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3 reveal d1">
+        <div class="stat-card-v sc-blue">
+          <div class="stat-icon-v"><i class="fa-solid fa-pills"></i></div>
+          <div><div class="stat-val" id="medCount">0</div><div class="stat-lbl">Today's Medicines</div></div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 reveal d2">
+        <div class="stat-card-v sc-teal">
+          <div class="stat-icon-v"><i class="fa-solid fa-heart-pulse"></i></div>
+          <div><div class="stat-val" id="healthStatus">--</div><div class="stat-lbl">Health Status</div></div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 reveal d3">
+        <div class="stat-card-v sc-green">
+          <div class="stat-icon-v"><i class="fa-solid fa-calendar-check"></i></div>
+          <div><div class="stat-val" id="apptCount">0</div><div class="stat-lbl">Appointments</div></div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 reveal d4">
+        <div class="stat-card-v sc-amber">
+          <div class="stat-icon-v"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div><div class="stat-val" id="alertCount">0</div><div class="stat-lbl">Alerts</div></div>
         </div>
       </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="card-custom">
-        <h5><i class="fa-solid fa-heart-pulse"></i> Latest Health Readings</h5>
-        <div id="healthLatest">
-          <p class="text-muted small">Loading...</p>
+    <!-- Info sections -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 reveal d1">
+        <div class="section-card">
+          <h5><i class="fa-solid fa-pills"></i> Today's Medicines</h5>
+          <div id="medicineList"><p class="text-muted small">Loading...</p></div>
+        </div>
+      </div>
+      <div class="col-md-6 reveal d2">
+        <div class="section-card">
+          <h5><i class="fa-solid fa-heart-pulse"></i> Latest Health Readings</h5>
+          <div id="healthLatest"><p class="text-muted small">Loading...</p></div>
+        </div>
+      </div>
+      <div class="col-md-6 reveal d3">
+        <div class="section-card">
+          <h5><i class="fa-solid fa-calendar-check"></i> Upcoming Appointments</h5>
+          <div id="apptList"><p class="text-muted small">Loading...</p></div>
+        </div>
+      </div>
+      <div class="col-md-6 reveal d4">
+        <div class="section-card">
+          <h5><i class="fa-brands fa-telegram"></i> Telegram Reminders</h5>
+          <div id="telegramSection"><p class="text-muted small">Loading...</p></div>
         </div>
       </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="card-custom">
-        <h5><i class="fa-solid fa-calendar-check"></i> Upcoming Appointments</h5>
-        <div id="apptList">
-          <p class="text-muted small">Loading...</p>
-        </div>
+    <!-- Quick Actions -->
+    <div class="section-label reveal"><i class="fa-solid fa-bolt"></i> Quick Actions</div>
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-4 col-lg-2 reveal d1">
+        <a href="symptom-checker.html" class="quick-card qc-cyan">
+          <div class="qc-icon"><i class="fa-solid fa-robot"></i></div>
+          <span>AI Symptom Checker</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2 reveal d2">
+        <a href="report-reader.html" class="quick-card qc-indigo">
+          <div class="qc-icon"><i class="fa-solid fa-file-medical"></i></div>
+          <span>AI Report Reader</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2 reveal d3">
+        <a href="food-recommendation.html" class="quick-card qc-emerald">
+          <div class="qc-icon"><i class="fa-solid fa-apple-alt"></i></div>
+          <span>Food Guide</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2 reveal d4">
+        <a href="emergency.html" class="quick-card qc-red">
+          <div class="qc-icon"><i class="fa-solid fa-bell"></i></div>
+          <span>Emergency SOS</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2 reveal d5">
+        <a href="blood-donation.html" class="quick-card qc-rose">
+          <div class="qc-icon"><i class="fa-solid fa-droplet"></i></div>
+          <span>Blood Donation</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2 reveal d6">
+        <a href="ambulance.html" class="quick-card qc-orange">
+          <div class="qc-icon"><i class="fa-solid fa-truck-medical"></i></div>
+          <span>Book Ambulance</span>
+        </a>
       </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="card-custom">
-        <h5><i class="fa-brands fa-telegram"></i> Telegram Reminders</h5>
-        <div id="telegramSection">
-          <p class="text-muted small">Loading...</p>
-        </div>
+    <!-- Find Care -->
+    <div class="section-label reveal"><i class="fa-solid fa-stethoscope"></i> Find Care</div>
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3 reveal d1">
+        <a href="doctors.html" class="quick-card qc-blue">
+          <div class="qc-icon"><i class="fa-solid fa-user-doctor"></i></div>
+          <span>Find a Doctor</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-3 reveal d2">
+        <a href="appointments.html" class="quick-card qc-cyan">
+          <div class="qc-icon"><i class="fa-solid fa-calendar-check"></i></div>
+          <span>My Appointments</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-3 reveal d3">
+        <a href="medicines.html" class="quick-card qc-purple">
+          <div class="qc-icon"><i class="fa-solid fa-pills"></i></div>
+          <span>My Medicines</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-3 reveal d4">
+        <a href="health.html" class="quick-card qc-emerald">
+          <div class="qc-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+          <span>Health Logs</span>
+        </a>
       </div>
     </div>
-  </div>
 
+  </main>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../js/api.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/utils.js"></script>
 <script>
-if (!checkAuth('PATIENT')) { }
-
+if (!checkAuth('PATIENT')) {}
 const auth = getAuth();
 
-function getGreeting() {
-    const h = new Date().getHours();
-    if (h < 12) return 'Good Morning';
-    if (h < 17) return 'Good Afternoon';
-    return 'Good Evening';
+/* ── User info in sidebar ── */
+document.getElementById('userName').textContent = auth.fullName || 'Patient';
+document.getElementById('userInitial').textContent = (auth.fullName || 'P').charAt(0).toUpperCase();
+
+/* ── Greeting ── */
+const h = new Date().getHours();
+document.getElementById('welcomeMsg').textContent =
+  (h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening') + ', ' + (auth.fullName || 'Patient') + '!';
+
+/* ── Mobile sidebar ── */
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+});
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+});
+
+/* ── Scroll reveal ── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+/* ── Helpers ── */
+function to12Hr(t) {
+  if (!t) return '-';
+  const [hh, mm] = t.split(':').map(Number);
+  return (hh % 12 || 12) + ':' + String(mm).padStart(2,'0') + (hh >= 12 ? ' PM' : ' AM');
+}
+function badge(s) {
+  const m = { NORMAL:'badge-normal',WARNING:'badge-warning',CRITICAL:'badge-critical',
+    PENDING:'badge-pending',APPROVED:'badge-approved',REJECTED:'badge-rejected',
+    COMPLETED:'badge-completed',CONFIRMED:'badge-confirmed' };
+  return `<span class="badge-status ${m[s]||'badge-pending'}">${s||'—'}</span>`;
 }
 
-document.getElementById('welcomeMsg').textContent = getGreeting() + ', ' + auth.fullName + '!';
-
-function convertTo12Hr(time) {
-    if (!time) return '-';
-    const [h, m] = time.split(':').map(Number);
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    const hour = h % 12 || 12;
-    return hour + ':' + String(m).padStart(2, '0') + ' ' + ampm;
-}
-
+/* ── Load data ── */
 async function loadDashboard() {
-    // Medicines
-    try {
-        const meds = await apiGet('/api/patient/medicines?patientId=' + auth.userId);
-        const logs = await apiGet('/api/patient/medicines/logs?patientId=' + auth.userId);
-        document.getElementById('medCount').textContent = meds.length;
 
-        const now = new Date();
-        const todayStr = now.toDateString();
+  /* Medicines */
+  try {
+    const meds = await apiGet('/api/patient/medicines?patientId=' + auth.userId);
+    const logs = await apiGet('/api/patient/medicines/logs?patientId=' + auth.userId);
+    document.getElementById('medCount').textContent = meds.length;
+    const now = new Date(), today = now.toDateString();
+    const taken = new Set();
+    logs.forEach(l => {
+      if (l.status==='TAKEN' && l.medicine?.id && new Date(l.takenAt||l.createdAt).toDateString()===today)
+        taken.add(l.medicine.id);
+    });
+    const due = meds.filter(m => {
+      if (taken.has(m.id)) return false;
+      if (!m.reminderTime) return true;
+      const [hh,mm] = m.reminderTime.split(':').map(Number);
+      const r = new Date(); r.setHours(hh,mm,0,0); return now >= r;
+    });
+    document.getElementById('medicineList').innerHTML = !due.length
+      ? '<p style="color:#34D399;font-size:.85rem;" class="mb-0"><i class="fa-solid fa-circle-check me-1"></i>All medicines taken today!</p>'
+      : due.map(m => `<div class="med-row" id="medRow${m.id}">
+          <div><div class="med-name">${m.medicineName}</div><div class="med-meta">${m.dosage} · ${to12Hr(m.reminderTime)}</div></div>
+          <button class="btn-took" onclick="markTaken(${m.id})"><i class="fa-solid fa-check me-1"></i>Took It</button>
+        </div>`).join('');
+  } catch { document.getElementById('medicineList').innerHTML = '<p class="text-danger small">Failed to load.</p>'; }
 
-        // Find medicine IDs already taken today
-        const takenTodayIds = new Set();
-        logs.forEach(l => {
-            if (l.status === 'TAKEN' && l.medicine && l.medicine.id) {
-                const takenDate = new Date(l.takenAt || l.createdAt);
-                if (takenDate.toDateString() === todayStr) {
-                    takenTodayIds.add(l.medicine.id);
-                }
-            }
-        });
-
-        // Show only medicines whose reminder time has passed and not yet taken today
-        const dueMeds = meds.filter(m => {
-            if (takenTodayIds.has(m.id)) return false;
-            if (!m.reminderTime) return true;
-            const [h, min] = m.reminderTime.split(':').map(Number);
-            const reminderDate = new Date();
-            reminderDate.setHours(h, min, 0, 0);
-            return now >= reminderDate;
-        });
-
-        if (dueMeds.length === 0) {
-            document.getElementById('medicineList').innerHTML =
-                '<p class="text-success small mb-0"><i class="fa-solid fa-circle-check"></i> All medicines taken for today!</p>';
-        } else {
-            let html = '';
-            dueMeds.forEach(m => {
-                html += '<div class="d-flex justify-content-between align-items-center border-bottom py-2" id="medRow' + m.id + '">'
-                    + '<div><strong>' + m.medicineName + '</strong><br>'
-                    + '<small class="text-muted">' + m.dosage + ' · ' + convertTo12Hr(m.reminderTime) + '</small></div>'
-                    + '<button class="btn btn-sm btn-success" onclick="markTaken(' + m.id + ')">I Took It ✓</button>'
-                    + '</div>';
-            });
-            document.getElementById('medicineList').innerHTML = html;
-        }
-    } catch (e) {
-        document.getElementById('medicineList').innerHTML = '<p class="text-danger small">Failed to load medicines.</p>';
+  /* Health */
+  try {
+    const hl = await apiGet('/api/patient/health/latest?patientId=' + auth.userId);
+    if (hl?.id) {
+      document.getElementById('healthStatus').textContent = hl.alertStatus || 'OK';
+      document.getElementById('alertCount').textContent = ['CRITICAL','WARNING'].includes(hl.alertStatus) ? 1 : 0;
+      document.getElementById('healthLatest').innerHTML = `
+        <div class="health-grid">
+          <div class="health-cell"><span class="hc-lbl">BP</span><span class="hc-val">${hl.bpSystolic}/${hl.bpDiastolic}</span></div>
+          <div class="health-cell"><span class="hc-lbl">Sugar</span><span class="hc-val">${hl.sugarLevel}</span></div>
+          <div class="health-cell"><span class="hc-lbl">Weight</span><span class="hc-val">${hl.weight||'--'} kg</span></div>
+          <div class="health-cell"><span class="hc-lbl">Pulse</span><span class="hc-val">${hl.pulseRate}</span></div>
+          <div class="health-cell"><span class="hc-lbl">Temp</span><span class="hc-val">${hl.temperature}°</span></div>
+          <div class="health-cell"><span class="hc-lbl">Status</span>${badge(hl.alertStatus)}</div>
+        </div>
+        <p style="color:#475569;font-size:.73rem;" class="mt-2 mb-0">Logged: ${hl.loggedAt||''}</p>`;
+    } else {
+      document.getElementById('healthLatest').innerHTML = '<p class="text-muted small">No health logs yet.</p>';
+      document.getElementById('healthStatus').textContent = 'N/A';
     }
+  } catch {
+    document.getElementById('healthLatest').innerHTML = '<p class="text-muted small">No health logs yet.</p>';
+    document.getElementById('healthStatus').textContent = 'N/A';
+  }
 
-    // Latest Health
-    try {
-        const health = await apiGet('/api/patient/health/latest?patientId=' + auth.userId);
-        if (health && health.id) {
-            document.getElementById('healthStatus').innerHTML = getStatusBadge(health.alertStatus);
-            document.getElementById('alertCount').textContent =
-                (health.alertStatus === 'CRITICAL' || health.alertStatus === 'WARNING') ? 1 : 0;
+  /* Appointments */
+  try {
+    const appts = await apiGet('/api/patient/appointments?patientId=' + auth.userId);
+    document.getElementById('apptCount').textContent = appts.length;
+    document.getElementById('apptList').innerHTML = !appts.length
+      ? '<p class="text-muted small">No appointments yet. <a href="doctors.html" style="color:#22D3EE;">Find a doctor →</a></p>'
+      : appts.slice(0,5).map(a => `<div class="appt-row">
+          <div><div class="appt-doc">${a.doctorName}</div><div class="appt-spec">${a.speciality}</div></div>
+          ${badge(a.status)}</div>`).join('');
+  } catch { document.getElementById('apptList').innerHTML = '<p class="text-danger small">Failed to load.</p>'; }
 
-            document.getElementById('healthLatest').innerHTML =
-                '<div class="row text-center g-2">'
-                + '<div class="col-4"><small class="text-muted">BP</small><h6>' + health.bpSystolic + '/' + health.bpDiastolic + '</h6></div>'
-                + '<div class="col-4"><small class="text-muted">Sugar</small><h6>' + health.sugarLevel + '</h6></div>'
-                + '<div class="col-4"><small class="text-muted">Weight</small><h6>' + (health.weight || '--') + ' kg</h6></div>'
-                + '<div class="col-4"><small class="text-muted">Pulse</small><h6>' + health.pulseRate + '</h6></div>'
-                + '<div class="col-4"><small class="text-muted">Temp</small><h6>' + health.temperature + '</h6></div>'
-                + '<div class="col-4"><small class="text-muted">Status</small><h6>' + getStatusBadge(health.alertStatus) + '</h6></div>'
-                + '</div>'
-                + '<p class="text-muted small mt-2 mb-0">Logged: ' + formatDate(health.loggedAt) + '</p>';
-        } else {
-            document.getElementById('healthLatest').innerHTML = '<p class="text-muted small">No health logs yet.</p>';
-            document.getElementById('healthStatus').textContent = 'N/A';
-        }
-    } catch (e) {
-        document.getElementById('healthLatest').innerHTML = '<p class="text-muted small">No health logs yet.</p>';
-        document.getElementById('healthStatus').textContent = 'N/A';
-    }
-
-    // Appointments
-    try {
-        const appts = await apiGet('/api/patient/appointments?patientId=' + auth.userId);
-        document.getElementById('apptCount').textContent = appts.length;
-
-        if (appts.length === 0) {
-            document.getElementById('apptList').innerHTML = '<p class="text-muted small">No appointments yet.</p>';
-        } else {
-            let html = '';
-            appts.slice(0, 5).forEach(a => {
-                html += '<div class="d-flex justify-content-between align-items-center border-bottom py-2">'
-                    + '<div><strong>' + a.doctorName + '</strong><br><small class="text-muted">' + a.speciality + '</small></div>'
-                    + getStatusBadge(a.status)
-                    + '</div>';
-            });
-            document.getElementById('apptList').innerHTML = html;
-        }
-    } catch (e) {
-        document.getElementById('apptList').innerHTML = '<p class="text-danger small">Failed to load appointments.</p>';
-    }
-
-    // Telegram
-    try {
-        const status = await apiGet('/api/telegram/status/' + auth.userId);
-        if (status.linked) {
-            document.getElementById('telegramSection').innerHTML =
-                '<p class="text-success mb-0"><i class="fa-solid fa-circle-check"></i> Telegram Connected</p>';
-        } else {
-            document.getElementById('telegramSection').innerHTML =
-                '<p class="text-muted small">Link Telegram to receive medicine reminders.</p>'
-                + '<button class="btn btn-primary btn-sm" onclick="linkTelegram()">Generate Link Code</button>'
-                + '<div id="telegramCode" class="mt-2"></div>';
-        }
-    } catch (e) {
-        document.getElementById('telegramSection').innerHTML =
-            '<p class="text-muted small">Unable to check Telegram status.</p>';
-    }
+  /* Telegram */
+  try {
+    const s = await apiGet('/api/telegram/status/' + auth.userId);
+    document.getElementById('telegramSection').innerHTML = s.linked
+      ? '<p style="color:#34D399;" class="mb-0"><i class="fa-solid fa-circle-check me-1"></i>Telegram Connected</p>'
+      : '<p class="text-muted small mb-2">Link Telegram for medicine reminders.</p>'
+        + '<button class="btn-took" onclick="linkTelegram()">Generate Link Code</button>'
+        + '<div id="telegramCode" class="mt-2"></div>';
+  } catch { document.getElementById('telegramSection').innerHTML = '<p class="text-muted small">Unable to check.</p>'; }
 }
 
 async function markTaken(id) {
-    try {
-        await apiPost('/api/patient/medicines/' + id + '/taken?patientId=' + auth.userId, {});
-        showSuccess('Marked as taken!');
-        const row = document.getElementById('medRow' + id);
-        if (row) row.remove();
-        const list = document.getElementById('medicineList');
-        if (list && list.querySelectorAll('[id^="medRow"]').length === 0) {
-            list.innerHTML = '<p class="text-success small mb-0"><i class="fa-solid fa-circle-check"></i> All medicines taken for today!</p>';
-        }
-    } catch (e) {
-        showError('Failed to update medicine status.');
-    }
+  try {
+    await apiPost('/api/patient/medicines/' + id + '/taken?patientId=' + auth.userId, {});
+    showSuccess('Marked as taken!');
+    document.getElementById('medRow' + id)?.remove();
+    if (!document.querySelector('[id^="medRow"]'))
+      document.getElementById('medicineList').innerHTML =
+        '<p style="color:#34D399;font-size:.85rem;" class="mb-0"><i class="fa-solid fa-circle-check me-1"></i>All medicines taken today!</p>';
+  } catch { showError('Failed to update.'); }
 }
 
 async function linkTelegram() {
-    try {
-        const data = await apiGet('/api/telegram/generate/' + auth.userId);
-        document.getElementById('telegramCode').innerHTML =
-            '<div class="alert alert-info small mb-0">'
-            + 'Open <strong>@' + data.botUsername + '</strong> on Telegram and send code: <strong>' + data.code + '</strong>'
-            + '</div>';
-    } catch (e) {
-        showError('Failed to generate Telegram code.');
-    }
+  try {
+    const d = await apiGet('/api/telegram/generate/' + auth.userId);
+    document.getElementById('telegramCode').innerHTML =
+      `<div class="alert alert-info small mb-0 mt-2">Open <strong>@${d.botUsername}</strong> on Telegram and send: <strong>${d.code}</strong></div>`;
+  } catch { showError('Failed to generate code.'); }
 }
 
 loadDashboard();
 </script>
-
 </body>
 </html>
