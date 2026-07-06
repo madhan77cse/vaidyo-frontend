@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report Reader - Vaidyo</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+/* ══════════════════════════════════════════
+   BASE & DARK BACKGROUND
+══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #060D1F;
+  background-image:
+    radial-gradient(ellipse 700px 500px at 0%   0%,   rgba(6,182,212,.13)  0%, transparent 65%),
+    radial-gradient(ellipse 600px 400px at 100% 0%,   rgba(139,92,246,.11) 0%, transparent 60%),
+    radial-gradient(ellipse 500px 400px at 0%   100%, rgba(16,185,129,.09) 0%, transparent 60%),
+    radial-gradient(ellipse 600px 350px at 100% 80%,  rgba(239,68,68,.07)  0%, transparent 55%);
+  color: #E2E8F0;
+  overflow-x: hidden;
+}
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(6,182,212,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,182,212,.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ══════════════════════════════════════════
+   LAYOUT — sidebar + main
+══════════════════════════════════════════ */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ══════════════════════════════════════════
+   FIXED LEFT SIDEBAR
+══════════════════════════════════════════ */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: rgba(8,15,35,.92);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(6,182,212,.12);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-brand {
+  padding: 24px 20px 20px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  flex-shrink: 0;
+}
+.sidebar-brand .brand-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg,#0E7490,#2563EB);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1rem;
+}
+.sidebar-brand span { font-weight: 700; font-size: 1.1rem; color: #fff; }
+
+.sidebar-user {
+  margin: 14px 14px 6px;
+  background: rgba(6,182,212,.08);
+  border: 1px solid rgba(6,182,212,.15);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.user-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg,#0E7490,#7C3AED);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: .85rem; color: #fff; flex-shrink: 0;
+}
+.user-name  { font-size: .8rem; font-weight: 600; color: #E2E8F0; line-height: 1.2; }
+.user-role  { font-size: .68rem; color: #64748B; }
+
+.nav-label {
+  font-size: .62rem; font-weight: 700; letter-spacing: .8px;
+  text-transform: uppercase; color: #334155;
+  padding: 14px 20px 6px;
+}
+
+.sidebar-nav { flex: 1; padding: 4px 10px; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  color: rgba(255,255,255,.55);
+  font-size: .85rem; font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 2px;
+  transition: all .2s ease;
+  cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-item i { width: 18px; text-align: center; font-size: .9rem; flex-shrink: 0; }
+.nav-item:hover {
+  background: rgba(255,255,255,.06);
+  color: #fff;
+}
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(14,116,144,.3), rgba(37,99,235,.2));
+  color: #22D3EE;
+  border: 1px solid rgba(6,182,212,.2);
+}
+.nav-item.active i { color: #22D3EE; }
+
+.nav-sos {
+  margin: 8px 10px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7F1D1D, #DC2626);
+  color: #fff; font-size: .85rem; font-weight: 700;
+  text-decoration: none; border: none; cursor: pointer;
+  animation: sos-glow 2.5s ease-in-out infinite;
+  transition: transform .2s ease;
+}
+.nav-sos:hover { transform: scale(1.02); color: #fff; }
+.nav-sos i { font-size: 1rem; }
+@keyframes sos-glow {
+  0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,.5); }
+  50%      { box-shadow: 0 0 0 10px rgba(220,38,38,0); }
+}
+
+.nav-blood {
+  margin: 4px 10px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #881337, #E11D48);
+  color: #fff; font-size: .85rem; font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-blood:hover { filter: brightness(1.1); color: #fff; }
+
+.nav-ambulance {
+  margin: 4px 10px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #78350F, #D97706);
+  color: #fff; font-size: .85rem; font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-ambulance:hover { filter: brightness(1.1); color: #fff; }
+
+.sidebar-footer {
+  padding: 12px 10px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  flex-shrink: 0;
+}
+.btn-logout {
+  width: 100%; padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(220,38,38,.1);
+  border: 1px solid rgba(220,38,38,.2);
+  color: #F87171; font-size: .82rem; font-weight: 600;
+  cursor: pointer; transition: all .2s ease;
+  display: flex; align-items: center; gap: 10px;
+}
+.btn-logout:hover { background: rgba(220,38,38,.2); }
+
+.sidebar-toggle {
+  display: none;
+  position: fixed; top: 14px; left: 14px; z-index: 200;
+  width: 40px; height: 40px; border-radius: 10px;
+  background: rgba(8,15,35,.9); border: 1px solid rgba(6,182,212,.2);
+  color: #fff; font-size: 1rem; cursor: pointer;
+  align-items: center; justify-content: center;
+}
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 99;
+  background: rgba(0,0,0,.5);
+}
+
+/* ══════════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════════ */
+.main-content {
+  margin-left: 240px;
+  flex: 1;
+  padding: 28px 28px 40px;
+  min-width: 0;
+}
+
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.d1 { transition-delay: .08s; } .d2 { transition-delay: .16s; }
+.d3 { transition-delay: .24s; } .d4 { transition-delay: .32s; }
+
+/* ══════════════════════════════════════════
+   AI PAGE HEADER BANNER
+══════════════════════════════════════════ */
+.ai-banner {
+  background: linear-gradient(135deg, #312E81 0%, #4F46E5 45%, #0E7490 100%);
+  border-radius: 20px; padding: 28px 32px; color: #fff;
+  position: relative; overflow: hidden; margin-bottom: 24px;
+  border: 1px solid rgba(255,255,255,.07);
+}
+.ai-banner::after {
+  content:''; position:absolute;
+  width:260px; height:260px; border-radius:50%;
+  border:1px solid rgba(255,255,255,.06);
+  top:-80px; right:-60px;
+  animation: ring 5s ease-in-out infinite;
+}
+@keyframes ring { 0%,100%{transform:scale(1);opacity:.4;} 50%{transform:scale(1.2);opacity:.1;} }
+.ai-banner h3 { font-weight:800; font-size:1.5rem; margin-bottom:4px; position:relative; z-index:1; }
+.ai-banner p  { opacity:.75; margin:0; font-size:.88rem; position:relative; z-index:1; }
+
+/* ══════════════════════════════════════════
+   SECTION CARDS (shared with dashboard)
+══════════════════════════════════════════ */
+.section-card {
+  background: rgba(13,20,45,.75);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px; padding: 22px;
+  transition: border-color .3s, box-shadow .3s;
+}
+.section-card:hover {
+  border-color: rgba(6,182,212,.2);
+  box-shadow: 0 6px 24px rgba(6,182,212,.07);
+}
+.section-card h5 {
+  font-weight:700; font-size:.95rem; color:#E2E8F0;
+  margin-bottom:14px; display:flex; align-items:center; gap:8px;
+}
+
+.form-label-dark {
+  font-size: .82rem; font-weight: 600; color: #94A3B8;
+  margin-bottom: 8px; display: block;
+}
+
+/* Upload area */
+.upload-area-dark {
+  border: 2px dashed rgba(255,255,255,.14);
+  border-radius: 14px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s ease;
+  background: rgba(255,255,255,.02);
+}
+.upload-area-dark:hover,
+.upload-area-dark.dragover {
+  border-color: rgba(79,70,229,.5);
+  background: rgba(79,70,229,.06);
+}
+.upload-area-dark i {
+  font-size: 2.2rem;
+  color: #6366F1;
+  margin-bottom: 12px;
+}
+.upload-area-dark .upload-title {
+  font-size: .9rem; font-weight: 600; color: #E2E8F0; margin-bottom: 4px;
+}
+.upload-area-dark .upload-sub {
+  font-size: .76rem; color: #475569;
+}
+
+.file-preview {
+  display: none;
+  align-items: center; gap: 12px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-top: 14px;
+  font-size: .85rem;
+}
+.file-preview i { color: #6366F1; font-size: 1.2rem; }
+.file-preview .file-name { color: #E2E8F0; font-weight: 600; }
+.file-preview .file-remove {
+  margin-left: auto; color: #F87171; cursor: pointer; font-size: .8rem;
+}
+
+/* Primary action button */
+.btn-ai-action {
+  background: linear-gradient(135deg, #4F46E5, #0E7490);
+  color: #fff; border: none; border-radius: 10px;
+  font-weight: 600; font-size: .9rem; padding: 13px 20px;
+  width: 100%; transition: all .2s ease;
+}
+.btn-ai-action:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-ai-action:disabled { opacity: .45; cursor: not-allowed; transform: none; filter: none; }
+
+/* Result subsections */
+.result-block h6 {
+  font-size: .82rem; font-weight: 700; color: #22D3EE;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+.result-block p { color: #94A3B8; font-size: .85rem; }
+
+.abnormal-box {
+  background: rgba(217,119,6,.1);
+  border: 1px solid rgba(217,119,6,.25);
+  border-left: 3px solid #D97706;
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: #FCD34D;
+  font-size: .84rem;
+}
+
+/* Disclaimer */
+.disclaimer-dark {
+  background: rgba(220,38,38,.1);
+  border: 1px solid rgba(220,38,38,.25);
+  border-left: 3px solid #DC2626;
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: #FCA5A5;
+  font-size: .82rem;
+  font-weight: 500;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+
+/* Spinner */
+.ai-spinner {
+  width: 34px; height: 34px;
+  border: 3px solid rgba(6,182,212,.15);
+  border-top-color: #22D3EE;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); transition: transform .3s ease; }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.open { display: block; }
+  .sidebar-toggle { display: flex; }
+  .main-content { margin-left: 0; padding: 20px 16px 40px; padding-top: 64px; }
+}
+</style>
+</head>
+<body>
+
+<button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="app-layout">
+
+  <!-- ══ FIXED LEFT SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+      <span>Vaidyo</span>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userInitial">M</div>
+      <div>
+        <div class="user-name" id="userName">Patient</div>
+        <div class="user-role">Patient</div>
+      </div>
+    </div>
+
+    <div class="nav-label">Main Menu</div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item">
+        <i class="fa-solid fa-house"></i> Dashboard
+      </a>
+      <a href="doctors.html" class="nav-item">
+        <i class="fa-solid fa-user-doctor"></i> Find Doctors
+      </a>
+      <a href="appointments.html" class="nav-item">
+        <i class="fa-solid fa-calendar-check"></i> Appointments
+      </a>
+      <a href="medicines.html" class="nav-item">
+        <i class="fa-solid fa-pills"></i> Medicines
+      </a>
+      <a href="health.html" class="nav-item">
+        <i class="fa-solid fa-heart-pulse"></i> Health Logs
+      </a>
+    </nav>
+
+    <div class="nav-label">⚠ Important</div>
+    <a href="emergency.html" class="nav-sos">
+      <i class="fa-solid fa-bell"></i> Emergency SOS
+    </a>
+    <a href="blood-donation.html" class="nav-blood">
+      <i class="fa-solid fa-droplet"></i> Blood Donation
+    </a>
+    <a href="ambulance.html" class="nav-ambulance">
+      <i class="fa-solid fa-truck-medical"></i> Book Ambulance
+    </a>
+
+    <div class="nav-label">AI Tools</div>
+    <nav class="sidebar-nav">
+      <a href="symptom-checker.html" class="nav-item">
+        <i class="fa-solid fa-robot"></i> Symptom Checker
+      </a>
+      <a href="report-reader.html" class="nav-item active">
+        <i class="fa-solid fa-file-medical"></i> Report Reader
+      </a>
+      <a href="food-recommendation.html" class="nav-item">
+        <i class="fa-solid fa-apple-alt"></i> Food Guide
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ══ MAIN CONTENT ══ -->
+  <main class="main-content">
+
+    <!-- AI Banner -->
+    <div class="ai-banner reveal">
+      <h3><i class="fa-solid fa-file-medical me-2"></i>AI Lab Report Reader</h3>
+      <p>Upload your lab report for a plain-language explanation</p>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="section-card mb-4 reveal d1">
+      <label class="form-label-dark">Upload your lab report</label>
+
+      <div class="upload-area-dark" id="uploadArea">
+        <i class="fa-solid fa-folder-open"></i>
+        <div class="upload-title">Click to upload or drag &amp; drop</div>
+        <div class="upload-sub">Accepted: PDF, JPG, PNG — Max 5MB</div>
+        <input type="file" id="reportFile" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+      </div>
+
+      <div class="file-preview" id="filePreview">
+        <i class="fa-solid fa-file-lines"></i>
+        <span class="file-name" id="fileName"></span>
+        <span class="file-remove" id="fileRemove"><i class="fa-solid fa-xmark"></i> Remove</span>
+      </div>
+
+      <button id="readBtn" class="btn-ai-action mt-3" disabled>
+        <i class="fa-solid fa-book-open me-2"></i>Read My Report
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div id="loader" class="text-center my-4" style="display:none;">
+      <div class="ai-spinner"></div>
+      <p style="color:#475569;" class="small mt-2 mb-0">Reading your report...</p>
+    </div>
+
+    <!-- Result Card -->
+    <div id="resultCard" class="section-card mb-4 reveal d2" style="display:none;">
+      <h5><i class="fa-solid fa-file-waveform" style="color:#22D3EE;"></i> Report Summary</h5>
+
+      <div class="result-block mb-3">
+        <h6><i class="fa-solid fa-flask"></i> What was tested</h6>
+        <p id="whatWasTested" class="mb-0"></p>
+      </div>
+
+      <div class="result-block mb-3">
+        <h6><i class="fa-solid fa-chart-simple"></i> What the values mean</h6>
+        <p id="valuesMeaning" class="mb-0"></p>
+      </div>
+
+      <div class="result-block mb-3" id="abnormalBlock" style="display:none;">
+        <h6><i class="fa-solid fa-triangle-exclamation"></i> Values to watch out for</h6>
+        <div class="abnormal-box" id="abnormalValues"></div>
+      </div>
+
+      <div class="result-block mb-3">
+        <h6><i class="fa-solid fa-comment-medical"></i> Overall Summary</h6>
+        <p id="overallSummary" class="mb-0"></p>
+      </div>
+
+      <div class="disclaimer-dark mt-3">
+        <i class="fa-solid fa-triangle-exclamation mt-1"></i>
+        <span>This AI summary is for understanding only. Your doctor's interpretation is the only medically valid opinion.</span>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+if (!checkAuth('PATIENT')) {}
+const auth = getAuth();
+
+document.getElementById('userName').textContent = auth.fullName || 'Patient';
+document.getElementById('userInitial').textContent = (auth.fullName || 'P').charAt(0).toUpperCase();
+
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+});
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+});
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+/* ── Upload handling ── */
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('reportFile');
+const filePreview = document.getElementById('filePreview');
+const fileNameEl = document.getElementById('fileName');
+const readBtn = document.getElementById('readBtn');
+const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
+uploadArea.addEventListener('click', () => fileInput.click());
+
+uploadArea.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadArea.classList.add('dragover');
+});
+uploadArea.addEventListener('dragleave', () => {
+  uploadArea.classList.remove('dragover');
+});
+uploadArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadArea.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  handleFile(file);
+});
+
+fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
+
+function handleFile(file) {
+  if (!file) return;
+
+  const allowed = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+  if (!allowed.includes(file.type)) {
+    showError('Only PDF, JPG, or PNG files are allowed.');
+    return;
+  }
+  if (file.size > MAX_SIZE) {
+    showError('File is too large. Max size is 5MB.');
+    return;
+  }
+
+  fileNameEl.textContent = file.name;
+  filePreview.style.display = 'flex';
+  readBtn.disabled = false;
+}
+
+document.getElementById('fileRemove').addEventListener('click', () => {
+  fileInput.value = '';
+  filePreview.style.display = 'none';
+  readBtn.disabled = true;
+  document.getElementById('resultCard').style.display = 'none';
+});
+
+/* ── Loader / result helpers ── */
+function showLoader(show) {
+  document.getElementById('loader').style.display = show ? 'block' : 'none';
+}
+function hideResult() {
+  document.getElementById('resultCard').style.display = 'none';
+}
+function showResult(data) {
+  document.getElementById('whatWasTested').textContent = data.whatWasTested || 'No data returned.';
+  document.getElementById('valuesMeaning').textContent = data.valuesMeaning || 'No data returned.';
+  document.getElementById('overallSummary').textContent = data.overallSummary || 'No data returned.';
+
+  const abnormalBlock = document.getElementById('abnormalBlock');
+  if (data.abnormalValues) {
+    document.getElementById('abnormalValues').textContent = data.abnormalValues;
+    abnormalBlock.style.display = 'block';
+  } else {
+    abnormalBlock.style.display = 'none';
+  }
+
+  document.getElementById('resultCard').style.display = 'block';
+}
+
+/* ── Main action ── */
+readBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('report', file);
+  formData.append('patientId', auth.userId);
+
+  showLoader(true);
+  hideResult();
+
+  try {
+    const res = await fetch('https://vaidyo-backend.onrender.com/api/report-reader', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+      body: formData
+    });
+
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = {}; }
+
+    if (!res.ok) {
+      showError('Could not read report (status ' + res.status + '). Try again.');
+      return;
+    }
+
+    showResult(data);
+  } catch (err) {
+    showError('Could not read report. Try again.');
+  } finally {
+    showLoader(false);
+  }
+});
+</script>
+</body>
+</html>
