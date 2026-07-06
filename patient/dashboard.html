@@ -9,9 +9,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="../css/style.css">
 <style>
-/* ══════════════════════════════════════════
-   BASE & DARK BACKGROUND
-══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; padding: 0; }
 
@@ -34,19 +31,8 @@ body::before {
   background-size: 60px 60px;
 }
 
-/* ══════════════════════════════════════════
-   LAYOUT — sidebar + main
-══════════════════════════════════════════ */
-.app-layout {
-  display: flex;
-  min-height: 100vh;
-  position: relative;
-  z-index: 1;
-}
+.app-layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
 
-/* ══════════════════════════════════════════
-   FIXED LEFT SIDEBAR
-══════════════════════════════════════════ */
 .sidebar {
   width: 240px;
   flex-shrink: 0;
@@ -57,12 +43,11 @@ body::before {
   top: 0; left: 0; bottom: 0;
   display: flex;
   flex-direction: column;
-  z-index: 100;
+  z-index: 999;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-/* brand */
 .sidebar-brand {
   padding: 24px 20px 20px;
   display: flex; align-items: center; gap: 10px;
@@ -77,7 +62,6 @@ body::before {
 }
 .sidebar-brand span { font-weight: 700; font-size: 1.1rem; color: #fff; }
 
-/* user pill */
 .sidebar-user {
   margin: 14px 14px 6px;
   background: rgba(6,182,212,.08);
@@ -95,15 +79,13 @@ body::before {
 .user-name  { font-size: .8rem; font-weight: 600; color: #E2E8F0; line-height: 1.2; }
 .user-role  { font-size: .68rem; color: #64748B; }
 
-/* nav label */
 .nav-label {
   font-size: .62rem; font-weight: 700; letter-spacing: .8px;
   text-transform: uppercase; color: #334155;
   padding: 14px 20px 6px;
 }
 
-/* nav links */
-.sidebar-nav { flex: 1; padding: 4px 10px; }
+.sidebar-nav { flex: 1; padding: 4px 10px; position: relative; z-index: 1; }
 .nav-item {
   display: flex; align-items: center; gap: 12px;
   padding: 11px 14px;
@@ -114,12 +96,12 @@ body::before {
   margin-bottom: 2px;
   transition: all .2s ease;
   cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+  position: relative;
+  z-index: 1;
+  -webkit-tap-highlight-color: rgba(255,255,255,.15);
 }
 .nav-item i { width: 18px; text-align: center; font-size: .9rem; flex-shrink: 0; }
-.nav-item:hover {
-  background: rgba(255,255,255,.06);
-  color: #fff;
-}
+.nav-item:hover { background: rgba(255,255,255,.06); color: #fff; }
 .nav-item.active {
   background: linear-gradient(135deg, rgba(14,116,144,.3), rgba(37,99,235,.2));
   color: #22D3EE;
@@ -127,7 +109,6 @@ body::before {
 }
 .nav-item.active i { color: #22D3EE; }
 
-/* ── EMERGENCY SOS — special highlighted item ── */
 .nav-sos {
   margin: 8px 10px;
   display: flex; align-items: center; gap: 10px;
@@ -138,6 +119,8 @@ body::before {
   text-decoration: none; border: none; cursor: pointer;
   animation: sos-glow 2.5s ease-in-out infinite;
   transition: transform .2s ease;
+  position: relative; z-index: 1;
+  -webkit-tap-highlight-color: rgba(255,255,255,.15);
 }
 .nav-sos:hover { transform: scale(1.02); color: #fff; }
 .nav-sos i { font-size: 1rem; }
@@ -146,7 +129,6 @@ body::before {
   50%      { box-shadow: 0 0 0 10px rgba(220,38,38,0); }
 }
 
-/* ── Blood Donation — highlighted ── */
 .nav-blood {
   margin: 4px 10px;
   display: flex; align-items: center; gap: 10px;
@@ -156,10 +138,11 @@ body::before {
   color: #fff; font-size: .85rem; font-weight: 600;
   text-decoration: none; border: none; cursor: pointer;
   transition: all .2s ease;
+  position: relative; z-index: 1;
+  -webkit-tap-highlight-color: rgba(255,255,255,.15);
 }
 .nav-blood:hover { filter: brightness(1.1); color: #fff; }
 
-/* ── Ambulance — highlighted ── */
 .nav-ambulance {
   margin: 4px 10px;
   display: flex; align-items: center; gap: 10px;
@@ -169,14 +152,16 @@ body::before {
   color: #fff; font-size: .85rem; font-weight: 600;
   text-decoration: none; border: none; cursor: pointer;
   transition: all .2s ease;
+  position: relative; z-index: 1;
+  -webkit-tap-highlight-color: rgba(255,255,255,.15);
 }
 .nav-ambulance:hover { filter: brightness(1.1); color: #fff; }
 
-/* logout at bottom */
 .sidebar-footer {
   padding: 12px 10px;
   border-top: 1px solid rgba(255,255,255,.06);
   flex-shrink: 0;
+  position: relative; z-index: 1;
 }
 .btn-logout {
   width: 100%; padding: 10px 14px;
@@ -189,24 +174,43 @@ body::before {
 }
 .btn-logout:hover { background: rgba(220,38,38,.2); }
 
-/* mobile toggle */
 .sidebar-toggle {
   display: none;
-  position: fixed; top: 14px; left: 14px; z-index: 200;
+  position: fixed; top: 14px; left: 14px; z-index: 1001;
   width: 40px; height: 40px; border-radius: 10px;
   background: rgba(8,15,35,.9); border: 1px solid rgba(6,182,212,.2);
   color: #fff; font-size: 1rem; cursor: pointer;
   align-items: center; justify-content: center;
 }
+
 .sidebar-overlay {
   display: none;
-  position: fixed; inset: 0; z-index: 99;
+  position: fixed; inset: 0; z-index: 900;
   background: rgba(0,0,0,.5);
+  pointer-events: none;
 }
+.sidebar-overlay.open { display: block; pointer-events: auto; }
 
 /* ══════════════════════════════════════════
-   MAIN CONTENT
+   MOBILE MODE — controlled ENTIRELY by JS
+   via body.is-mobile, not a CSS @media query.
 ══════════════════════════════════════════ */
+body.is-mobile .sidebar {
+  transform: translateX(-100%) !important;
+  transition: transform .3s ease !important;
+}
+body.is-mobile .sidebar.open {
+  transform: translateX(0) !important;
+}
+body.is-mobile .sidebar-toggle {
+  display: flex !important;
+}
+body.is-mobile .main-content {
+  margin-left: 0 !important;
+  padding: 20px 16px 40px !important;
+  padding-top: 64px !important;
+}
+
 .main-content {
   margin-left: 240px;
   flex: 1;
@@ -214,21 +218,12 @@ body::before {
   min-width: 0;
 }
 
-/* ══════════════════════════════════════════
-   SCROLL REVEAL
-══════════════════════════════════════════ */
-.reveal {
-  opacity: 0; transform: translateY(32px);
-  transition: opacity .55s ease, transform .55s ease;
-}
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity .55s ease, transform .55s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 .d1 { transition-delay: .08s; } .d2 { transition-delay: .16s; }
 .d3 { transition-delay: .24s; } .d4 { transition-delay: .32s; }
 .d5 { transition-delay: .40s; } .d6 { transition-delay: .48s; }
 
-/* ══════════════════════════════════════════
-   WELCOME BANNER
-══════════════════════════════════════════ */
 .welcome-banner {
   background: linear-gradient(135deg, #0C1445 0%, #0E7490 40%, #2563EB 75%, #7C3AED 100%);
   border-radius: 20px; padding: 28px 32px; color: #fff;
@@ -251,9 +246,6 @@ body::before {
 .welcome-banner h3 { font-weight:800; font-size:1.5rem; margin-bottom:4px; }
 .welcome-banner p  { opacity:.72; margin:0; font-size:.88rem; }
 
-/* ══════════════════════════════════════════
-   STAT CARDS
-══════════════════════════════════════════ */
 .stat-card-v {
   border-radius: 16px; padding: 20px;
   display: flex; align-items: center; gap: 14px;
@@ -284,9 +276,6 @@ body::before {
 .stat-val { font-size:1.5rem; font-weight:800; color:#fff; line-height:1.1; }
 .stat-lbl { font-size:.72rem; color:rgba(255,255,255,.6); margin-top:2px; }
 
-/* ══════════════════════════════════════════
-   SECTION CARDS
-══════════════════════════════════════════ */
 .section-card {
   background: rgba(13,20,45,.75);
   backdrop-filter: blur(14px);
@@ -294,10 +283,7 @@ body::before {
   border-radius: 16px; padding: 22px; height:100%;
   transition: border-color .3s, box-shadow .3s;
 }
-.section-card:hover {
-  border-color: rgba(6,182,212,.2);
-  box-shadow: 0 6px 24px rgba(6,182,212,.07);
-}
+.section-card:hover { border-color: rgba(6,182,212,.2); box-shadow: 0 6px 24px rgba(6,182,212,.07); }
 .section-card h5 {
   font-weight:700; font-size:.88rem; color:#E2E8F0;
   margin-bottom:14px; display:flex; align-items:center; gap:8px;
@@ -305,7 +291,6 @@ body::before {
 }
 .section-card h5 i { color:#22D3EE; }
 
-/* rows */
 .med-row, .appt-row {
   display:flex; justify-content:space-between; align-items:center;
   border-bottom:1px solid rgba(255,255,255,.04); padding:9px 0;
@@ -314,7 +299,6 @@ body::before {
 .med-name, .appt-doc { font-weight:600; font-size:.85rem; color:#F1F5F9; }
 .med-meta, .appt-spec { font-size:.73rem; color:#475569; }
 
-/* health grid */
 .health-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
 .health-cell {
   background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
@@ -323,7 +307,6 @@ body::before {
 .hc-lbl { font-size:.68rem; color:#475569; display:block; }
 .hc-val { font-size:.95rem; font-weight:700; color:#E2E8F0; }
 
-/* badges */
 .badge-status { display:inline-block; padding:3px 10px; border-radius:50px; font-size:.7rem; font-weight:600; }
 .badge-normal    { background:rgba(5,150,105,.18);  color:#34D399; }
 .badge-warning   { background:rgba(217,119,6,.18);  color:#FCD34D; }
@@ -334,9 +317,6 @@ body::before {
 .badge-completed { background:rgba(37,99,235,.18);  color:#93C5FD; }
 .badge-confirmed { background:rgba(5,150,105,.18);  color:#34D399; }
 
-/* ══════════════════════════════════════════
-   SECTION LABEL DIVIDERS
-══════════════════════════════════════════ */
 .section-label {
   font-size:.68rem; font-weight:700; letter-spacing:.7px;
   text-transform:uppercase; color:#334155;
@@ -346,9 +326,6 @@ body::before {
 .section-label i { color:#22D3EE; }
 .section-label::after { content:''; flex:1; height:1px; background:rgba(255,255,255,.05); }
 
-/* ══════════════════════════════════════════
-   QUICK ACTION CARDS
-══════════════════════════════════════════ */
 .quick-card {
   border-radius:16px; padding:22px 12px;
   text-align:center; text-decoration:none;
@@ -409,7 +386,6 @@ body::before {
 .qc-purple  .qc-icon { background:rgba(124,58,237,.25); }
 .qc-purple:hover { box-shadow:0 14px 36px rgba(124,58,237,.3); }
 
-/* took-it button */
 .btn-took {
   background:linear-gradient(135deg,#059669,#34D399);
   color:#fff; border:none; border-radius:8px;
@@ -417,37 +393,23 @@ body::before {
   cursor:pointer; white-space:nowrap; transition:all .2s;
 }
 .btn-took:hover { transform:scale(1.05); box-shadow:0 4px 12px rgba(5,150,105,.4); }
-
-/* ══════════════════════════════════════════
-   RESPONSIVE MOBILE
-══════════════════════════════════════════ */
-@media (max-width: 768px) {
-  .sidebar { transform: translateX(-100%); transition: transform .3s ease; }
-  .sidebar.open { transform: translateX(0); }
-  .sidebar-overlay.open { display: block; }
-  .sidebar-toggle { display: flex; }
-  .main-content { margin-left: 0; padding: 20px 16px 40px; padding-top: 64px; }
-}
 </style>
 </head>
 <body>
 
-<!-- Mobile toggle -->
 <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <div class="app-layout">
 
-  <!-- ══ FIXED LEFT SIDEBAR ══ -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
   <aside class="sidebar" id="sidebar">
 
-    <!-- Brand -->
     <div class="sidebar-brand">
       <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
       <span>Vaidyo</span>
     </div>
 
-    <!-- User pill -->
     <div class="sidebar-user">
       <div class="user-avatar" id="userInitial">M</div>
       <div>
@@ -456,7 +418,6 @@ body::before {
       </div>
     </div>
 
-    <!-- 1. Main Menu -->
     <div class="nav-label">Main Menu</div>
     <nav class="sidebar-nav">
       <a href="dashboard.html" class="nav-item active">
@@ -476,7 +437,6 @@ body::before {
       </a>
     </nav>
 
-    <!-- 2. Important / Emergency -->
     <div class="nav-label">⚠ Important</div>
     <a href="emergency.html" class="nav-sos">
       <i class="fa-solid fa-bell"></i> Emergency SOS
@@ -488,7 +448,6 @@ body::before {
       <i class="fa-solid fa-truck-medical"></i> Book Ambulance
     </a>
 
-    <!-- 3. AI Tools -->
     <div class="nav-label">AI Tools</div>
     <nav class="sidebar-nav">
       <a href="symptom-checker.html" class="nav-item">
@@ -502,7 +461,6 @@ body::before {
       </a>
     </nav>
 
-    <!-- Logout -->
     <div class="sidebar-footer">
       <button class="btn-logout" onclick="logout()">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
@@ -511,10 +469,8 @@ body::before {
 
   </aside>
 
-  <!-- ══ MAIN CONTENT ══ -->
   <main class="main-content">
 
-    <!-- Welcome -->
     <div class="welcome-banner reveal">
       <div class="wb-inner d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
@@ -525,7 +481,6 @@ body::before {
       </div>
     </div>
 
-    <!-- Stat cards -->
     <div class="row g-3 mb-4">
       <div class="col-6 col-md-3 reveal d1">
         <div class="stat-card-v sc-blue">
@@ -553,7 +508,6 @@ body::before {
       </div>
     </div>
 
-    <!-- Info sections -->
     <div class="row g-3 mb-4">
       <div class="col-md-6 reveal d1">
         <div class="section-card">
@@ -581,7 +535,6 @@ body::before {
       </div>
     </div>
 
-    <!-- Quick Actions -->
     <div class="section-label reveal"><i class="fa-solid fa-bolt"></i> Quick Actions</div>
     <div class="row g-3 mb-4">
       <div class="col-6 col-md-4 col-lg-2 reveal d1">
@@ -622,7 +575,6 @@ body::before {
       </div>
     </div>
 
-    <!-- Find Care -->
     <div class="section-label reveal"><i class="fa-solid fa-stethoscope"></i> Find Care</div>
     <div class="row g-3 mb-4">
       <div class="col-6 col-md-3 reveal d1">
@@ -663,18 +615,27 @@ body::before {
 if (!checkAuth('PATIENT')) {}
 const auth = getAuth();
 
-/* ── User info in sidebar ── */
 document.getElementById('userName').textContent = auth.fullName || 'Patient';
 document.getElementById('userInitial').textContent = (auth.fullName || 'P').charAt(0).toUpperCase();
 
-/* ── Greeting ── */
 const h = new Date().getHours();
 document.getElementById('welcomeMsg').textContent =
   (h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening') + ', ' + (auth.fullName || 'Patient') + '!';
 
-/* ── Mobile sidebar ── */
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('sidebarOverlay');
+
+const MOBILE_BREAKPOINT = 991;
+function applyResponsiveMode() {
+  if (window.innerWidth <= MOBILE_BREAKPOINT) {
+    document.body.classList.add('is-mobile');
+  } else {
+    document.body.classList.remove('is-mobile');
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  }
+}
+
 document.getElementById('sidebarToggle').addEventListener('click', () => {
   sidebar.classList.toggle('open');
   overlay.classList.toggle('open');
@@ -683,14 +644,22 @@ overlay.addEventListener('click', () => {
   sidebar.classList.remove('open');
   overlay.classList.remove('open');
 });
+document.querySelectorAll('.sidebar a').forEach(link => {
+  link.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  });
+});
 
-/* ── Scroll reveal ── */
+applyResponsiveMode();
+window.addEventListener('resize', applyResponsiveMode);
+window.addEventListener('orientationchange', applyResponsiveMode);
+
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-/* ── Helpers ── */
 function to12Hr(t) {
   if (!t) return '-';
   const [hh, mm] = t.split(':').map(Number);
@@ -703,10 +672,8 @@ function badge(s) {
   return `<span class="badge-status ${m[s]||'badge-pending'}">${s||'—'}</span>`;
 }
 
-/* ── Load data ── */
 async function loadDashboard() {
 
-  /* Medicines */
   try {
     const meds = await apiGet('/api/patient/medicines?patientId=' + auth.userId);
     const logs = await apiGet('/api/patient/medicines/logs?patientId=' + auth.userId);
@@ -731,7 +698,6 @@ async function loadDashboard() {
         </div>`).join('');
   } catch { document.getElementById('medicineList').innerHTML = '<p class="text-danger small">Failed to load.</p>'; }
 
-  /* Health */
   try {
     const hl = await apiGet('/api/patient/health/latest?patientId=' + auth.userId);
     if (hl?.id) {
@@ -756,7 +722,6 @@ async function loadDashboard() {
     document.getElementById('healthStatus').textContent = 'N/A';
   }
 
-  /* Appointments */
   try {
     const appts = await apiGet('/api/patient/appointments?patientId=' + auth.userId);
     document.getElementById('apptCount').textContent = appts.length;
@@ -767,7 +732,6 @@ async function loadDashboard() {
           ${badge(a.status)}</div>`).join('');
   } catch { document.getElementById('apptList').innerHTML = '<p class="text-danger small">Failed to load.</p>'; }
 
-  /* Telegram */
   try {
     const s = await apiGet('/api/telegram/status/' + auth.userId);
     document.getElementById('telegramSection').innerHTML = s.linked
