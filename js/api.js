@@ -166,14 +166,15 @@ async function deleteEmergencyContact(id) {
 }
 
 // --- Blood donation ---
+
 async function registerDonor(data) {
-    return await apiPost('/api/blood/register', data);
+    return await apiPost('/api/patient/blood-donor/profile', data);
 }
 
 async function searchDonors(bloodGroup, location) {
-    return await apiGet(`/api/blood/search?bloodGroup=${bloodGroup}&location=${encodeURIComponent(location)}`);
+    const params = new URLSearchParams({ bloodGroup, location });
+    return await apiGet(`/api/patient/blood-donor/search?${params.toString()}`);
 }
-
 // --- Ambulance ---
 async function requestAmbulance(data) {
     return await apiPost('/api/ambulance/request', data);
