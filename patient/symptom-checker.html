@@ -520,10 +520,46 @@ function showLoader(show) {
 function hideResult() {
   document.getElementById('resultCard').style.display = 'none';
 }
+
 function showResult(data) {
-  document.getElementById('possibleCauses').textContent = data.possibleCauses || 'No data returned.';
-  document.getElementById('guidance').textContent = data.guidance || 'No data returned.';
-  document.getElementById('whenToSeeDoctor').textContent = data.whenToSeeDoctor || 'No data returned.';
+  // Backend returns full AI text in data.analysis
+  const fullText = data.analysis || data.response || '';
+
+  if (!fullText) {
+    document.getElementById('possibleCauses').textContent = 'No response from AI.';
+    document.getElementById('guidance').textContent = '';
+    document.getElementById('whenToSeeDoctor').textContent = '';
+    document.getElementById('resultCard').style.display = 'block';
+    return;
+  }
+
+  // Split into paragraphs and distribute across sections
+  const paragraphs = fullText.split('\n').filter(p => p.trim() !== '');
+
+  // Find sections by keywords
+  const causesLines = [], guidanceLines = [], doctorLines = [];
+  let currentSection = 'causes';
+
+  for (const line of paragraphs) {
+    const lower = line.toLowerCase();
+    if (lower.includes('self-care') || lower.includes('advice') || lower.includes('relief') || lower.includes('general')) {
+      currentSection = 'guidance';
+    } else if (lower.includes('see a doctor') || lower.includes('when to') || lower.includes('urgent') || lower.includes('emergency') || lower.includes('red flag')) {
+      currentSection = 'doctor';
+    }
+
+    if (currentSection === 'causes') causesLines.push(line);
+    else if (currentSection === 'guidance') guidanceLines.push(line);
+    else doctorLines.push(line);
+  }
+
+  document.getElementById('possibleCauses').textContent =
+    causesLines.join('\n') || fullText.substring(0, 300);
+  document.getElementById('guidance').textContent =
+    guidanceLines.join('\n') || 'See full analysis above.';
+  document.getElementById('whenToSeeDoctor').textContent =
+    doctorLines.join('\n') || 'Consult a doctor if symptoms worsen.';
+
   document.getElementById('resultCard').style.display = 'block';
 }
 
@@ -537,12 +573,10 @@ function saveToHistory(symptoms, data) {
 function renderHistory() {
   const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
   const list = document.getElementById('historyList');
-
   if (history.length === 0) {
     list.innerHTML = '<p style="color:#475569;" class="small mb-0">No previous checks yet.</p>';
     return;
   }
-
   list.innerHTML = history.map(item => `
     <div class="history-row">
       <div class="history-date">${item.date}</div>
@@ -562,7 +596,8 @@ document.getElementById('checkBtn').addEventListener('click', async () => {
   hideResult();
 
   try {
-    const data = await apiPost('/api/symptom-checker', { symptoms, patientId: auth.userId });
+    // FIXED: correct endpoint, no patientId needed
+    const data = await apiPost('/api/patient/symptom-checker', { symptoms });
     showResult(data);
     saveToHistory(symptoms, data);
   } catch (err) {

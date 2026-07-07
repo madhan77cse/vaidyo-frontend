@@ -591,13 +591,52 @@ function hideResult() {
   document.getElementById('resultCard').style.display = 'none';
 }
 function showResult(data) {
-  document.getElementById('whatWasTested').textContent = data.whatWasTested || 'No data returned.';
-  document.getElementById('valuesMeaning').textContent = data.valuesMeaning || 'No data returned.';
-  document.getElementById('overallSummary').textContent = data.overallSummary || 'No data returned.';
+  const fullText = data.summary || '';
+
+  if (!fullText) {
+    document.getElementById('whatWasTested').textContent = 'No data returned.';
+    document.getElementById('valuesMeaning').textContent = '';
+    document.getElementById('overallSummary').textContent = '';
+    document.getElementById('abnormalBlock').style.display = 'none';
+    document.getElementById('resultCard').style.display = 'block';
+    return;
+  }
+
+  // Split by double newline into paragraphs
+  const paragraphs = fullText.split('\n\n').filter(p => p.trim());
+
+  const testedLines = [];
+  const meaningLines = [];
+  const summaryLines = [];
+  const abnormalLines = [];
+  let section = 'tested';
+
+  for (const para of paragraphs) {
+    const lower = para.toLowerCase();
+    if (lower.includes('summary') || lower.includes('key finding') || lower.includes('simple term')) {
+      section = 'summary';
+    } else if (lower.includes('outside normal') || lower.includes('abnormal') || lower.includes('explanation of')) {
+      section = 'abnormal';
+    } else if (lower.includes('what the value') || lower.includes('values mean') || lower.includes('general advice') || lower.includes('what to do')) {
+      section = 'meaning';
+    }
+
+    if (section === 'tested') testedLines.push(para);
+    else if (section === 'meaning') meaningLines.push(para);
+    else if (section === 'abnormal') abnormalLines.push(para);
+    else summaryLines.push(para);
+  }
+
+  document.getElementById('whatWasTested').textContent =
+    testedLines.join('\n\n') || fullText.substring(0, 300);
+  document.getElementById('valuesMeaning').textContent =
+    meaningLines.join('\n\n') || 'See full report above.';
+  document.getElementById('overallSummary').textContent =
+    summaryLines.join('\n\n') || '';
 
   const abnormalBlock = document.getElementById('abnormalBlock');
-  if (data.abnormalValues) {
-    document.getElementById('abnormalValues').textContent = data.abnormalValues;
+  if (abnormalLines.length > 0) {
+    document.getElementById('abnormalValues').textContent = abnormalLines.join('\n\n');
     abnormalBlock.style.display = 'block';
   } else {
     abnormalBlock.style.display = 'none';
@@ -612,14 +651,13 @@ readBtn.addEventListener('click', async () => {
   if (!file) return;
 
   const formData = new FormData();
-  formData.append('report', file);
-  formData.append('patientId', auth.userId);
+  formData.append('file', file);  // FIXED: was 'report', backend expects 'file'
 
   showLoader(true);
   hideResult();
 
   try {
-    const res = await fetch('https://vaidyo-backend.onrender.com/api/report-reader', {
+    const res = await fetch('https://vaidyo-backend.onrender.com/api/patient/lab-report', {  // FIXED: correct endpoint
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
       body: formData

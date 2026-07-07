@@ -504,24 +504,37 @@ document.querySelectorAll('#bgSelector .bg-btn').forEach(btn => {
 document.getElementById('searchDonorsBtn').addEventListener('click', async () => {
   const location = document.getElementById('searchLocation').value.trim();
 
-  if (!selectedBloodGroup) {
-    showError('Please select a blood group.');
-    return;
-  }
-  if (!location) {
-    showError('Please enter a location.');
-    return;
-  }
+  if (!selectedBloodGroup) { showError('Please select a blood group.'); return; }
+  if (!location) { showError('Please enter a location.'); return; }
 
   const resultsWrap = document.getElementById('donorResults');
   resultsWrap.innerHTML = '<p style="color:#475569;" class="small mb-0">Searching...</p>';
 
   try {
-    const donors = await apiGet(
-      '/api/blood/search?bloodGroup=' + encodeURIComponent(selectedBloodGroup) +
-      '&location=' + encodeURIComponent(location)
-    );
-    renderDonors(donors || []);
+    // Backend searches by coordinates — use browser geolocation
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const donors = await apiGet(
+          '/api/patient/blood-donor/search?bloodGroup=' + encodeURIComponent(selectedBloodGroup) +
+          '&latitude=' + latitude +
+          '&longitude=' + longitude +
+          '&radiusKm=50'
+        );
+        renderDonors(donors || []);
+      }, async () => {
+        // If geolocation denied, search without coordinates (all matching blood group)
+        const donors = await apiGet(
+          '/api/patient/blood-donor/search?bloodGroup=' + encodeURIComponent(selectedBloodGroup)
+        );
+        renderDonors(donors || []);
+      });
+    } else {
+      const donors = await apiGet(
+        '/api/patient/blood-donor/search?bloodGroup=' + encodeURIComponent(selectedBloodGroup)
+      );
+      renderDonors(donors || []);
+    }
   } catch (err) {
     resultsWrap.innerHTML = '<p class="text-danger small mb-0">Failed to search donors. Try again.</p>';
   }
@@ -533,39 +546,52 @@ function renderDonors(donors) {
     wrap.innerHTML = '<p style="color:#475569;" class="small mb-0">No donors found for this blood group and location.</p>';
     return;
   }
-
   wrap.innerHTML = donors.map(d => `
     <div class="donor-card">
       <div class="blood-badge">${d.bloodGroup}</div>
       <div class="donor-info">
-        <div class="donor-name">${d.name || 'Anonymous Donor'}</div>
+        <div class="donor-name">${d.patientName || 'Anonymous Donor'}</div>
         <div class="donor-meta">
-          <i class="fa-solid fa-location-dot"></i> ${d.location} ·
+          <i class="fa-solid fa-location-dot"></i> ${d.city || d.location || 'Unknown'} ·
           Last donated: ${d.lastDonationDate || 'Not specified'}
         </div>
       </div>
-      ${d.phone ? `<button class="btn-contact-donor" onclick="window.location.href='tel:${d.phone}'"><i class="fa-solid fa-phone me-1"></i>Contact</button>` : ''}
+      ${d.contactNumber ? `<button class="btn-contact-donor" onclick="window.location.href='tel:${d.contactNumber}'"><i class="fa-solid fa-phone me-1"></i>Contact</button>` : ''}
     </div>
   `).join('');
 }
+
+/* ═══ Load my existing profile on register tab ═══ */
+async function loadMyProfile() {
+  try {
+    const profile = await apiGet('/api/patient/blood-donor/profile');
+    if (profile) {
+      document.getElementById('regBloodGroup').value = profile.bloodGroup || 'A+';
+      document.getElementById('regLocation').value = profile.city || '';
+      document.getElementById('regLastDonation').value = profile.lastDonationDate || '';
+      document.getElementById('regAvailable').checked = profile.available !== false;
+      document.getElementById('registeredInfo').style.display = 'block';
+    }
+  } catch (err) {
+    // No profile yet — that's fine
+  }
+}
+loadMyProfile();
 
 /* ═══ Register as donor ═══ */
 document.getElementById('registerBtn').addEventListener('click', async () => {
   const bloodGroup = document.getElementById('regBloodGroup').value;
   const location = document.getElementById('regLocation').value.trim();
-  const lastDonationDate = document.getElementById('regLastDonation').value;
+  const lastDonationDate = document.getElementById('regLastDonation').value || null;
   const available = document.getElementById('regAvailable').checked;
 
-  if (!location) {
-    showError('Please enter your location.');
-    return;
-  }
+  if (!location) { showError('Please enter your location.'); return; }
 
   try {
-    await apiPost('/api/blood/register', {
-      patientId: auth.userId,
+    // FIXED: correct endpoint, correct field names (no patientId needed)
+    await apiPost('/api/patient/blood-donor/profile', {
       bloodGroup,
-      location,
+      city: location,
       lastDonationDate,
       available
     });
