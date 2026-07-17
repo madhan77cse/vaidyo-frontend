@@ -437,17 +437,6 @@ body.is-mobile .main-content {
       </a>
     </nav>
 
-    <div class="nav-label">⚠ Important</div>
-    <a href="emergency.html" class="nav-sos">
-      <i class="fa-solid fa-bell"></i> Emergency SOS
-    </a>
-    <a href="blood-donation.html" class="nav-blood">
-      <i class="fa-solid fa-droplet"></i> Blood Donation
-    </a>
-    <a href="ambulance.html" class="nav-ambulance">
-      <i class="fa-solid fa-truck-medical"></i> Book Ambulance
-    </a>
-
     <div class="nav-label">AI Tools</div>
     <nav class="sidebar-nav">
       <a href="symptom-checker.html" class="nav-item">
@@ -461,6 +450,18 @@ body.is-mobile .main-content {
       </a>
     </nav>
 
+    <div class="nav-label">⚠ Important</div>
+    <a href="emergency.html" class="nav-sos">
+      <i class="fa-solid fa-bell"></i> Emergency SOS
+    </a>
+    <a href="blood-donation.html" class="nav-blood">
+      <i class="fa-solid fa-droplet"></i> Blood Donation
+    </a>
+    <a href="ambulance.html" class="nav-ambulance">
+      <i class="fa-solid fa-truck-medical"></i> Book Ambulance
+    </a>
+
+    
     <div class="sidebar-footer">
       <button class="btn-logout" onclick="logout()">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
@@ -757,7 +758,7 @@ async function linkTelegram() {
   try {
     const d = await apiGet('/api/telegram/generate/' + auth.userId);
     document.getElementById('telegramCode').innerHTML =
-      `<div class="alert alert-info small mb-0 mt-2">Open <strong>@${d.botUsername}</strong> on Telegram and send: <strong>${d.code}</strong></div>`;
+      `<div class="alert alert-info small mb-0 mt-2">Open <strong>${d.botUsername}</strong> on Telegram and send: <strong>${d.code}</strong></div>`;
   } catch { showError('Failed to generate code.'); }
 }
 
