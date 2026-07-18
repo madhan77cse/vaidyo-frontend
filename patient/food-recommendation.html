@@ -83,69 +83,56 @@ body::before {
 .ai-banner h3 { font-weight:800; font-size:1.5rem; margin-bottom:4px; position:relative; z-index:1; }
 .ai-banner p  { opacity:.75; margin:0; font-size:.88rem; position:relative; z-index:1; }
 
-/* ── CARDS ── */
-.section-card { background:rgba(13,20,45,.75); backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,.07); border-radius:16px; padding:22px; height:100%; transition:border-color .3s, box-shadow .3s; }
-.section-card:hover { border-color:rgba(6,182,212,.2); box-shadow:0 6px 24px rgba(6,182,212,.07); }
-.section-card h5 { font-weight:700; font-size:.95rem; color:#E2E8F0; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+/* ── INPUT CARD — fixed height: auto so it never stretches ── */
+.input-card {
+  background:rgba(13,20,45,.75);
+  backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;
+  padding:22px;
+  height:auto;
+  margin-bottom:20px;
+  transition:border-color .3s, box-shadow .3s;
+}
+.input-card:hover { border-color:rgba(6,182,212,.2); box-shadow:0 6px 24px rgba(6,182,212,.07); }
+.input-card h5 { font-weight:700; font-size:.95rem; color:#E2E8F0; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
 
-/* ── INPUT AREA ── */
-.input-wrap { position:relative; }
+/* ── INPUT ── */
 .symptom-input {
-  width:100%; padding:14px 50px 14px 18px;
+  width:100%; padding:13px 18px;
   background:rgba(255,255,255,.05);
   border:1px solid rgba(6,182,212,.2);
   border-radius:12px; color:#E2E8F0;
   font-family:'Poppins',sans-serif; font-size:.9rem;
-  resize:none; outline:none;
+  outline:none; height:48px;
   transition:border-color .2s, box-shadow .2s;
-  min-height: 56px;
-  line-height: 1.5;
 }
 .symptom-input::placeholder { color:#475569; }
 .symptom-input:focus { border-color:rgba(6,182,212,.5); box-shadow:0 0 0 3px rgba(6,182,212,.08); }
 
-/* quick-select chips */
+/* ── CHIPS ── */
 .quick-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
-.chip {
-  padding:5px 13px; border-radius:50px; font-size:.75rem; font-weight:600; cursor:pointer;
-  background:rgba(6,182,212,.08); border:1px solid rgba(6,182,212,.2); color:#94A3B8;
-  transition:all .15s ease;
-}
+.chip { padding:5px 13px; border-radius:50px; font-size:.75rem; font-weight:600; cursor:pointer; background:rgba(6,182,212,.08); border:1px solid rgba(6,182,212,.2); color:#94A3B8; transition:all .15s ease; }
 .chip:hover { background:rgba(6,182,212,.18); color:#22D3EE; border-color:rgba(6,182,212,.4); }
 
-/* ── ACTION BUTTON ── */
-.btn-ai-action { background:linear-gradient(135deg,#059669,#0E7490); color:#fff; border:none; border-radius:10px; font-weight:600; font-size:.9rem; padding:13px 20px; width:100%; transition:all .2s ease; }
+/* ── BUTTON ── */
+.btn-ai-action { background:linear-gradient(135deg,#059669,#0E7490); color:#fff; border:none; border-radius:10px; font-weight:600; font-size:.9rem; padding:13px 20px; width:100%; margin-top:12px; transition:all .2s ease; cursor:pointer; }
 .btn-ai-action:hover { filter:brightness(1.1); transform:translateY(-1px); }
 .btn-ai-action:disabled { opacity:.45; cursor:not-allowed; transform:none; filter:none; }
-
-/* ── FOOD RESULT ── */
-.food-col-header { display:flex; align-items:center; gap:8px; font-size:.9rem; font-weight:700; margin-bottom:14px; }
-.food-col-header.eat   { color:#34D399; }
-.food-col-header.avoid { color:#F87171; }
-.food-col-header.tips  { color:#60A5FA; }
-.food-item { display:flex; align-items:flex-start; gap:10px; border-radius:10px; padding:10px 12px; margin-bottom:8px; font-size:.84rem; line-height:1.45; }
-.food-item.eat   { background:rgba(5,150,105,.08); border:1px solid rgba(5,150,105,.2); color:#D1FAE5; }
-.food-item.avoid { background:rgba(220,38,38,.08); border:1px solid rgba(220,38,38,.2); color:#FEE2E2; }
-.food-item.tips  { background:rgba(37,99,235,.08); border:1px solid rgba(37,99,235,.2); color:#DBEAFE; }
-.food-item i { flex-shrink:0; margin-top:2px; }
-.food-item.eat i   { color:#34D399; }
-.food-item.avoid i { color:#F87171; }
-.food-item.tips i  { color:#60A5FA; }
-
-/* ── QUERY ECHO ── */
-.query-badge {
-  display:inline-flex; align-items:center; gap:6px;
-  background:rgba(6,182,212,.1); border:1px solid rgba(6,182,212,.25);
-  color:#22D3EE; padding:5px 13px; border-radius:50px;
-  font-size:.78rem; font-weight:600; margin-bottom:16px;
-}
-
-/* ── DISCLAIMER ── */
-.disclaimer-dark { background:rgba(220,38,38,.1); border:1px solid rgba(220,38,38,.25); border-left:3px solid #DC2626; border-radius:10px; padding:14px 16px; color:#FCA5A5; font-size:.82rem; font-weight:500; display:flex; gap:10px; align-items:flex-start; }
 
 /* ── SPINNER ── */
 .ai-spinner { width:34px; height:34px; border:3px solid rgba(6,182,212,.15); border-top-color:#22D3EE; border-radius:50%; animation:spin .8s linear infinite; margin:0 auto; }
 @keyframes spin { to{transform:rotate(360deg);} }
+
+/* ── RESULT ── */
+.query-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(6,182,212,.1); border:1px solid rgba(6,182,212,.25); color:#22D3EE; padding:5px 13px; border-radius:50px; font-size:.78rem; font-weight:600; margin-bottom:16px; }
+
+.ai-response-card { background:rgba(13,20,45,.75); backdrop-filter:blur(14px); border:1px solid rgba(6,182,212,.15); border-radius:16px; padding:24px 28px; margin-bottom:16px; height:auto; }
+.ai-response-card h5 { font-weight:700; font-size:.95rem; color:#22D3EE; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.ai-response-text { color:#CBD5E1; font-size:.88rem; line-height:1.85; white-space:pre-wrap; word-break:break-word; }
+.ai-response-text strong { color:#E2E8F0; font-weight:600; }
+
+.disclaimer-dark { background:rgba(220,38,38,.1); border:1px solid rgba(220,38,38,.25); border-left:3px solid #DC2626; border-radius:10px; padding:14px 16px; color:#FCA5A5; font-size:.82rem; font-weight:500; display:flex; gap:10px; align-items:flex-start; }
 
 @media (max-width:768px) {
   .sidebar { transform:translateX(-100%); transition:transform .3s ease; }
@@ -163,7 +150,6 @@ body::before {
 
 <div class="app-layout">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
       <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
@@ -201,19 +187,17 @@ body::before {
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main-content">
 
+    <!-- Banner -->
     <div class="ai-banner reveal">
       <h3><i class="fa-solid fa-apple-whole me-2"></i>AI Food Recommendations</h3>
-      <p>Type any disease or symptom — get a personalized diet guide instantly</p>
+      <p>Type any disease or symptom — get a personalised diet guide instantly</p>
     </div>
 
-    <!-- Input Card -->
-    <div class="section-card mb-4 reveal d1">
+    <!-- Input Card — uses .input-card NOT .section-card to avoid height:100% from style.css -->
+    <div class="input-card reveal d1">
       <h5><i class="fa-solid fa-magnifying-glass-plus" style="color:#22D3EE;"></i> What condition are you managing?</h5>
-
-      <!-- Quick-pick chips -->
       <div class="quick-chips" id="quickChips">
         <span class="chip" data-val="Diabetes">🩸 Diabetes</span>
         <span class="chip" data-val="Hypertension">❤️ Hypertension</span>
@@ -224,55 +208,35 @@ body::before {
         <span class="chip" data-val="Acid Reflux">🔥 Acid Reflux</span>
         <span class="chip" data-val="High Cholesterol">🫀 High Cholesterol</span>
       </div>
-
-      <div class="input-wrap mb-3">
-        <input
-          type="text"
-          id="conditionInput"
-          class="symptom-input"
-          placeholder="e.g. Diabetes, PCOD, Hypertension, Kidney Stone…"
-          maxlength="200"
-          autocomplete="off"
-        />
-      </div>
-
+      <input
+        type="text"
+        id="conditionInput"
+        class="symptom-input"
+        placeholder="e.g. Diabetes, PCOD, Hypertension, Kidney Stone…"
+        maxlength="200"
+        autocomplete="off"
+      />
       <button id="getGuideBtn" class="btn-ai-action">
         <i class="fa-solid fa-utensils me-2"></i>Get My Food Guide
       </button>
     </div>
 
     <!-- Loader -->
-    <div id="loader" class="text-center my-4" style="display:none;">
+    <div id="loader" style="display:none; text-align:center; padding:20px 0;">
       <div class="ai-spinner"></div>
-      <p style="color:#475569;" class="small mt-2 mb-0">Generating your personalised food guide…</p>
+      <p style="color:#475569; margin-top:10px; font-size:.85rem;">Generating your personalised food guide…</p>
     </div>
 
     <!-- Result -->
     <div id="resultSection" style="display:none;">
-      <div id="queryBadgeWrap" class="mb-2"></div>
-      <div class="row g-3 mb-4">
-        <div class="col-md-4 reveal d1">
-          <div class="section-card">
-            <div class="food-col-header eat"><i class="fa-solid fa-circle-check"></i> Foods to Eat</div>
-            <div id="foodsToEat"></div>
-          </div>
-        </div>
-        <div class="col-md-4 reveal d2">
-          <div class="section-card">
-            <div class="food-col-header avoid"><i class="fa-solid fa-circle-xmark"></i> Foods to Avoid</div>
-            <div id="foodsToAvoid"></div>
-          </div>
-        </div>
-        <div class="col-md-4 reveal d3">
-          <div class="section-card">
-            <div class="food-col-header tips"><i class="fa-solid fa-lightbulb"></i> General Tips</div>
-            <div id="generalTips"></div>
-          </div>
-        </div>
+      <div id="queryBadgeWrap"></div>
+      <div class="ai-response-card reveal d1">
+        <h5><i class="fa-solid fa-robot"></i> Your Personalised Food Guide</h5>
+        <div class="ai-response-text" id="aiResponseText"></div>
       </div>
       <div class="disclaimer-dark">
         <i class="fa-solid fa-triangle-exclamation mt-1"></i>
-        <span>These are general wellness suggestions, not a clinical diet plan. Always consult a qualified dietitian for personalised advice.</span>
+        <span id="disclaimerText">These are general wellness suggestions, not a clinical diet plan. Always consult a qualified dietitian for personalised advice.</span>
       </div>
     </div>
 
@@ -285,13 +249,11 @@ body::before {
 <script src="../js/auth.js"></script>
 <script src="../js/utils.js"></script>
 <script>
-/* ── Auth ── */
 if (!checkAuth('PATIENT')) {}
 const auth = getAuth();
-document.getElementById('userName').textContent   = auth.fullName || 'Patient';
+document.getElementById('userName').textContent    = auth.fullName || 'Patient';
 document.getElementById('userInitial').textContent = (auth.fullName || 'P').charAt(0).toUpperCase();
 
-/* ── Sidebar mobile toggle ── */
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('sidebarOverlay');
 document.getElementById('sidebarToggle').addEventListener('click', () => {
@@ -301,14 +263,12 @@ overlay.addEventListener('click', () => {
   sidebar.classList.remove('open'); overlay.classList.remove('open');
 });
 
-/* ── Scroll reveal ── */
 const obs = new IntersectionObserver(entries =>
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } }),
   { threshold: 0.1 }
 );
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-/* ── Quick chips ── */
 document.querySelectorAll('#quickChips .chip').forEach(chip => {
   chip.addEventListener('click', () => {
     document.getElementById('conditionInput').value = chip.dataset.val;
@@ -316,76 +276,50 @@ document.querySelectorAll('#quickChips .chip').forEach(chip => {
   });
 });
 
-/* ── Enter key shortcut ── */
 document.getElementById('conditionInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('getGuideBtn').click();
 });
 
-/* ── Helpers ── */
-function showLoader(on) {
-  document.getElementById('loader').style.display = on ? 'block' : 'none';
-}
-function renderList(id, items, type) {
-  const icons = { eat:'fa-utensils', avoid:'fa-ban', tips:'fa-lightbulb' };
-  const el = document.getElementById(id);
-  if (!items || !items.length) {
-    el.innerHTML = '<p style="color:#475569;" class="small mb-0">No data returned.</p>';
-    return;
-  }
-  el.innerHTML = items.map(item =>
-    `<div class="food-item ${type}"><i class="fa-solid ${icons[type]}"></i><span>${item}</span></div>`
-  ).join('');
+function formatAiText(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^(\d+\..+)$/gm, '<strong>$1</strong>');
 }
 
-/* ── Main: call Groq via backend ── */
 document.getElementById('getGuideBtn').addEventListener('click', async () => {
   const condition = document.getElementById('conditionInput').value.trim();
-  if (!condition) {
-    document.getElementById('conditionInput').focus();
-    return;
-  }
+  if (!condition) { document.getElementById('conditionInput').focus(); return; }
 
-  showLoader(true);
+  document.getElementById('loader').style.display = 'block';
   document.getElementById('resultSection').style.display = 'none';
 
   try {
-    /* Call your existing backend endpoint — pass condition as query param or body.
-       Adjust the endpoint path to whatever your Spring Boot controller exposes.      */
-    const data = await apiPost('/api/food-recommendation', {
-      patientId: auth.userId,
-      condition: condition
-    });
+    const data = await apiPost('/api/patient/food-recommendation', { condition });
 
-    /* Expected response shape:
-       { foodsToEat: string[], foodsToAvoid: string[], generalTips: string[] }       */
+    if (!data || (!data.recommendation && !data.aiResponse)) throw new Error('Empty response');
 
-    // Query echo badge
+    const text       = data.recommendation || data.aiResponse || '';
+    const disclaimer = data.disclaimer || '';
+
     document.getElementById('queryBadgeWrap').innerHTML =
       `<span class="query-badge"><i class="fa-solid fa-tag"></i> Results for: ${condition}</span>`;
-
-    renderList('foodsToEat',   data.foodsToEat,   'eat');
-    renderList('foodsToAvoid', data.foodsToAvoid, 'avoid');
-    renderList('generalTips',  data.generalTips,  'tips');
+    document.getElementById('aiResponseText').innerHTML = formatAiText(text);
+    if (disclaimer) document.getElementById('disclaimerText').textContent = disclaimer;
 
     document.getElementById('resultSection').style.display = 'block';
-
-    // Re-trigger reveal animation on result cards
     document.querySelectorAll('#resultSection .reveal').forEach(el => {
-      el.classList.remove('visible');
-      obs.observe(el);
+      el.classList.remove('visible'); obs.observe(el);
     });
+    document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   } catch (err) {
     Swal.fire({
-      icon: 'error',
-      title: 'Oops!',
+      icon: 'error', title: 'Oops!',
       text: 'Could not get recommendations. Please try again.',
-      background: '#0D1A2E',
-      color: '#E2E8F0',
-      confirmButtonColor: '#059669'
+      background: '#0D1A2E', color: '#E2E8F0', confirmButtonColor: '#059669'
     });
   } finally {
-    showLoader(false);
+    document.getElementById('loader').style.display = 'none';
   }
 });
 </script>
